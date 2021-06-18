@@ -1,5 +1,5 @@
 const finalConfig = {
-  apiURL = ''
+  apiURL = 'localhost:5000'
 }
 
 export default finalConfig

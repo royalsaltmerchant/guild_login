@@ -1,0 +1,1 @@
+import finalConfig from './config'
