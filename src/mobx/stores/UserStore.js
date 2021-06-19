@@ -1,11 +1,13 @@
+import { observable, makeObservable, action } from 'mobx';
 import React, { Component } from 'react'
 
 export default class UserStore extends Component {
-  render() {
-    return (
-      <div>
-        
-      </div>
-    )
+  constructor() {
+    makeObservable(this, {
+      userInfo: observable,
+      getUserInfo: action
+    })
+    this.userInfo = null
   }
+  
 }

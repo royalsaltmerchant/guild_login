@@ -9,6 +9,7 @@ import {
 import {Provider as MobxStoreProvider} from 'mobx-react';
 import mobxStoresToInject from './mobx'
 import Login from './components/Login'
+import Account from './components/Account'
 import Header from './components/Header'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import {Container, Row, Col} from 'react-bootstrap'
@@ -23,8 +24,11 @@ function Root() {
       <Header />
       <div className="d-flex justify-content-center mx-5 p-3 rounded border border-light" style={{height: 600, backgroundColor: '#f6f6f6'}}>
         <Switch>
-          <Route path="/">
+          <Route path="/login">
             <Login />
+          </Route>
+          <Route path="/account">
+            <Account />
           </Route>
         </Switch>
       </div>

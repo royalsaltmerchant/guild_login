@@ -1,5 +1,3 @@
-const finalConfig = {
-  apiURL = 'localhost:5000'
+export const finalConfig = {
+  apiURL: 'http://127.0.0.1:5000/api'
 }
-
-export default finalConfig
