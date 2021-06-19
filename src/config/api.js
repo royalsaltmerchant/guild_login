@@ -32,7 +32,23 @@ const authenticate = async () => {
   }
 }
 
+const getUser = async () => {
+  try {
+    const res = await axios({
+      method: 'get',
+      url: '/api/get_user',
+      headers: {
+        "x-access-token": localStorage.getItem("token")
+      }
+    })
+    return res
+  } catch(err) {
+    throw(err)
+  }
+}
+
 export {
   login,
-  authenticate
+  authenticate,
+  getUser
 }

@@ -1,17 +1,33 @@
 import React, { Component } from 'react'
 import {authenticate as authenticateAPICall} from '../config/api'
+import {inject, observer} from 'mobx-react'
 
-export default class Account extends Component {
-  constructor() {
-    super()
+class Account extends Component {
+  constructor(props) {
+    super(props)
     this.state = {
       authenticated: false,
-      loading: true
+      loading: true,
+      hasUserInfo: false
     }
   }
 
   componentDidMount() {
     this.authenticate()
+  }
+
+  async componentDidUpdate() {
+    const {authenticated, hasUserInfo} = this.state
+    if(authenticated && !hasUserInfo) {
+      try {
+        const res = await this.props.userStore.getUserInfo()
+        if(res.status === 200) {
+          this.setState({hasUserInfo: true})
+        }
+      } catch(err) {
+        console.log(err)
+      }
+    }
   }
 
   async authenticate() {
@@ -35,10 +51,14 @@ export default class Account extends Component {
   }
 
   renderLoadingOrAccount() {
-    const {loading, authenticated} = this.state
-    if(!loading, authenticated) {
+    const {loading, authenticated, hasUserInfo} = this.state
+    if(!loading && authenticated && hasUserInfo) {
+      const {userInfo} = this.props.userStore
       return(
-        <p>yes</p>
+        <div className="d-flex flex-column justify-content-start align-items-left">
+          <h3>Username</h3>
+          <p>{userInfo.username}</p>
+        </div>
       )
     }
     if(loading) {
@@ -62,3 +82,5 @@ export default class Account extends Component {
     )
   }
 }
+
+export default inject('userStore')(observer(Account));
