@@ -1,8 +1,9 @@
 import React, { Component } from 'react'
 import {Form, Button} from 'react-bootstrap'
 import {login as loginAPICall} from '../config/api'
+import {withRouter} from 'react-router-dom';
 
-export default class Login extends Component {
+class Login extends Component {
 
   async handleSubmit(event) {
     event.preventDefault()
@@ -14,10 +15,12 @@ export default class Login extends Component {
       if(res.status === 200) {
         const token = res.data.token
         localStorage.setItem('token', "Bearer " + token)
+        this.props.history.push('/account')
       }
     } catch(err) {
-      if(err.response.status === 400) {
-        console.log('wrong data')
+      console.log(err)
+      if(err.response) {
+        console.log('error status', err.response.status)
       }
       else {
         console.log('something went wrong')
@@ -55,3 +58,5 @@ export default class Login extends Component {
     )
   }
 }
+
+export default withRouter(Login)
