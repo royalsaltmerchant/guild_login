@@ -22,6 +22,7 @@ function Root() {
   return(
     <Container fluid className="App">
       <Header />
+      
       <div className="d-flex justify-content-center mx-5 p-3 rounded border border-light" style={{height: 600, backgroundColor: '#f6f6f6'}}>
         <Switch>
           <Route path="/login">

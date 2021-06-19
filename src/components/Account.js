@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import {authenticate as authenticateAPICall} from '../config/api'
 import {inject, observer} from 'mobx-react'
+import {Spinner} from 'react-bootstrap'
 
 class Account extends Component {
   constructor(props) {
@@ -55,15 +56,17 @@ class Account extends Component {
     if(!loading && authenticated && hasUserInfo) {
       const {userInfo} = this.props.userStore
       return(
-        <div className="d-flex flex-column justify-content-start align-items-left">
-          <h3>Username</h3>
-          <p>{userInfo.username}</p>
+        <div>
+          <p>Username: {userInfo.username}</p>
+          <p>Email: {userInfo.email}</p>
         </div>
       )
     }
     if(loading) {
       return(
-        <p>loading</p>
+        <Spinner animation="border" role="status">
+          <span className="sr-only">Loading...</span>
+        </Spinner>
       )
     }
     if(!loading && !authenticated) {
@@ -75,8 +78,8 @@ class Account extends Component {
 
   render() {
     return (
-      <div>
-        <h2 className="text-center">Account</h2>
+      <div className="m-100 text-center">
+        <h2>Account</h2>
         {this.renderLoadingOrAccount()}
       </div>
     )

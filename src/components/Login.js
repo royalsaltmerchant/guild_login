@@ -30,7 +30,7 @@ class Login extends Component {
 
   render() {
     return (
-      <div className=" w-50">
+      <div className="w-50">
         <h2 className="text-center">Login</h2>
         <Form onSubmit={(event) => this.handleSubmit(event)}>
           <Form.Group controlId="email">
