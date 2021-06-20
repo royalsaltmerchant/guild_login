@@ -11,6 +11,7 @@ import mobxStoresToInject from './mobx'
 import Login from './components/Login'
 import Account from './components/Account'
 import Header from './components/Header'
+import Upload from './components/Upload'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import {Container, Row, Col} from 'react-bootstrap'
 
@@ -22,14 +23,17 @@ function Root() {
   return(
     <Container fluid className="App">
       <Header />
-      
-      <div className="d-flex justify-content-center mx-5 p-3 rounded border border-light" style={{height: 600, backgroundColor: '#f6f6f6'}}>
+
+      <div className="d-flex justify-content-center p-3 rounded border border-light" style={{height: '80vh', backgroundColor: '#f6f6f6'}}>
         <Switch>
           <Route path="/login">
             <Login />
           </Route>
           <Route path="/account">
             <Account />
+          </Route>
+          <Route path="/upload">
+            <Upload />
           </Route>
         </Switch>
       </div>

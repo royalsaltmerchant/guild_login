@@ -56,7 +56,7 @@ class Account extends Component {
     if(!loading && authenticated && hasUserInfo) {
       const {userInfo} = this.props.userStore
       return(
-        <div>
+        <div className="d-flex flex-column justify-content-start align-items-start p-3 rounded" style={{width: '75vw', height: '50vh', backgroundColor: '#fff'}}>
           <p>Username: {userInfo.username}</p>
           <p>Email: {userInfo.email}</p>
         </div>
@@ -64,22 +64,26 @@ class Account extends Component {
     }
     if(loading) {
       return(
-        <Spinner animation="border" role="status">
-          <span className="sr-only">Loading...</span>
-        </Spinner>
+        <div className="d-flex justify-content-center align-items-center" style={{width: '75vw', height: '50vh', backgroundColor: '#fff'}}>
+          <Spinner animation="border" role="status">
+            <span className="sr-only">Loading...</span>
+          </Spinner>
+        </div>
       )
     }
     if(!loading && !authenticated) {
       return(
-        <p>no</p>
+        <div className="d-flex justify-content-center align-items-center" style={{width: '75vw', height: '50vh', backgroundColor: '#fff'}}>
+          <p>Can't find user data...</p>
+        </div>
       )
     }
   }
 
   render() {
     return (
-      <div className="m-100 text-center">
-        <h2>Account</h2>
+      <div>
+        <h2 className="m-100 text-center">Account</h2>
         {this.renderLoadingOrAccount()}
       </div>
     )
