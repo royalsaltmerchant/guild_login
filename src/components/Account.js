@@ -51,6 +51,12 @@ class Account extends Component {
     }
   }
 
+  renderAdminTools() {
+    return(
+      <p>admin tools</p>
+    )
+  }
+
   renderLoadingOrAccount() {
     const {loading, authenticated, hasUserInfo} = this.state
     if(!loading && authenticated && hasUserInfo) {
@@ -59,6 +65,7 @@ class Account extends Component {
         <div className="d-flex flex-column justify-content-start align-items-start p-3 rounded" style={{width: '75vw', height: '50vh', backgroundColor: '#fff'}}>
           <p>Username: {userInfo.username}</p>
           <p>Email: {userInfo.email}</p>
+          {userInfo.admin ? this.renderAdminTools() : null}
         </div>
       )
     }
