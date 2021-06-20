@@ -5,31 +5,39 @@ export default class Upload extends Component {
   constructor(props) {
     super(props)
     this.state = {
-
+      filesList: []
     }
   }
 
-  handleSubmit() {
+  handleSubmit(event) {
+    const {filesList} = this.state
 
+    event.preventDefault()
+    console.log(event.target.file.files)
+    this.setState({
+      filesList: [...filesList, ...event.target.file.files]
+    })
+  }
+
+  renderFilesList() {
+    const {filesList} = this.state
+
+    const list = filesList.map(file => (
+      <p>{file.name}</p>
+    ))
+    return list
   }
 
   render() {
+    const {filesList} = this.state
+    console.log('files list state',filesList)
     return (
       <div>
+        <p>File List:</p>
         <div className="p-1 rounded border border-dark" style={{width: '60vw', height: '25vh', backgroundColor: '#fff', overflow: 'scroll'}}>
-          <p>test item blah blah blah blah</p>
-          <p>test item blah blah blah blah</p>
-          <p>test item blah blah blah blah</p>
-          <p>test item blah blah blah blah</p>
-          <p>test item blah blah blah blah</p>
-          <p>test item blah blah blah blah</p>
-          <p>test item blah blah blah blah</p>
-          <p>test item blah blah blah blah</p>
-          <p>test item blah blah blah blah</p>
-          <p>test item blah blah blah blah</p>
-          <p>test item blah blah blah blah</p>
-          <p>test item blah blah blah blah</p>
+          {this.renderFilesList()}
         </div>
+        <hr />
         <Form onSubmit={(event) => this.handleSubmit(event)}>
           <Form.Group controlId="file">
             <Form.Label>Upload Files</Form.Label>
@@ -38,6 +46,7 @@ export default class Upload extends Component {
               size="md" 
               type="file" 
               multiple
+              accept="audio/*"
             />
           </Form.Group>
             <Button variant="outline-dark" type="submit">
