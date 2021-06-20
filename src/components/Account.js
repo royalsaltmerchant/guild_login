@@ -80,7 +80,7 @@ class Account extends Component {
     if(!loading && authenticated && hasUserInfo) {
       const {userInfo} = this.props.userStore
       return(
-        <div className="d-flex flex-column justify-content-start align-items-start p-3 rounded" style={{width: '75vw', height: '50vh', backgroundColor: '#fff'}}>
+        <div className="d-flex flex-column justify-content-start align-items-start p-3 rounded" style={{width: '75vw', backgroundColor: '#fff'}}>
           <p><u>Account Info</u></p>
           <p>Username: {userInfo.username}</p>
           <p>Email: {userInfo.email}</p>
@@ -90,7 +90,7 @@ class Account extends Component {
     }
     if(loading) {
       return(
-        <div className="d-flex justify-content-center align-items-center" style={{width: '75vw', height: '50vh', backgroundColor: '#fff'}}>
+        <div className="d-flex justify-content-center align-items-center" style={{width: '75vw', backgroundColor: '#fff'}}>
           <Spinner animation="border" role="status">
             <span className="sr-only">Loading...</span>
           </Spinner>
@@ -99,7 +99,7 @@ class Account extends Component {
     }
     if(!loading && !authenticated) {
       return(
-        <div className="d-flex justify-content-center align-items-center" style={{width: '75vw', height: '50vh', backgroundColor: '#fff'}}>
+        <div className="d-flex justify-content-center align-items-center" style={{width: '75vw', backgroundColor: '#fff'}}>
           <p>Can't find user data...</p>
         </div>
       )

@@ -24,7 +24,7 @@ function Root() {
     <Container fluid className="App">
       <Header />
 
-      <div className="d-flex justify-content-center p-3 rounded border border-light" style={{height: '80vh', backgroundColor: '#f6f6f6'}}>
+      <div className="d-flex justify-content-center p-3 rounded border border-light" style={{backgroundColor: '#f6f6f6'}}>
         <Switch>
           <Route path="/login">
             <Login />
