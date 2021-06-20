@@ -1,7 +1,8 @@
 import React, { Component } from 'react'
 import {authenticate as authenticateAPICall} from '../config/api'
 import {inject, observer} from 'mobx-react'
-import {Spinner} from 'react-bootstrap'
+import {Spinner, Button} from 'react-bootstrap'
+import CreateProject from './CreateProject'
 
 class Account extends Component {
   constructor(props) {
@@ -9,7 +10,8 @@ class Account extends Component {
     this.state = {
       authenticated: false,
       loading: true,
-      hasUserInfo: false
+      hasUserInfo: false,
+      createProjectBoolean: false
     }
   }
 
@@ -51,9 +53,25 @@ class Account extends Component {
     }
   }
 
+  renderCreateProject() {
+    const {createProjectBoolean} = this.state
+
+    if(createProjectBoolean) {
+      return(
+        <CreateProject />
+      )
+    }
+  }
+
   renderAdminTools() {
     return(
-      <p>admin tools</p>
+      <div>
+        <p><u>Admin Tools</u></p>
+        <Button variant="link" onClick={() => this.setState({createProjectBoolean: !this.state.createProjectBoolean})}>
+          {this.state.createProjectBoolean ? '- Create New Project' : '+ Create New Project'}
+        </Button>
+        {this.renderCreateProject()}
+      </div>
     )
   }
 
@@ -63,6 +81,7 @@ class Account extends Component {
       const {userInfo} = this.props.userStore
       return(
         <div className="d-flex flex-column justify-content-start align-items-start p-3 rounded" style={{width: '75vw', height: '50vh', backgroundColor: '#fff'}}>
+          <p><u>Account Info</u></p>
           <p>Username: {userInfo.username}</p>
           <p>Email: {userInfo.email}</p>
           {userInfo.admin ? this.renderAdminTools() : null}

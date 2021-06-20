@@ -98,7 +98,7 @@ export default class Upload extends Component {
               accept="audio/*"
             />
           </Form.Group>
-            <Button variant="outline-dark" type="submit">
+            <Button variant="outline-success" type="submit">
               Upload
             </Button>
         </Form>    

@@ -50,7 +50,7 @@ class Login extends Component {
               type="password" 
               placeholder="Account Password" />
           </Form.Group>
-            <Button variant="outline-dark" type="submit">
+            <Button variant="outline-success" type="submit">
               Login
             </Button>
         </Form>
