@@ -23,19 +23,17 @@ export default class CreateProject extends Component {
     const {entryIdCount} = this.state
     const list = []
     list.push(
-      <div className="d-flex">
         <Form.Group controlId={`asset${entryIdCount}`}>
           <Form.Label>{`asset ${entryIdCount}`}</Form.Label>
-          <Form.Control 
+          <button variant="link" style={{color: 'red', textDecoration: 'none', paddingLeft: 30, border: 'none', background: 'none'}} onClick={() => this.removeAsset(entryIdCount)}>
+            remove
+          </button>
+          <Form.Control
             required
             size="md"
             type="text"
             placeholder="Project Asset" />
         </Form.Group>
-        <Button variant="link" style={{color: 'red', fontSize: '30px'}} onClick={() => this.removeAsset(entryIdCount)}>
-          ×
-        </Button>
-      </div>
     )
     this.setState({
       entries: [...this.state.entries, {item: list, id: entryIdCount}]
@@ -53,7 +51,8 @@ export default class CreateProject extends Component {
   }
 
   handleSubmit(event) {
-    console.log(event.target)
+    event.preventDefault()
+    console.log(event)
   }
 
   render() {
