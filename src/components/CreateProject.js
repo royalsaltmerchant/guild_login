@@ -5,40 +5,51 @@ import {Spinner, Button, Form} from 'react-bootstrap'
 export default class CreateProject extends Component {
   constructor(props) {
     super(props)
+
     this.state = {
-      entries: [1],
+      entries: [],
+      entryIdCount: 0
     }
   }
 
   renderEntries() {
     const {entries} = this.state
-    const elements = []
-    entries.forEach(entry => {
-      elements.push(
-        <div className="d-flex justify-content-end">
-          <Form.Group controlId={`asset${entry}`}>
-            <Form.Label>{`asset ${entry}`}</Form.Label>
-            <Form.Control 
-              required
-              size="md"
-              type="text"
-              placeholder="Project Asset" />
-          </Form.Group>
-          <Button variant="link" style={{color: 'red', fontSize: '30px'}} onClick={() => this.removeAsset(entry)}>
-          ×
-          </Button>
-        </div>
-      )
-    })
-    return elements
+
+    const listMap = entries.map(entry => entry.item)
+    return listMap
   }
 
-  removeAsset(entry) {
-    const {entries} = this.state
-    const filteredEntries = entries.filter(oldEntry => {
-      return oldEntry !== entry
+  addEntry() {
+    const {entryIdCount} = this.state
+    const list = []
+    list.push(
+      <div className="d-flex">
+        <Form.Group controlId={`asset${entryIdCount}`}>
+          <Form.Label>{`asset ${entryIdCount}`}</Form.Label>
+          <Form.Control 
+            required
+            size="md"
+            type="text"
+            placeholder="Project Asset" />
+        </Form.Group>
+        <Button variant="link" style={{color: 'red', fontSize: '30px'}} onClick={() => this.removeAsset(entryIdCount)}>
+          ×
+        </Button>
+      </div>
+    )
+    this.setState({
+      entries: [...this.state.entries, {item: list, id: entryIdCount}]
     })
-    this.setState({entries: [...filteredEntries]})
+  }
+
+  removeAsset(entryIdCount) {
+    const {entries} = this.state
+    const filteredEntries = entries.filter(entry => {
+      return entry.id !== entryIdCount
+    })
+    this.setState({
+      entries: filteredEntries
+    })
   }
 
   handleSubmit(event) {
@@ -46,7 +57,6 @@ export default class CreateProject extends Component {
   }
 
   render() {
-    console.log(this.state.entries)
     return (
       <div className="p-3">
         
@@ -81,7 +91,7 @@ export default class CreateProject extends Component {
 
           {this.renderEntries()}
 
-          <Button variant="link" onClick={() => this.setState({entries: [...this.state.entries, this.state.entries[this.state.entries.length - 1] + 1]})}>
+          <Button variant="link" onClick={() => this.setState({entryIdCount: this.state.entryIdCount + 1}, () => this.addEntry())}>
             + Asset
           </Button>
 
