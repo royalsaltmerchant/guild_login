@@ -35,13 +35,13 @@ export default class CreateEntry extends Component {
             />
           </Form.Group>
 
-          <Form.Group controlId="entryName">
-            <Form.Label>Name</Form.Label>
+          <Form.Group controlId="entryTitle">
+            <Form.Label>Title</Form.Label>
             <Form.Control 
               required
               size="md"
               type="text"
-              placeholder="Entry Name"
+              placeholder="Entry Title"
               onChange={text => this.setState({entryName: text})}
             />
           </Form.Group>

@@ -26,13 +26,13 @@ export default class CreateProject extends Component {
       <div className="p-3">
         
         <Form onSubmit={(event) => this.handleSubmitProject(event)}>
-          <Form.Group controlId="projectName">
-            <Form.Label>Name</Form.Label>
+          <Form.Group controlId="projectTitle">
+            <Form.Label>Title</Form.Label>
             <Form.Control 
               required
               size="md"
               type="text"
-              placeholder="Project Name"
+              placeholder="Project Title"
               onChange={text => this.setState({projectName: text})}
             />
           </Form.Group>

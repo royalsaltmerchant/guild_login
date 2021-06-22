@@ -9,6 +9,7 @@ class AdminTools extends Component {
     super(props)
     this.state = {
       createProjectBoolean: false,
+      createEntryBoolean: false,
       loadingProjects: true,
       loadingEntries: true,
       hasProjects: false,
@@ -49,7 +50,7 @@ class AdminTools extends Component {
 
   renderEntryContributions(contributions) {
     return contributions.map(contribution => (
-      <div className="p-3">
+      <div className="px-3">
         <p>User_ID {contribution.user_id}</p>
         <p>{contribution.amount}</p>
         <p>{contribution.status}</p>
@@ -61,7 +62,7 @@ class AdminTools extends Component {
     const entriesMap = entries.map(entry => {
       const entryKey = `entry${entry.id}Toggle`
       return(
-        <div key={entry.id} className="p-3">
+        <div key={entry.id} className="px-3">
           <Button variant="link" onClick={() => this.handleEntryClick(entryKey)}>
             {entry.title} ▼
           </Button>
@@ -88,19 +89,23 @@ class AdminTools extends Component {
       const projectMap = projects.map(project => {
         const projectKey = `project${project.id}Toggle`
         return(
-          <div key={project.id} className="p-3">
+          <div key={project.id} className="px-3">
             <Button variant="link" onClick={() => this.handleProjectClick(projectKey)}>
               {project.title} ▼
             </Button>
             {
               this.state[projectKey] ? 
-              <div className="p-3">
+              <div className="px-3">
               <p>{project.description}</p>
               <p>{project.image_file}</p>
               <p>Active: {project.active ? 'yes' : 'no'}</p>
               <p>Complete: {project.complete ? 'yes' : 'no'}</p>
               <p>Entries:</p>
               <p>{this.renderProjectEntries(project.entries)}</p>
+              <Button variant="link" onClick={() => this.setState({createEntryBoolean: !this.state.createEntryBoolean})}>
+                {this.state.createEntryBoolean ? '- Create New Entry' : '+ Create New Entry'}
+              </Button>
+              {this.state.createEntryBoolean ? <CreateEntry projectId={project.id}/> : null}
             </div> : null
             }
           </div>
