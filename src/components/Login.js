@@ -7,11 +7,11 @@ class Login extends Component {
 
   async handleSubmit(event) {
     event.preventDefault()
-    const email = event.target.email.value.trim()
+    const username_or_email = event.target.username_or_email.value.trim()
     const password = event.target.password.value
 
     try {
-      const res = await loginAPICall(email, password)
+      const res = await loginAPICall(username_or_email, password)
       if(res.status === 200) {
         const token = res.data.token
         localStorage.setItem('token', "Bearer " + token)
@@ -33,13 +33,13 @@ class Login extends Component {
       <div className="w-50">
         <h2 className="text-center">Login</h2>
         <Form onSubmit={(event) => this.handleSubmit(event)}>
-          <Form.Group controlId="email">
-            <Form.Label>Email</Form.Label>
+          <Form.Group controlId="username_or_email">
+            <Form.Label>Username or Email</Form.Label>
             <Form.Control 
               required
               size="md"
-              type="email"
-              placeholder="Account Email" />
+              type="text"
+              placeholder="Username or Email" />
           </Form.Group>
 
           <Form.Group controlId="password">
@@ -48,7 +48,7 @@ class Login extends Component {
               required
               size="md" 
               type="password" 
-              placeholder="Account Password" />
+              placeholder="Password" />
           </Form.Group>
             <Button variant="outline-success" type="submit">
               Login

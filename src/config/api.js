@@ -1,13 +1,13 @@
 import {finalConfig as config} from './config'
 import axios from 'axios'
 
-const login = async (email, password) => {
+const login = async (username_or_email, password) => {
   try {
     const res = await axios({
       method: 'post',
       url: `api/login`,
       data: {
-        email: email,
+        username_or_email: username_or_email,
         password: password
       }
     })
@@ -47,8 +47,21 @@ const getUser = async () => {
   }
 }
 
+const getProjects = async () => {
+  try {
+    const res = await axios({
+      method: 'get',
+      url: '/api/projects',
+    })
+    return res
+  } catch(err) {
+    throw(err)
+  }
+}
+
 export {
   login,
   authenticate,
-  getUser
+  getUser,
+  getProjects
 }

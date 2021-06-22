@@ -58,9 +58,13 @@ class Account extends Component {
       const {userInfo} = this.props.userStore
       return(
         <div className="d-flex flex-column justify-content-start align-items-start p-3 rounded" style={{width: '75vw', backgroundColor: '#fff'}}>
-          <p><u>Account Info</u></p>
-          <p>Username: {userInfo.username}</p>
+          <p style={{fontSize:"25px"}}>{userInfo.username}</p>
+          <p>First Name: {userInfo.first_name}</p>
+          <p>Last Name: {userInfo.last_name}</p>
           <p>Email: {userInfo.email}</p>
+          <p>Eligible to access community files: {userInfo.eligible ? 'yes' : 'no'}</p>
+          <p>Approved asset count: {userInfo.approved_asset_count}</p>
+          <br />
           {userInfo.admin ? <AdminTools /> : null}
         </div>
       )
