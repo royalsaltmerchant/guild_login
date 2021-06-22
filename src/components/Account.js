@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import {authenticate as authenticateAPICall} from '../config/api'
 import {inject, observer} from 'mobx-react'
 import {Spinner, Button} from 'react-bootstrap'
-import CreateProject from './CreateProject'
+import AdminTools from './AdminTools'
 
 class Account extends Component {
   constructor(props) {
@@ -11,7 +11,6 @@ class Account extends Component {
       authenticated: false,
       loading: true,
       hasUserInfo: false,
-      createProjectBoolean: false
     }
   }
 
@@ -53,28 +52,6 @@ class Account extends Component {
     }
   }
 
-  renderCreateProject() {
-    const {createProjectBoolean} = this.state
-
-    if(createProjectBoolean) {
-      return(
-        <CreateProject />
-      )
-    }
-  }
-
-  renderAdminTools() {
-    return(
-      <div>
-        <p><u>Admin Tools</u></p>
-        <Button variant="link" onClick={() => this.setState({createProjectBoolean: !this.state.createProjectBoolean})}>
-          {this.state.createProjectBoolean ? '- Create New Project' : '+ Create New Project'}
-        </Button>
-        {this.renderCreateProject()}
-      </div>
-    )
-  }
-
   renderLoadingOrAccount() {
     const {loading, authenticated, hasUserInfo} = this.state
     if(!loading && authenticated && hasUserInfo) {
@@ -84,7 +61,7 @@ class Account extends Component {
           <p><u>Account Info</u></p>
           <p>Username: {userInfo.username}</p>
           <p>Email: {userInfo.email}</p>
-          {userInfo.admin ? this.renderAdminTools() : null}
+          {userInfo.admin ? <AdminTools /> : null}
         </div>
       )
     }
