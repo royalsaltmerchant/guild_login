@@ -20,6 +20,18 @@ class AdminTools extends Component {
     this.getAndUpdateProjects()
   }
 
+  handleProjectClick(projectKey) {
+    this.setState({
+      [projectKey]: !this.state[projectKey]
+    })
+  }
+
+  handleEntryClick(entryKey) {
+    this.setState({
+      [entryKey]: !this.state[entryKey]
+    })
+  }
+
   async getAndUpdateProjects() {
     try {
       const res = await this.props.projectsStore.getProjects()
@@ -35,21 +47,66 @@ class AdminTools extends Component {
     }
   }
 
+  renderEntryContributions(contributions) {
+    return contributions.map(contribution => (
+      <div className="p-3">
+        <p>User_ID {contribution.user_id}</p>
+        <p>{contribution.amount}</p>
+        <p>{contribution.status}</p>
+      </div>
+    ))
+  }
+
+  renderProjectEntries(entries) {
+    const entriesMap = entries.map(entry => {
+      const entryKey = `entry${entry.id}Toggle`
+      return(
+        <div key={entry.id} className="p-3">
+          <Button variant="link" onClick={() => this.handleEntryClick(entryKey)}>
+            {entry.title} ▼
+          </Button>
+            {
+              this.state[entryKey] ?
+              <div>
+                <p>{entry.amount}</p>
+                <p>{entry.description}</p>
+                <p>Complete: {entry.complete ? 'yes' : 'no'}</p>
+                <p>Contributions:</p>
+                {this.renderEntryContributions(entry.contributions)}
+              </div> : null
+            }
+        </div>
+      )
+    })
+    return entriesMap
+  }
+
   renderProjects() {
     const {projects} = this.props.projectsStore
     const {hasProjects, loadingProjects} = this.state
     if(hasProjects && !loadingProjects) {
-      return projects.map(project => (
-        <div key={project.id} className="p-3">
-          <p><u>{project.title}</u></p>
-          <div className="p-3">
-            <p>{project.description}</p>
-            <p>{project.image_file}</p>
-            <p>Active: {project.active ? 'yes' : 'no'}</p>
-            <p>Complete: {project.complete ? 'yes' : 'no'}</p>
+      const projectMap = projects.map(project => {
+        const projectKey = `project${project.id}Toggle`
+        return(
+          <div key={project.id} className="p-3">
+            <Button variant="link" onClick={() => this.handleProjectClick(projectKey)}>
+              {project.title} ▼
+            </Button>
+            {
+              this.state[projectKey] ? 
+              <div className="p-3">
+              <p>{project.description}</p>
+              <p>{project.image_file}</p>
+              <p>Active: {project.active ? 'yes' : 'no'}</p>
+              <p>Complete: {project.complete ? 'yes' : 'no'}</p>
+              <p>Entries:</p>
+              <p>{this.renderProjectEntries(project.entries)}</p>
+            </div> : null
+            }
           </div>
-        </div>
-      ))
+        )
+      })
+      return projectMap
     }
     if(!hasProjects && !loadingProjects) {
       return <p>Can't get projects!</p>
