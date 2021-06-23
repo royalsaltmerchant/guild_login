@@ -70,7 +70,7 @@ class Upload extends Component {
   async getAndUpdateUser() {
     this.setState({hasUser: false, loading: true}, async () => {
       try {
-        const res = await this.props.userStore.getUserInfo(this.props.entryStore.entryInfo.user_id)
+        const res = await this.props.userStore.getUserInfo()
         if(res.status === 200) {
           this.setState({
             hasUser: true,
