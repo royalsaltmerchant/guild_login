@@ -194,6 +194,44 @@ const deleteEntry = async (entryId) => {
   }
 }
 
+const editContribution = async (contributionId, amount, status) => {
+  try {
+    const res = await axios({
+      method: 'post',
+      url: '/api/edit_contribution',
+      headers: {
+        "x-access-token": localStorage.getItem("token")
+      },
+      data: {
+        contribution_id: contributionId,
+        amount: amount,
+        status: status,
+      }
+    })
+    return res
+  } catch(err) {
+    throw(err)
+  }
+}
+
+const deleteContribution = async (contributionId) => {
+  try {
+    const res = await axios({
+      method: 'post',
+      url: '/api/remove_contribution',
+      headers: {
+        "x-access-token": localStorage.getItem("token")
+      },
+      data: {
+        contribution_id: contributionId,
+      }
+    })
+    return res
+  } catch(err) {
+    throw(err)
+  }
+}
+
 export {
   login,
   authenticate,
@@ -205,5 +243,7 @@ export {
   deleteProject,
   createEntry,
   editEntry,
-  deleteEntry
+  deleteEntry,
+  editContribution,
+  deleteContribution
 }

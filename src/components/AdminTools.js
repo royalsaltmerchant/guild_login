@@ -8,6 +8,8 @@ import {
   deleteProject as deleteProjectAPICall,
   editEntry as editEntryAPICall,
   deleteEntry as deleteEntryAPICall,
+  editContribution as editContributionAPICall,
+  deleteContribution as deleteContributionAPICall,
 } from '../config/api'
 
 class AdminTools extends Component {
@@ -84,6 +86,13 @@ class AdminTools extends Component {
     })
   }
 
+  handleContributionClick(contributionToggleKey, contributionEditKey) {
+    this.setState({
+      [contributionToggleKey]: !this.state[contributionToggleKey],
+      [contributionEditKey]: false
+    })
+  }
+
   handleEditProjectClick(projectEditKey) {
     this.setState({
       [projectEditKey]: !this.state[projectEditKey]
@@ -93,6 +102,12 @@ class AdminTools extends Component {
   handleEditEntryClick(entryEditKey) {
     this.setState({
       [entryEditKey]: !this.state[entryEditKey]
+    })
+  }
+
+  handleEditContributionClick(contributionEditKey) {
+    this.setState({
+      [contributionEditKey]: !this.state[contributionEditKey]
     })
   }
 
@@ -132,6 +147,22 @@ class AdminTools extends Component {
     }
   }
 
+  async handleEditContributionSave(event, contributionId, contributionEditKey) {
+    event.preventDefault()
+    const amount = event.target.form[`contribution${contributionId}Amount`].value || event.target.form[`contribution${contributionId}Amount`].placeholder
+    const status = event.target.form[`contribution${contributionId}Status`].value || event.target.form[`contribution${contributionId}Status`].placeholder
+    
+    try {
+      const res = await editContributionAPICall(contributionId, amount, status)
+      if(res.status === 200) {
+        this.setState({[contributionEditKey]: false})
+        this.getAndUpdateProjects()
+      }
+    } catch(err) {
+      console.log(err)
+    }
+  }
+
   async handleDeleteProject(projectId) {
     try {
       const res = await deleteProjectAPICall(projectId)
@@ -154,6 +185,63 @@ class AdminTools extends Component {
     }
   }
 
+  async handleDeleteContribution(contributionId) {
+    try {
+      const res = await deleteContributionAPICall(contributionId)
+      if(res.status === 200) {
+        this.getAndUpdateProjects()
+      }
+    } catch(err) {
+      console.log(err)
+    }
+  }
+
+  renderContributionsToggleOrEdit(contributionToggleKey, contributionEditKey, contribution) {
+    if(this.state[contributionToggleKey] && !this.state[contributionEditKey]) {
+      return(
+        <div className="px-3">
+          <p>Amount: {contribution.amount}</p>
+          <p>Status: {contribution.status}</p>
+        </div>
+      )
+    }
+    if(this.state[contributionToggleKey] && this.state[contributionEditKey]) {
+      return(
+        <Form className="px-3">
+          <Form.Group controlId={`contribution${contribution.id}Amount`}>
+            <Form.Label>Amount</Form.Label>
+            <Form.Control 
+              size="md"
+              type="number"
+              placeholder={contribution.amount}
+            />
+          </Form.Group>
+          <Form.Group controlId={`contribution${entry.id}Status`}>
+            <Form.Label>Status</Form.Label>
+            <Form.Control 
+              size="md"
+              type="text"
+              placeholder={contribution.status}
+            />
+          </Form.Group>
+          <div className="d-flex justify-content-around">
+            <Button variant="outline-success" onClick={(event) => this.handleEditContributionSave(event, contribution.id, contributionEditKey)}>
+              Save
+            </Button>
+            <Button variant="outline-secondary" onClick={() => this.setState({[contributionEditKey]: false})}>
+              Cancel
+            </Button>
+            <Button variant="outline-danger" onClick={() => this.handleDeleteContribution(contribution.id)}>
+              Delete
+            </Button>
+          </div>
+        </Form>
+      )
+    } else {
+      return null
+    }
+  }
+
   renderEntryContributions(contributions) {
     const {hasUsersList, loadingUsers} = this.state
     const {usersList} = this.props.userStore
@@ -164,11 +252,17 @@ class AdminTools extends Component {
         })
         if(user.length !== 0) {
           const firstUser = user[0]
+          const contributionToggleKey = `contribution${contribution.id}Toggle`
+          const contributionEditKey = `contribution${contribution.id}Edit`
           return(
-            <div className="px-3">
-              <p>User: {`${firstUser.first_name} ${firstUser.last_name} (${firstUser.username})`}</p>
-              <p>Amount: {contribution.amount}</p>
-              <p>Status: {contribution.status}</p>
+            <div key={contribution.id} className="px-3">
+              <Button variant="link" onClick={() => this.handleContributionClick(contributionToggleKey, contributionEditKey)}>
+                {`${firstUser.first_name} ${firstUser.last_name} (${firstUser.username})`} ▼
+              </Button>
+              <Button variant="link" disabled={!this.state[contributionToggleKey]} onClick={() => this.handleEditContributionClick(contributionEditKey)}>
+                  Edit
+              </Button>
+              {this.renderContributionsToggleOrEdit(contributionToggleKey, contributionEditKey, contribution)}
               <hr />
             </div>
           )
