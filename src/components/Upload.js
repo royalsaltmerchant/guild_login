@@ -21,7 +21,7 @@ class Upload extends Component {
   }
 
   async getAndUpdateEntry() {
-    this.setState({hasEntry: false, loadingEntry: true}, () => {
+    this.setState({hasEntry: false, loadingEntry: true}, async () => {
       try {
         const res = await this.props.entryStore.getEntryInfo()
         if(res.status === 200) {
