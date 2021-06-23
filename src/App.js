@@ -12,8 +12,9 @@ import Login from './components/Login'
 import Logout from './components/Logout'
 import Account from './components/Account'
 import Header from './components/Header'
-import Upload from './components/Upload'
 import NavBar from './components/NavBar'
+import Dashboard from './components/Dashboard';
+import Upload from './components/Upload'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import {Container, Row, Col} from 'react-bootstrap'
 
@@ -37,7 +38,10 @@ function Root() {
           <Route path="/account">
             <Account />
           </Route>
-          <Route path="/upload">
+          <Route path="/Dashboard">
+            <Dashboard />
+          </Route>
+          <Route path="/Upload/entry/:entryId">
             <Upload />
           </Route>
         </Switch>

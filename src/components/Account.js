@@ -92,7 +92,7 @@ class Account extends Component {
   render() {
     return (
       <div>
-        <h2 className="m-100 text-center">Account</h2>
+        <h2 className="pb-3 text-center">Account</h2>
         {this.renderLoadingOrAccount()}
       </div>
     )

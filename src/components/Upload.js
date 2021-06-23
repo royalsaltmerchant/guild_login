@@ -2,13 +2,16 @@ import React, { Component } from 'react'
 import { Form, Button } from 'react-bootstrap'
 import {awsConfig} from '../config/config'
 import S3 from 'react-aws-s3'
+import {withRouter} from 'react-router-dom'
 
-export default class Upload extends Component {
+class Upload extends Component {
   constructor(props) {
     super(props)
     this.state = {
       successList: [],
-      failedList: []
+      failedList: [],
+      hasEntry: false,
+      loadingEntry: true
     }
   }
 
@@ -77,10 +80,10 @@ export default class Upload extends Component {
   }
 
   render() {
-    const {successList, failedList} = this.state
-    console.log('files list state', successList, failedList)
+    console.log(this.props.match.params.entryId)
     return (
       <div>
+        <h2 className="text-center">something</h2>
         <p>Uploaded Files:</p>
         <div className="p-1 rounded border border-dark" style={{width: '60vw', height: '25vh', backgroundColor: '#fff', overflowY: 'auto'}}>
           {this.renderFilesSuccessList()}
@@ -106,3 +109,5 @@ export default class Upload extends Component {
     )
   }
 }
+
+export default withRouter(Upload)

@@ -372,7 +372,7 @@ class AdminTools extends Component {
           <p>Active: {project.active ? 'true' : 'false'}</p>
           <p>Complete: {project.complete ? 'true' : 'false'}</p>
           <p>Entries:</p>
-          <p>{this.renderProjectEntries(project.entries)}</p>
+          {this.renderProjectEntries(project.entries)}
           <Button variant="link" onClick={() => this.setState({createEntryBoolean: !this.state.createEntryBoolean})}>
             {this.state.createEntryBoolean ? '- Create New Entry' : '+ Create New Entry'}
           </Button>

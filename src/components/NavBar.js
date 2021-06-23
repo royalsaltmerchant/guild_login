@@ -18,7 +18,6 @@ export default class NavBar extends Component {
       try {
         const res = await authenticateAPICall()
         if(res.status === 200) {
-          console.log(res)
           this.setState({
             authorized: true
           })
