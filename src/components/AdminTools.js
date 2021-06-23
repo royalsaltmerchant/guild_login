@@ -3,7 +3,10 @@ import {inject, observer} from 'mobx-react'
 import CreateProject from './CreateProject'
 import CreateEntry from './CreateEntry'
 import {Spinner, Button, Form} from 'react-bootstrap'
-import {editProjects as editProjectsAPICall} from '../config/api'
+import {
+  editProject as editProjectAPICall,
+  deleteProject as deleteProjectAPICall
+} from '../config/api'
 
 class AdminTools extends Component {
   constructor(props) {
@@ -17,9 +20,29 @@ class AdminTools extends Component {
       hasEntries: false
     }
   }
-
+  
   componentDidMount() {
     this.getAndUpdateProjects()
+  }
+  
+  async getAndUpdateProjects() {
+    this.setState({loadingProjects: true}, async () => {
+      try {
+        const res = await this.props.projectsStore.getProjects()
+        if(res.status === 200) {
+          this.setState({
+            hasProjects: true,
+            loadingProjects: false
+          })
+        }
+      } catch(err) {
+        console.log(err)
+        this.setState({
+          hasProjects: false,
+          loadingProjects: false
+        })
+      }
+    })
   }
 
   handleProjectClick(projectToggleKey, projectEditKey) {
@@ -49,7 +72,7 @@ class AdminTools extends Component {
     const complete = event.target.form[`project${projectId}Complete`].checked
 
     try {
-      const res = await editProjectsAPICall(projectId, title, description, active, complete)
+      const res = await editProjectAPICall(projectId, title, description, active, complete)
       if(res.status === 200) {
         this.setState({[projectEditKey]: false})
         this.getAndUpdateProjects()
@@ -59,25 +82,17 @@ class AdminTools extends Component {
     }
   }
 
-  async getAndUpdateProjects() {
-    this.setState({loadingProjects: true}, async () => {
-      try {
-        const res = await this.props.projectsStore.getProjects()
-        if(res.status === 200) {
-          this.setState({
-            hasProjects: true,
-            loadingProjects: false
-          })
-        }
-      } catch(err) {
-        console.log(err)
-        this.setState({
-          hasProjects: false,
-          loadingProjects: false
-        })
+  async handleDeleteProject(projectId) {
+    try {
+      const res = await deleteProjectAPICall(projectId)
+      if(res.status === 200) {
+        this.getAndUpdateProjects()
       }
-    })
+    } catch(err) {
+      console.log(err)
+    }
   }
+
 
   renderEntryContributions(contributions) {
     return contributions.map(contribution => (
@@ -168,8 +183,11 @@ class AdminTools extends Component {
             <Button variant="outline-success" onClick={(event) => this.handleEditProjectSave(event, project.id, projectEditKey)}>
               Save
             </Button>
-            <Button variant="outline-danger" onClick={() => this.setState({[projectEditKey]: false})}>
+            <Button variant="outline-secondary" onClick={() => this.setState({[projectEditKey]: false})}>
               Cancel
+            </Button>
+            <Button variant="outline-danger" onClick={() => this.handleDeleteProject(project.id)}>
+              Delete
             </Button>
           </div>
         </Form>
@@ -217,7 +235,7 @@ class AdminTools extends Component {
         <Button variant="link" onClick={() => this.setState({createProjectBoolean: !this.state.createProjectBoolean})}>
           {this.state.createProjectBoolean ? '- Create New Project' : '+ Create New Project'}
         </Button>
-        {this.state.createProjectBoolean ? <CreateProject /> : null}
+        {this.state.createProjectBoolean ? <CreateProject getAndUpdateProjects={() => this.getAndUpdateProjects()}/> : null}
         <hr />
         <p style={{fontSize:"20px"}}>Projects:</p>
         {this.renderProjects()}

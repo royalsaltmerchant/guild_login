@@ -59,7 +59,27 @@ const getProjects = async () => {
   }
 }
 
-const editProjects = async (projectId, title, description, active, complete) => {
+const createProject = async (title, description, image) => {
+  try {
+    const res = await axios({
+      method: 'post',
+      url: '/api/add_project',
+      headers: {
+        "x-access-token": localStorage.getItem("token")
+      },
+      data: {
+        title: title,
+        description: description,
+        image_file: image
+      }
+    })
+    return res
+  } catch(err) {
+    throw(err)
+  }
+}
+
+const editProject = async (projectId, title, description, active, complete) => {
   try {
     const res = await axios({
       method: 'post',
@@ -82,10 +102,30 @@ const editProjects = async (projectId, title, description, active, complete) => 
   }
 }
 
+const deleteProject = async (projectId) => {
+  try {
+    const res = await axios({
+      method: 'post',
+      url: '/api/remove_project',
+      headers: {
+        "x-access-token": localStorage.getItem("token")
+      },
+      data: {
+        project_id: projectId,
+      }
+    })
+    return res
+  } catch(err) {
+    throw(err)
+  }
+}
+
 export {
   login,
   authenticate,
   getUser,
   getProjects,
-  editProjects
+  createProject,
+  editProject,
+  deleteProject
 }

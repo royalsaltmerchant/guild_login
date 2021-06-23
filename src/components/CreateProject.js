@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import {Spinner, Button, Form} from 'react-bootstrap'
+import {createProject as createProjectAPICall} from '../config/api'
 
 export default class CreateProject extends Component {
   constructor(props) {
@@ -9,16 +10,25 @@ export default class CreateProject extends Component {
       entries: [],
       entryIdCount: 0,
       asset: [],
-      projectName: '',
-      projectDescripton: '',
-      projectImage: null
     }
   }
 
-  handleSubmitProject(event) {
-    const {projectDescripton, projectName, projectImage} = this.state
+  async handleSubmitProject(event) {
     event.preventDefault()
-
+    const title = event.target.projectTitle.value
+    const description = event.target.projectDescription.value
+    const image = event.target.projectImage.files[0].name
+    const imageFile = event.target.projectImage.files[0]
+    
+    try {
+      const res = await createProjectAPICall(title, description, image)
+      if(res.stats === 200) {
+        console.log(res)
+        this.props.getAndUpdateProjects()
+      }
+    } catch(err) {
+      console.log(err)
+    }
   }
 
   render() {
@@ -33,7 +43,6 @@ export default class CreateProject extends Component {
               size="md"
               type="text"
               placeholder="Project Title"
-              onChange={text => this.setState({projectName: text})}
             />
           </Form.Group>
 
@@ -43,7 +52,6 @@ export default class CreateProject extends Component {
               size="md" 
               type="file"
               accept="image/*"
-              onChange={image => this.setState({projectImage: image})}
              />
           </Form.Group>
 
@@ -55,7 +63,6 @@ export default class CreateProject extends Component {
               size="md"
               type="text"
               placeholder="Project Description"
-              onChange={text => this.setState({projectDescripton: text})}
             />
           </Form.Group>
 
