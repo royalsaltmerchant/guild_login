@@ -21,7 +21,6 @@ export default class CreateEntry extends Component {
     try {
       const res = await createEntryAPICall(projectId, amount, title, description)
       if(res.status === 201) {
-        console.log(res)
         this.props.getAndUpdateProjects()
         this.props.createEntryBoolean(false)
       }

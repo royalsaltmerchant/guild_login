@@ -101,7 +101,6 @@ class AdminTools extends Component {
     try {
       const res = await editEntryAPICall(entryId, amount, title, description, complete)
       if(res.status === 200) {
-        console.log(res)
         this.setState({[entryEditKey]: false})
         this.getAndUpdateProjects()
       }
@@ -135,9 +134,10 @@ class AdminTools extends Component {
   renderEntryContributions(contributions) {
     return contributions.map(contribution => (
       <div className="px-3">
-        <p>User_ID {contribution.user_id}</p>
-        <p>{contribution.amount}</p>
-        <p>{contribution.status}</p>
+        <p>User_ID: {contribution.user_id}</p>
+        <p>Amount: {contribution.amount}</p>
+        <p>Status: {contribution.status}</p>
+        <hr />
       </div>
     ))
   }
