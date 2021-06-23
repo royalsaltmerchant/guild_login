@@ -8,12 +8,35 @@ class Dashboard extends Component {
     super(props)
     this.state = {
       hasProjects: false,
-      loadingProjects: true
+      hasUsers: false,
+      loadingProjects: true,
+      loadingUsers: true
     }
   }
 
   componentDidMount() {
     this.getAndUpdateProjects()
+    this.getAndUpdateUsersList()
+  }
+
+  async getAndUpdateUsersList() {
+    this.setState({loadingUsers: true}, async () => {
+      try {
+        const res = await this.props.userStore.getUsersList()
+        if(res.status === 200) {
+          this.setState({
+            hasUsersList: true,
+            loadingUsers: false
+          })
+        }
+      } catch(err) {
+        console.log(err)
+        this.setState({
+          hasUsersList: false,
+          loadingUsers: false
+        })
+      }
+    })
   }
 
   async getAndUpdateProjects() {
@@ -36,6 +59,35 @@ class Dashboard extends Component {
     })
   }
 
+  renderEntryContributions(contributions) {
+    const {hasUsersList, loadingUsers} = this.state
+    const {usersList} = this.props.userStore
+    if(hasUsersList && !loadingUsers) {
+      const contributionsMap = contributions.map(contribution => {
+        const contributionUser = usersList.filter(user => {
+          return user.id === contribution.user_id
+        })
+        const singleContributionUser = contributionUser[0]
+        if(singleContributionUser) {
+          return(
+            <div key={contribution.id} className="px-5">
+            <p>{`(${contribution.amount}) ${singleContributionUser.username}`}</p>
+          </div>
+          )
+        } else {
+          return <p>Can't find contributing user...</p>
+        }
+      })
+      return contributionsMap
+    }
+    if(!hasUsersList && !loadingUsers) {
+      return <p style={{color: 'red'}}>Can't get users!</p>
+    }
+    if(loadingUsers) {
+      return <Spinner />
+    }
+  }
+
   renderProjectEntries(entries) {
     const entriesMap = entries.map(entry => (
       <div key={entry.id} className="px-5 flex-row">
@@ -47,6 +99,8 @@ class Dashboard extends Component {
           </Link>
         </div>
         <p className="px-3">{entry.description}</p>
+        <p className="px-3">Contributions:</p>
+        {this.renderEntryContributions(entry.contributions)}
         </div>
       </div>
     ))
@@ -93,4 +147,4 @@ class Dashboard extends Component {
   }
 }
 
-export default inject('projectsStore')(observer(withRouter(Dashboard)))
+export default inject('projectsStore', 'userStore')(observer(withRouter(Dashboard)))
