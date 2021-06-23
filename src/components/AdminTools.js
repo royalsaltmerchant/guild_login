@@ -141,7 +141,7 @@ class AdminTools extends Component {
           <Button variant="link" onClick={() => this.setState({createEntryBoolean: !this.state.createEntryBoolean})}>
             {this.state.createEntryBoolean ? '- Create New Entry' : '+ Create New Entry'}
           </Button>
-          {this.state.createEntryBoolean ? <CreateEntry projectId={project.id}/> : null}
+          {this.state.createEntryBoolean ? <CreateEntry projectId={project.id} getAndUpdateProjects={() => this.getAndUpdateProjects()} createEntryBoolean={value => this.setState({createEntryBoolean: value})}/> : null}
         </div>
       )
     }

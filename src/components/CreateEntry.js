@@ -1,22 +1,33 @@
 import React, { Component } from 'react'
 import {Spinner, Button, Form} from 'react-bootstrap'
+import {createEntry as createEntryAPICall} from '../config/api'
 
 export default class CreateEntry extends Component {
   constructor(props) {
     super(props)
 
     this.state = {
-      entryName: '',
-      entryDescripton: '',
-      entryAmount: 0
+
     }
   }
 
-  removeAsset() {
-  }
+  async handleSubmitEntry(event) {
+    event.preventDefault()
+    const projectId = this.props.projectId
+    const amount = event.target.entryAmount.value
+    const title = event.target.entryTitle.value
+    const description = event.target.entryDescription.value
 
-  handleSubmitEntry() {
-    console.log()
+    try {
+      const res = await createEntryAPICall(projectId, amount, title, description)
+      if(res.status === 201) {
+        console.log(res)
+        this.props.getAndUpdateProjects()
+        this.props.createEntryBoolean(false)
+      }
+    } catch(err) {
+      console.log(err)
+    }
   }
 
   render() {
@@ -31,7 +42,6 @@ export default class CreateEntry extends Component {
               size="md"
               type="number"
               placeholder="Entry Amount"
-              onChange={number => this.setState({entryAmount: number})}
             />
           </Form.Group>
 
@@ -42,7 +52,6 @@ export default class CreateEntry extends Component {
               size="md"
               type="text"
               placeholder="Entry Title"
-              onChange={text => this.setState({entryName: text})}
             />
           </Form.Group>
 
@@ -54,7 +63,6 @@ export default class CreateEntry extends Component {
               size="md"
               type="text"
               placeholder="Entry Description"
-              onChange={text => this.setState({entryDescripton: text})}
             />
           </Form.Group>
 
