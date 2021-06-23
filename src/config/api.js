@@ -71,6 +71,24 @@ const getProjects = async () => {
   }
 }
 
+const getProject = async (projectId) => {
+  try {
+    const res = await axios({
+      method: 'post',
+      url: '/api/get_project',
+      headers: {
+        "x-access-token": localStorage.getItem("token")
+      },
+      data: {
+        project_id: projectId
+      }
+    })
+    return res
+  } catch(err) {
+    throw(err)
+  }
+}
+
 const createProject = async (title, description, image) => {
   try {
     const res = await axios({
@@ -255,6 +273,7 @@ export {
   authenticate,
   getUser,
   getUsers,
+  getProject,
   getProjects,
   createProject,
   editProject,

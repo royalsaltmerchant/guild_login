@@ -12,36 +12,83 @@ class Upload extends Component {
       successList: [],
       failedList: [],
       hasEntry: false,
-      loadingEntry: true
+      hasProject: false,
+      hasUser: false,
+      loading: true
     }
   }
 
-  componentDidMount() {
-    this.getAndUpdateEntry()
+  async componentDidMount() {
+    await this.getAndUpdateEntry()
+    if(this.props.entryStore.entryInfo) {
+      this.getAndUpdateProject()
+      this.getAndUpdateUser()
+
+    }
   }
 
   async getAndUpdateEntry() {
-    this.setState({hasEntry: false, loadingEntry: true}, async () => {
+    this.setState({hasEntry: false, loading: true}, async () => {
       try {
         const res = await this.props.entryStore.getEntryInfo(this.props.match.params.entryId)
         if(res.status === 200) {
           this.setState({
             hasEntry: true,
-            loadingEntry: false
+            loading: false
           })
         }
       } catch(err) {
         console.log(err)
         this.setState({
           hasEntry: false,
-          loadingEntry: false
+          loading: false
+        })
+      }
+    })
+  }
+
+  async getAndUpdateProject() {
+    this.setState({hasProject: false, loading: true}, async () => {
+      try {
+        const res = await this.props.entryStore.getProjectInfo(this.props.entryStore.entryInfo.project_id)
+        if(res.status === 200) {
+          this.setState({
+            hasProject: true,
+            loading: false
+          })
+        }
+      } catch(err) {
+        console.log(err)
+        this.setState({
+          hasEntry: false,
+          loading: false
+        })
+      }
+    })
+  }
+
+  async getAndUpdateUser() {
+    this.setState({hasUser: false, loading: true}, async () => {
+      try {
+        const res = await this.props.userStore.getUserInfo(this.props.entryStore.entryInfo.user_id)
+        if(res.status === 200) {
+          this.setState({
+            hasUser: true,
+            loading: false
+          })
+        }
+      } catch(err) {
+        console.log(err)
+        this.setState({
+          hasEntry: false,
+          loading: false
         })
       }
     })
   }
 
   async handleSubmit(event) {
-    // const {project, user} = this.props
+    const {entryInfo} = this.props.entryStore
     const config = {
       bucketName: awsConfig.bucketName,
       // dirName: `${project}/${user}`,
@@ -105,13 +152,14 @@ class Upload extends Component {
   }
 
   renderUploaderOrLoading() {
-    const {hasEntry, loadingEntry} = this.state
+    const {hasEntry, hasProject, hasUser, loading} = this.state
     const {entryInfo} = this.props.entryStore
-    
-    if(hasEntry && !loadingEntry) {
+
+    if(hasEntry && hasProject && hasUser && !loading) {
       return(
         <div>
           <h2 className="text-center">{entryInfo.title}</h2>
+          <p className="text-center">{entryInfo.description}</p>
           <p>Uploaded Files:</p>
           <div className="p-1 rounded border border-dark" style={{width: '60vw', height: '25vh', backgroundColor: '#fff', overflowY: 'auto'}}>
             {this.renderFilesSuccessList()}
@@ -136,19 +184,18 @@ class Upload extends Component {
         </div>
       )
     }
-    if(!hasEntry && !loadingEntry) {
+    if(!hasEntry && !loading) {
       return <div>
-      <p>Can't Load Entry, Try Again</p>
+      <p>Can't Load Info, Try Again</p>
       <Button onClick={() => this.getAndUpdateEntry()}>Try Again</Button>
     </div>
     }
-    if(loadingEntry) {
+    if(loading) {
       return <Spinner />
     }
   }
 
   render() {
-    console.log(this.props.match.params.entryId)
     return (
       <div>
         {this.renderUploaderOrLoading()}
@@ -157,4 +204,4 @@ class Upload extends Component {
   }
 }
 
-export default inject('entryStore')(observer(withRouter(Upload)))
+export default inject('entryStore', 'projectsStore', 'userStore')(observer(withRouter(Upload)))
