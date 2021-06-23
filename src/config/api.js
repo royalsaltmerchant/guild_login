@@ -132,6 +132,24 @@ const deleteProject = async (projectId) => {
   }
 }
 
+const getEntry = async (entryId) => {
+  try {
+    const res = await axios({
+      method: 'post',
+      url: '/api/get_entry',
+      headers: {
+        "x-access-token": localStorage.getItem("token")
+      },
+      data: {
+        entry_id: entryId
+      }
+    })
+    return res
+  } catch(err) {
+    throw(err)
+  }
+}
+
 const createEntry = async (projectId, amount, title, description) => {
   try {
     const res = await axios({
@@ -242,6 +260,7 @@ export {
   editProject,
   deleteProject,
   createEntry,
+  getEntry,
   editEntry,
   deleteEntry,
   editContribution,

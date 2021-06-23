@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
-import { Form, Button } from 'react-bootstrap'
+import { Form, Button, Spinner } from 'react-bootstrap'
+import {inject, observer} from 'mobx-react'
 import {awsConfig} from '../config/config'
 import S3 from 'react-aws-s3'
 import {withRouter} from 'react-router-dom'
@@ -13,6 +14,30 @@ class Upload extends Component {
       hasEntry: false,
       loadingEntry: true
     }
+  }
+
+  componentDidMount() {
+    this.getAndUpdateEntry()
+  }
+
+  async getAndUpdateEntry() {
+    this.setState({hasEntry: false, loadingEntry: true}, () => {
+      try {
+        const res = await this.props.entryStore.getEntryInfo()
+        if(res.status === 200) {
+          this.setState({
+            hasEntry: true,
+            loadingEntry: false
+          })
+        }
+      } catch(err) {
+        console.log(err)
+        this.setState({
+          hasEntry: false,
+          loadingEntry: false
+        })
+      }
+    })
   }
 
   async handleSubmit(event) {
@@ -79,35 +104,55 @@ class Upload extends Component {
     }
   }
 
+  renderUploaderOrLoading() {
+    const {hasEntry, loadingEntry} = this.state
+    if(hasEntry && !loadingEntry) {
+      return(
+        <div>
+          <h2 className="text-center">something</h2>
+          <p>Uploaded Files:</p>
+          <div className="p-1 rounded border border-dark" style={{width: '60vw', height: '25vh', backgroundColor: '#fff', overflowY: 'auto'}}>
+            {this.renderFilesSuccessList()}
+            {this.renderFilesFailedList()}
+          </div>
+          <hr />
+          <Form onSubmit={(event) => this.handleSubmit(event)}>
+            <Form.Group controlId="file">
+              <Form.Label>Upload Files</Form.Label>
+              <Form.Control 
+                required
+                size="md" 
+                type="file" 
+                multiple
+                accept="audio/*"
+              />
+            </Form.Group>
+              <Button variant="outline-success" type="submit">
+                Upload
+              </Button>
+          </Form>    
+        </div>
+      )
+    }
+    if(!hasEntry && !loadingEntry) {
+      return <div>
+      <p>Can't Load Entry, Try Again</p>
+      <Button onClick={() => this.getAndUpdateEntry()}>Try Again</Button>
+    </div>
+    }
+    if(loadingEntry) {
+      return <Spinner />
+    }
+  }
+
   render() {
     console.log(this.props.match.params.entryId)
     return (
       <div>
-        <h2 className="text-center">something</h2>
-        <p>Uploaded Files:</p>
-        <div className="p-1 rounded border border-dark" style={{width: '60vw', height: '25vh', backgroundColor: '#fff', overflowY: 'auto'}}>
-          {this.renderFilesSuccessList()}
-          {this.renderFilesFailedList()}
-        </div>
-        <hr />
-        <Form onSubmit={(event) => this.handleSubmit(event)}>
-          <Form.Group controlId="file">
-            <Form.Label>Upload Files</Form.Label>
-            <Form.Control 
-              required
-              size="md" 
-              type="file" 
-              multiple
-              accept="audio/*"
-            />
-          </Form.Group>
-            <Button variant="outline-success" type="submit">
-              Upload
-            </Button>
-        </Form>    
+        {this.renderUploaderOrLoading()}
       </div>
     )
   }
 }
 
-export default withRouter(Upload)
+export default inject('entryStore')(observer(withRouter(Upload)))

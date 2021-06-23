@@ -75,7 +75,7 @@ class Dashboard extends Component {
     if(!hasProjects && !loadingProjects) {
       return <div>
         <p>Can't Load Projects, Try Again</p>
-        <Button onClick={() => this.getOrUpdateProjects()}>Try Again</Button>
+        <Button onClick={() => this.getAndUpdateProjects()}>Try Again</Button>
       </div>
     }
     if(loadingProjects) {
