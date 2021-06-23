@@ -235,7 +235,7 @@ class AdminTools extends Component {
         <Button variant="link" onClick={() => this.setState({createProjectBoolean: !this.state.createProjectBoolean})}>
           {this.state.createProjectBoolean ? '- Create New Project' : '+ Create New Project'}
         </Button>
-        {this.state.createProjectBoolean ? <CreateProject getAndUpdateProjects={() => this.getAndUpdateProjects()}/> : null}
+        {this.state.createProjectBoolean ? <CreateProject getAndUpdateProjects={() => this.getAndUpdateProjects()} createProjectBoolean={value => this.setState({createProjectBoolean: value})}/> : null}
         <hr />
         <p style={{fontSize:"20px"}}>Projects:</p>
         {this.renderProjects()}

@@ -22,9 +22,10 @@ export default class CreateProject extends Component {
     
     try {
       const res = await createProjectAPICall(title, description, image)
-      if(res.stats === 200) {
+      if(res.status === 201) {
         console.log(res)
         this.props.getAndUpdateProjects()
+        this.props.createProjectBoolean(false)
       }
     } catch(err) {
       console.log(err)
