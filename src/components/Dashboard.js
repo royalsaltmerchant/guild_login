@@ -70,8 +70,9 @@ class Dashboard extends Component {
         const singleContributionUser = contributionUser[0]
         if(singleContributionUser) {
           return(
-            <div key={contribution.id} className="px-5">
-            <p>{`(${contribution.amount}) ${singleContributionUser.username}`}</p>
+            <div key={contribution.id} className="px-5 d-flex flex-row justify-content-between w-75">
+            <p style={{color: 'purple'}}>{`(${contribution.amount}) ${singleContributionUser.username}`}</p>
+            <p style={{color: 'green'}}>{contribution.status}</p>
           </div>
           )
         } else {
@@ -90,7 +91,7 @@ class Dashboard extends Component {
 
   renderProjectEntries(entries) {
     const entriesMap = entries.map(entry => (
-      <div key={entry.id} className="px-5 flex-row">
+      <div key={entry.id} className="p-3 flex-row border rounded my-3" style={{backgroundColor: 'white'}}>
         <div className="flex-column">
         <div className="d-flex flex-row justify-content-between">
           <p><b>{`(${entry.amount}) ${entry.title}`}</b></p>
@@ -115,10 +116,9 @@ class Dashboard extends Component {
       const projectsMap = projects.map(project => {
         if(project.active && !project.complete) {
           return(
-            <div key={project.id} className="card-style border rounded p-3 m-3 w-75" style={{backgroundColor: '#d6f2ff', color: '#47476b', fontFamily: 'Noto Sans'}}>
+            <div key={project.id} className="card-style border rounded p-3 m-3 w-75" style={{backgroundColor: '#d6f2ff', fontFamily: 'Noto Sans'}}>
               <h4 className="pb-2"><b>{project.title}</b></h4>
               <p className="px-3">{project.description}</p>
-              <hr />
               {this.renderProjectEntries(project.entries)}
             </div>
           )
