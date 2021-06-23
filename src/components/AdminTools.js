@@ -216,7 +216,7 @@ class AdminTools extends Component {
               placeholder={contribution.amount}
             />
           </Form.Group>
-          <Form.Group controlId={`contribution${entry.id}Status`}>
+          <Form.Group controlId={`contribution${contribution.id}Status`}>
             <Form.Label>Status</Form.Label>
             <Form.Control 
               size="md"
