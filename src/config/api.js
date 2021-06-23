@@ -47,6 +47,18 @@ const getUser = async () => {
   }
 }
 
+const getUsers = async () => {
+  try {
+    const res = await axios({
+      method: 'get',
+      url: '/api/users',
+    })
+    return res
+  } catch(err) {
+    throw(err)
+  }
+}
+
 const getProjects = async () => {
   try {
     const res = await axios({
@@ -186,6 +198,7 @@ export {
   login,
   authenticate,
   getUser,
+  getUsers,
   getProjects,
   createProject,
   editProject,

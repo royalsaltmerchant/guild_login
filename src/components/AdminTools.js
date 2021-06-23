@@ -18,13 +18,36 @@ class AdminTools extends Component {
       createEntryBoolean: false,
       loadingProjects: true,
       loadingEntries: true,
+      loadingUsers: true,
       hasProjects: false,
-      hasEntries: false
+      hasEntries: false,
+      hasUsersList: false
     }
   }
   
   componentDidMount() {
     this.getAndUpdateProjects()
+    this.getAndUpdateUsersList()
+  }
+
+  async getAndUpdateUsersList() {
+    this.setState({loadingUsers: true}, async () => {
+      try {
+        const res = await this.props.userStore.getUsersList()
+        if(res.status === 200) {
+          this.setState({
+            hasUsersList: true,
+            loadingUsers: false
+          })
+        }
+      } catch(err) {
+        console.log(err)
+        this.setState({
+          hasUsersList: false,
+          loadingUsers: false
+        })
+      }
+    })
   }
   
   async getAndUpdateProjects() {
@@ -132,14 +155,31 @@ class AdminTools extends Component {
   }
 
   renderEntryContributions(contributions) {
-    return contributions.map(contribution => (
-      <div className="px-3">
-        <p>User_ID: {contribution.user_id}</p>
-        <p>Amount: {contribution.amount}</p>
-        <p>Status: {contribution.status}</p>
-        <hr />
-      </div>
-    ))
+    const {hasUsersList, loadingUsers} = this.state
+    const {usersList} = this.props.userStore
+    if(hasUsersList && !loadingUsers) {
+      const contributionsMap = contributions.map(contribution => {
+        const user = usersList.filter(user => {
+          return user.id === contribution.user_id
+        })
+        if(user.length !== 0) {
+          const firstUser = user[0]
+          return(
+            <div className="px-3">
+              <p>User: {`${firstUser.first_name} ${firstUser.last_name} (${firstUser.username})`}</p>
+              <p>Amount: {contribution.amount}</p>
+              <p>Status: {contribution.status}</p>
+              <hr />
+            </div>
+          )
+        } else {
+          return <p>Can't find user...</p>
+        }
+      })
+      return contributionsMap
+    } else {
+      return <p>No User Data!</p>
+    }
   }
 
   renderEntriesToggleOrEdit(entryToggleKey, entryEditKey, entry) {
@@ -329,6 +369,27 @@ class AdminTools extends Component {
     }
   }
 
+  renderUsersList() {
+    const {usersList} = this.props.userStore
+    const {hasUsersList, loadingUsers} = this.state
+    if(hasUsersList && !loadingUsers) {
+      const usersMap = usersList.map(user => {
+        return(
+          <div key={user.id} className="px-3 py-1">
+            <p>{`${user.first_name} ${user.last_name} (${user.username}) ${user.email}`}</p>
+          </div>
+        )
+      })
+      return usersMap
+    }
+    if(!hasUsersList && !loadingUsers) {
+      return <p>Can't get users list!</p>
+    }
+    if(loadingUsers) {
+      return <Spinner />
+    }
+  }
+
   render() {
     return (
       <div className="border w-100 p-3 rounded">
@@ -340,9 +401,12 @@ class AdminTools extends Component {
         <hr />
         <p style={{fontSize:"20px"}}>Projects:</p>
         {this.renderProjects()}
+        <hr />
+        <p style={{fontSize:"20px"}}>Users:</p>
+        {this.renderUsersList()}
       </div>
     )
   }
 }
 
-export default inject('projectsStore')(observer(AdminTools));
+export default inject('projectsStore', 'userStore')(observer(AdminTools));
