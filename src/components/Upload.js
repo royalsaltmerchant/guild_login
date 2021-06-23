@@ -23,7 +23,7 @@ class Upload extends Component {
   async getAndUpdateEntry() {
     this.setState({hasEntry: false, loadingEntry: true}, async () => {
       try {
-        const res = await this.props.entryStore.getEntryInfo()
+        const res = await this.props.entryStore.getEntryInfo(this.props.match.params.entryId)
         if(res.status === 200) {
           this.setState({
             hasEntry: true,
@@ -106,10 +106,12 @@ class Upload extends Component {
 
   renderUploaderOrLoading() {
     const {hasEntry, loadingEntry} = this.state
+    const {entryInfo} = this.props.entryStore
+    
     if(hasEntry && !loadingEntry) {
       return(
         <div>
-          <h2 className="text-center">something</h2>
+          <h2 className="text-center">{entryInfo.title}</h2>
           <p>Uploaded Files:</p>
           <div className="p-1 rounded border border-dark" style={{width: '60vw', height: '25vh', backgroundColor: '#fff', overflowY: 'auto'}}>
             {this.renderFilesSuccessList()}

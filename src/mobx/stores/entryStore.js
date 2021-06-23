@@ -16,12 +16,12 @@ export default class EntryStore extends Component {
     })
   }
 
-  async getEntryInfo() {
+  async getEntryInfo(entryId) {
     try {
-      const res = await getEntryAPICall()
+      const res = await getEntryAPICall(entryId)
       if(res.status === 200) {
         const data = toJS(res.data)
-        this.userInfo = data
+        this.entryInfo = data
       }
       return res
     } catch(err) {
