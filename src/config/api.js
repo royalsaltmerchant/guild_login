@@ -230,6 +230,26 @@ const deleteEntry = async (entryId) => {
   }
 }
 
+const createContribution = async (entryId, projectId, amount) => {
+  try {
+    const res = await axios({
+      method: 'post',
+      url: '/api/add_contribution',
+      headers: {
+        "x-access-token": localStorage.getItem("token")
+      },
+      data: {
+        entry_id: entryId,
+        project_id: projectId,
+        amount: amount,
+      }
+    })
+    return res
+  } catch(err) {
+    throw(err)
+  }
+}
+
 const editContribution = async (contributionId, amount, status) => {
   try {
     const res = await axios({
@@ -282,6 +302,7 @@ export {
   getEntry,
   editEntry,
   deleteEntry,
+  createContribution,
   editContribution,
   deleteContribution
 }

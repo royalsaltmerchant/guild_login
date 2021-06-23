@@ -4,6 +4,7 @@ import {inject, observer} from 'mobx-react'
 import {awsConfig} from '../config/config'
 import S3 from 'react-aws-s3'
 import {withRouter} from 'react-router-dom'
+import {createContribution as createContributionAPICall} from '../config/api'
 
 class Upload extends Component {
   constructor(props) {
@@ -18,12 +19,14 @@ class Upload extends Component {
     }
   }
 
-  async componentDidMount() {
-    await this.getAndUpdateEntry()
-    if(this.props.entryStore.entryInfo) {
-      this.getAndUpdateProject()
-      this.getAndUpdateUser()
+  componentDidMount() {
+    this.getAndUpdateEntry()
+    this.getAndUpdateUser()
+  }
 
+  componentDidUpdate(prevProps, prevState) {
+    if(prevState.hasEntry !== this.state.hasEntry) {
+      this.getAndUpdateProject()
     }
   }
 
@@ -50,7 +53,7 @@ class Upload extends Component {
   async getAndUpdateProject() {
     this.setState({hasProject: false, loading: true}, async () => {
       try {
-        const res = await this.props.entryStore.getProjectInfo(this.props.entryStore.entryInfo.project_id)
+        const res = await this.props.projectsStore.getProjectInfo(this.props.entryStore.entryInfo.project_id)
         if(res.status === 200) {
           this.setState({
             hasProject: true,
@@ -87,11 +90,26 @@ class Upload extends Component {
     })
   }
 
+  async handleComplete() {
+    const {successList} = this.state
+    const {entryInfo} = this.props.entryStore
+    const amount = successList.length
+
+    try {
+      const res = await createContributionAPICall(entryInfo.id, entryInfo.project_id, amount)
+      this.props.history.push('/dashboard')
+    } catch(err) {
+      console.log(err)
+    }
+  }
+
   async handleSubmit(event) {
     const {entryInfo} = this.props.entryStore
+    const {userInfo} = this.props.userStore
+    const {projectInfo} = this.props.projectsStore
     const config = {
       bucketName: awsConfig.bucketName,
-      // dirName: `${project}/${user}`,
+      dirName: `${projectInfo.title}/${entryInfo.title}/${userInfo.first_name}_${userInfo.last_name}`,
       region: awsConfig.region,
       accessKeyId: awsConfig.accessKeyId,
       secretAccessKey: awsConfig.secretAccessKey
@@ -178,13 +196,18 @@ class Upload extends Component {
               />
             </Form.Group>
               <Button variant="outline-success" type="submit">
-                Upload
+                Upload Files
               </Button>
-          </Form>    
+          </Form>
+          <br />
+          <small style={{color: 'red'}}>* Do not navigate away without clicking complete, or your contribution will not register!</small>
+          <Button variant="info" className="w-100" disabled={this.state.successList.length === 0} onClick={() => this.handleComplete()}>
+            Complete
+          </Button>    
         </div>
       )
     }
-    if(!hasEntry && !loading) {
+    if(!hasEntry || !hasProject || !hasUser && !loading) {
       return <div>
       <p>Can't Load Info, Try Again</p>
       <Button onClick={() => this.getAndUpdateEntry()}>Try Again</Button>

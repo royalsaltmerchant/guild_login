@@ -16,7 +16,7 @@ export default class ProjectsStore extends Component {
       projects: observable,
       projectInfo: observable,
       getProjects: action,
-      getProject: action
+      getProjectInfo: action
     })
   }
 
@@ -33,9 +33,9 @@ export default class ProjectsStore extends Component {
     }
   }
 
-  async getProject() {
+  async getProjectInfo(projectId) {
     try {
-      const res = await getProjectAPICall()
+      const res = await getProjectAPICall(projectId)
       if(res.status === 200) {
         const data = toJS(res.data)
         this.projectInfo = data
