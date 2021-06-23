@@ -13,7 +13,7 @@ export default class Header extends Component {
             src={sfag}
           />
         </Media>
-        <hr style={{width: '50%'}}/>
+        <hr style={{width: '75%'}}/>
       </div>
     )
   }

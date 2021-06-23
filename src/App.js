@@ -9,9 +9,11 @@ import {
 import {Provider as MobxStoreProvider} from 'mobx-react';
 import mobxStoresToInject from './mobx'
 import Login from './components/Login'
+import Logout from './components/Logout'
 import Account from './components/Account'
 import Header from './components/Header'
 import Upload from './components/Upload'
+import NavBar from './components/NavBar'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import {Container, Row, Col} from 'react-bootstrap'
 
@@ -23,11 +25,14 @@ function Root() {
   return(
     <Container fluid className="App">
       <Header />
-
+      <NavBar />
       <div className="d-flex justify-content-center p-3 rounded border border-light" style={{backgroundColor: '#f6f6f6'}}>
         <Switch>
           <Route path="/login">
             <Login />
+          </Route>
+          <Route path="/logout">
+            <Logout />
           </Route>
           <Route path="/account">
             <Account />
