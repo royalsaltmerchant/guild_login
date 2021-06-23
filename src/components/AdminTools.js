@@ -5,7 +5,9 @@ import CreateEntry from './CreateEntry'
 import {Spinner, Button, Form} from 'react-bootstrap'
 import {
   editProject as editProjectAPICall,
-  deleteProject as deleteProjectAPICall
+  deleteProject as deleteProjectAPICall,
+  editEntry as editEntryAPICall,
+  deleteEntry as deleteEntryAPICall,
 } from '../config/api'
 
 class AdminTools extends Component {
@@ -52,15 +54,22 @@ class AdminTools extends Component {
     })
   }
 
-  handleEntryClick(entryToggleKey) {
+  handleEntryClick(entryToggleKey, entryEditKey) {
     this.setState({
-      [entryToggleKey]: !this.state[entryToggleKey]
+      [entryToggleKey]: !this.state[entryToggleKey],
+      [entryEditKey]: false
     })
   }
 
   handleEditProjectClick(projectEditKey) {
     this.setState({
       [projectEditKey]: !this.state[projectEditKey]
+    })
+  }
+
+  handleEditEntryClick(entryEditKey) {
+    this.setState({
+      [entryEditKey]: !this.state[entryEditKey]
     })
   }
 
@@ -82,6 +91,25 @@ class AdminTools extends Component {
     }
   }
 
+  async handleEditEntrySave(event, entryId, entryEditKey) {
+    event.preventDefault()
+    const amount = event.target.form[`entry${entryId}Amount`].value || event.target.form[`entry${entryId}Amount`].placeholder
+    const title = event.target.form[`entry${entryId}Title`].value || event.target.form[`entry${entryId}Title`].placeholder
+    const description = event.target.form[`entry${entryId}Description`].value || event.target.form[`entry${entryId}Description`].placeholder
+    const complete = event.target.form[`entry${entryId}Complete`].checked
+
+    try {
+      const res = await editEntryAPICall(entryId, amount, title, description, complete)
+      if(res.status === 200) {
+        console.log(res)
+        this.setState({[entryEditKey]: false})
+        this.getAndUpdateProjects()
+      }
+    } catch(err) {
+      console.log(err)
+    }
+  }
+
   async handleDeleteProject(projectId) {
     try {
       const res = await deleteProjectAPICall(projectId)
@@ -93,6 +121,16 @@ class AdminTools extends Component {
     }
   }
 
+  async handleDeleteEntry(entryId) {
+    try {
+      const res = await deleteEntryAPICall(entryId)
+      if(res.status === 200) {
+        this.getAndUpdateProjects()
+      }
+    } catch(err) {
+      console.log(err)
+    }
+  }
 
   renderEntryContributions(contributions) {
     return contributions.map(contribution => (
@@ -104,24 +142,87 @@ class AdminTools extends Component {
     ))
   }
 
+  renderEntriesToggleOrEdit(entryToggleKey, entryEditKey, entry) {
+    if(this.state[entryToggleKey] && !this.state[entryEditKey]) {
+      return(
+        <div className="px-3">
+          <p>Amount: {entry.amount}</p>
+          <p>Description: {entry.description}</p>
+          <p>Complete: {entry.complete ? 'true' : 'false'}</p>
+          <p>Contributions:</p>
+          {this.renderEntryContributions(entry.contributions)}
+        </div> 
+      )
+    }
+    if(this.state[entryToggleKey] && this.state[entryEditKey]) {
+      return(
+        <Form className="px-3">
+          <Form.Group controlId={`entry${entry.id}Amount`}>
+            <Form.Label>Amount</Form.Label>
+            <Form.Control 
+              size="md"
+              type="number"
+              placeholder={entry.amount}
+            />
+          </Form.Group>
+          <Form.Group controlId={`entry${entry.id}Title`}>
+            <Form.Label>Title</Form.Label>
+            <Form.Control 
+              size="md"
+              type="text"
+              placeholder={entry.title}
+            />
+          </Form.Group>
+          <Form.Group controlId={`entry${entry.id}Description`}>
+            <Form.Label>Description</Form.Label>
+            <Form.Control 
+              as="textarea"
+              size="md"
+              type="text"
+              placeholder={entry.description}
+            />
+          </Form.Group>
+          <Form.Group controlId={`entry${entry.id}Complete`}>
+            <Form.Label>Complete</Form.Label>
+            <Form.Check
+              size="md"
+              type="switch"
+              defaultChecked={entry.complete ? true : false}
+            />
+          </Form.Group>
+          <div className="d-flex justify-content-around">
+            <Button variant="outline-success" onClick={(event) => this.handleEditEntrySave(event, entry.id, entryEditKey)}>
+              Save
+            </Button>
+            <Button variant="outline-secondary" onClick={() => this.setState({[entryEditKey]: false})}>
+              Cancel
+            </Button>
+            <Button variant="outline-danger" onClick={() => this.handleDeleteEntry(entry.id)}>
+              Delete
+            </Button>
+          </div>
+        </Form>
+      )
+    } else {
+      return null
+    }
+  }
+
   renderProjectEntries(entries) {
     const entriesMap = entries.map(entry => {
       const entryToggleKey = `entry${entry.id}Toggle`
+      const entryEditKey = `entry${entry.id}Edit`
       return(
         <div key={entry.id} className="px-3">
-          <Button variant="link" onClick={() => this.handleEntryClick(entryToggleKey)}>
-            {entry.title} ▼
-          </Button>
-            {
-              this.state[entryToggleKey] ?
-              <div>
-                <p>{entry.amount}</p>
-                <p>{entry.description}</p>
-                <p>Complete: {entry.complete ? 'true' : 'false'}</p>
-                <p>Contributions:</p>
-                {this.renderEntryContributions(entry.contributions)}
-              </div> : null
-            }
+          <div className="d-flex justify-content-between">
+            <Button variant="link" onClick={() => this.handleEntryClick(entryToggleKey, entryEditKey)}>
+              {entry.title} ▼
+            </Button>
+            <Button variant="link" disabled={!this.state[entryToggleKey]} onClick={() => this.handleEditEntryClick(entryEditKey)}>
+                Edit
+            </Button>
+          </div>
+          {this.renderEntriesToggleOrEdit(entryToggleKey, entryEditKey, entry)}
         </div>
       )
     })
@@ -132,8 +233,8 @@ class AdminTools extends Component {
     if(this.state[projectToggleKey] && !this.state[projectEditKey]) {
       return(
         <div className="px-3">
-          <p>{project.description}</p>
-          <p>{project.image_file}</p>
+          <p>Description: {project.description}</p>
+          <p>Image: {project.image_file}</p>
           <p>Active: {project.active ? 'true' : 'false'}</p>
           <p>Complete: {project.complete ? 'true' : 'false'}</p>
           <p>Entries:</p>
@@ -147,7 +248,7 @@ class AdminTools extends Component {
     }
     if(this.state[projectToggleKey] && this.state[projectEditKey]) {
       return(
-        <Form className="px-3" onSubmit={(event) => this.handleSubmitEditProject(event, project.id)}>
+        <Form className="px-3">
           <Form.Group controlId={`project${project.id}Title`}>
             <Form.Label>Title</Form.Label>
             <Form.Control 
