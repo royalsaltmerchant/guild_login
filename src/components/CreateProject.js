@@ -1,6 +1,8 @@
 import React, { Component } from 'react'
 import {Spinner, Button, Form} from 'react-bootstrap'
 import {createProject as createProjectAPICall} from '../config/api'
+import S3 from 'react-aws-s3'
+import {awsConfig} from '../config/config'
 
 export default class CreateProject extends Component {
   constructor(props) {
@@ -10,6 +12,27 @@ export default class CreateProject extends Component {
       entries: [],
       entryIdCount: 0,
       asset: [],
+    }
+  }
+
+  async uploadImageFile(imageFile) {
+    const config = {
+      bucketName: awsConfig.bucketName,
+      dirName: "project_images",
+      region: awsConfig.region,
+      accessKeyId: awsConfig.accessKeyId,
+      secretAccessKey: awsConfig.secretAccessKey
+    }
+    const S3Client = new S3(config)
+
+    try {
+      const res = await S3Client.uploadFile(imageFile, imageFile.name)
+      console.log(res)
+      if(res.status === 204) {
+        console.log('succesful upload to aws')
+      }
+    } catch(err) {
+      console.log('failed to upload image to amazon',err)
     }
   }
 
@@ -26,6 +49,7 @@ export default class CreateProject extends Component {
         console.log(res)
         this.props.getAndUpdateProjects()
         this.props.createProjectBoolean(false)
+        this.uploadImageFile(imageFile)
       }
     } catch(err) {
       console.log(err)
