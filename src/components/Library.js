@@ -1,19 +1,25 @@
 import React, { Component } from 'react'
 import { Image } from 'react-bootstrap'
 import {finalConfig as config} from '../config/config'
+import {withRouter, Link} from 'react-router-dom'
 
-export default class Library extends Component {
+
+class Library extends Component {
 
   renderSFXPacks() {
     return(
       <div>
         <div className="img-div p-3 m-3">
           <Image className="pack-img" src={`${config.image_URL}weaponpackcolor.jpg`} />
-          <button class="di-btn">Details</button>
+          <button className="di-btn" onClick={() => this.props.history.push("/pack/ancient-weapons-pack")}>
+            Details
+          </button>
         </div>
         <div className="img-div p-3 m-3">
           <Image className="pack-img" src={`${config.image_URL}magicpackcolor.jpg`} />
-          <button class="di-btn">Details</button>
+          <button className="di-btn" onClick={() => this.props.history.push("/pack/ancient-magic-pack")}>
+            Details
+          </button>
         </div>
       </div>
     )
@@ -28,3 +34,5 @@ export default class Library extends Component {
     )
   }
 }
+
+export default withRouter(Library)
