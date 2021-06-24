@@ -64,10 +64,24 @@ class PackDetails extends Component {
     }
   }
 
+  renderPackImage() {
+    const {packName} = this.props.match.params
+    if(packName === 'ancient-weapons-pack') {
+      return(
+        <Image className="pack-img mr-3" src={`${config.image_URL}weaponpackcolor.jpg`} />
+      )
+    }
+    if(packName === 'ancient-magic-pack') {
+      return(
+        <Image className="pack-img mr-3" src={`${config.image_URL}magicpackcolor.jpg`} />
+      )
+    }
+  }
+
   render() {
     return (
       <div className="d-flex flex-row flex-wrap">
-        <Image className="pack-img mr-3" src={`${config.image_URL}weaponpackcolor.jpg`} />
+        {this.renderPackImage()}
         {this.renderTrackDetails()}
       </div>
     )
