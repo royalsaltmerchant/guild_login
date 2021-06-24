@@ -15,6 +15,7 @@ import Header from './components/Header'
 import NavBar from './components/NavBar'
 import Dashboard from './components/Dashboard';
 import Upload from './components/Upload'
+import Library from './components/Library';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import {Container, Row, Col} from 'react-bootstrap'
 
@@ -40,6 +41,9 @@ function Root() {
           </Route>
           <Route path="/Dashboard">
             <Dashboard />
+          </Route>
+          <Route path="/library">
+            <Library />
           </Route>
           <Route path="/Upload/entry/:entryId">
             <Upload />
