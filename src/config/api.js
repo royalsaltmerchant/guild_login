@@ -5,7 +5,7 @@ const login = async (username_or_email, password) => {
   try {
     const res = await axios({
       method: 'post',
-      url: `api/login`,
+      url: `${config.apiURL}/api/login`,
       data: {
         username_or_email: username_or_email,
         password: password
@@ -21,7 +21,7 @@ const authenticate = async () => {
   try {
     const res = await axios({
       method: 'get',
-      url: '/api/verify_jwt',
+      url: `${config.apiURL}/api/verify_jwt`,
       headers: {
         "x-access-token": localStorage.getItem("token")
       }
@@ -36,7 +36,7 @@ const getUser = async () => {
   try {
     const res = await axios({
       method: 'get',
-      url: '/api/get_user',
+      url: `${config.apiURL}/api/get_user`,
       headers: {
         "x-access-token": localStorage.getItem("token")
       }
@@ -51,7 +51,7 @@ const getUsers = async () => {
   try {
     const res = await axios({
       method: 'get',
-      url: '/api/users',
+      url: `${config.apiURL}/api/users`,
     })
     return res
   } catch(err) {
@@ -63,7 +63,7 @@ const getProjects = async () => {
   try {
     const res = await axios({
       method: 'get',
-      url: '/api/projects',
+      url: `${config.apiURL}/api/projects`,
     })
     return res
   } catch(err) {
@@ -75,7 +75,7 @@ const getProject = async (projectId) => {
   try {
     const res = await axios({
       method: 'post',
-      url: '/api/get_project',
+      url: `${config.apiURL}/api/get_project`,
       headers: {
         "x-access-token": localStorage.getItem("token")
       },
@@ -93,7 +93,7 @@ const createProject = async (title, description, image) => {
   try {
     const res = await axios({
       method: 'post',
-      url: '/api/add_project',
+      url: `${config.apiURL}/api/add_project`,
       headers: {
         "x-access-token": localStorage.getItem("token")
       },
@@ -113,7 +113,7 @@ const editProject = async (projectId, title, description, active, complete) => {
   try {
     const res = await axios({
       method: 'post',
-      url: '/api/edit_project',
+      url: `${config.apiURL}/api/edit_project`,
       headers: {
         "x-access-token": localStorage.getItem("token")
       },
@@ -136,7 +136,7 @@ const deleteProject = async (projectId) => {
   try {
     const res = await axios({
       method: 'post',
-      url: '/api/remove_project',
+      url: `${config.apiURL}/api/remove_project`,
       headers: {
         "x-access-token": localStorage.getItem("token")
       },
@@ -154,7 +154,7 @@ const getEntry = async (entryId) => {
   try {
     const res = await axios({
       method: 'post',
-      url: '/api/get_entry',
+      url: `${config.apiURL}/api/get_entry`,
       headers: {
         "x-access-token": localStorage.getItem("token")
       },
@@ -172,7 +172,7 @@ const createEntry = async (projectId, amount, title, description) => {
   try {
     const res = await axios({
       method: 'post',
-      url: '/api/add_entry',
+      url: `${config.apiURL}/api/add_entry`,
       headers: {
         "x-access-token": localStorage.getItem("token")
       },
@@ -193,7 +193,7 @@ const editEntry = async (entryId, amount, title, description, complete) => {
   try {
     const res = await axios({
       method: 'post',
-      url: '/api/edit_entry',
+      url: `${config.apiURL}/api/edit_entry`,
       headers: {
         "x-access-token": localStorage.getItem("token")
       },
@@ -216,7 +216,7 @@ const deleteEntry = async (entryId) => {
   try {
     const res = await axios({
       method: 'post',
-      url: '/api/remove_entry',
+      url: `${config.apiURL}/api/remove_entry`,
       headers: {
         "x-access-token": localStorage.getItem("token")
       },
@@ -234,7 +234,7 @@ const createContribution = async (entryId, projectId, amount) => {
   try {
     const res = await axios({
       method: 'post',
-      url: '/api/add_contribution',
+      url: `${config.apiURL}/api/add_contribution`,
       headers: {
         "x-access-token": localStorage.getItem("token")
       },
@@ -254,7 +254,7 @@ const editContribution = async (contributionId, amount, status) => {
   try {
     const res = await axios({
       method: 'post',
-      url: '/api/edit_contribution',
+      url: `${config.apiURL}/api/edit_contribution`,
       headers: {
         "x-access-token": localStorage.getItem("token")
       },
@@ -274,7 +274,7 @@ const deleteContribution = async (contributionId) => {
   try {
     const res = await axios({
       method: 'post',
-      url: '/api/remove_contribution',
+      url: `${config.apiURL}/api/remove_contribution`,
       headers: {
         "x-access-token": localStorage.getItem("token")
       },

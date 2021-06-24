@@ -42,7 +42,7 @@ class Account extends Component {
         })
       }
     } catch(err) {
-      if(err.response.stats === 400) {
+      if(err.response.status === 400) {
         console.log('invalid or expired token')
       }
       console.log(err)
