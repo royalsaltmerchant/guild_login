@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import {inject, observer} from 'mobx-react'
 import CreateProject from './CreateProject'
 import CreateEntry from './CreateEntry'
-import {Spinner, Button, Form} from 'react-bootstrap'
+import {Spinner, Button, Form, Image} from 'react-bootstrap'
 import {
   editProject as editProjectAPICall,
   deleteProject as deleteProjectAPICall,
@@ -11,6 +11,7 @@ import {
   editContribution as editContributionAPICall,
   deleteContribution as deleteContributionAPICall,
 } from '../config/api'
+import {finalConfig as config} from '../config/config'
 
 class AdminTools extends Component {
   constructor(props) {
@@ -368,7 +369,7 @@ class AdminTools extends Component {
       return(
         <div className="px-3">
           <p>Description: {project.description}</p>
-          <p>Image: {project.image_file}</p>
+          <Image className="small-img" src={`${config.image_URL}${project.image_file}`} rounded />
           <p>Active: {project.active ? 'true' : 'false'}</p>
           <p>Complete: {project.complete ? 'true' : 'false'}</p>
           <p>Entries:</p>
@@ -442,12 +443,12 @@ class AdminTools extends Component {
         return(
           <div key={project.id} className="px-3 py-1">
             <div className="d-flex justify-content-between">
-            <Button variant="link" onClick={() => this.handleProjectClick(projectToggleKey, projectEditKey)}>
-              {project.title} ▼
-            </Button>
-            <Button variant="link" disabled={!this.state[projectToggleKey]} onClick={() => this.handleEditProjectClick(projectEditKey)}>
-              Edit
-            </Button>
+              <Button variant="link" onClick={() => this.handleProjectClick(projectToggleKey, projectEditKey)}>
+                {project.title} ▼
+              </Button>
+              <Button variant="link" disabled={!this.state[projectToggleKey]} onClick={() => this.handleEditProjectClick(projectEditKey)}>
+                Edit
+              </Button>
             </div>
             {this.renderProjectsToggleOrEdit(projectToggleKey, projectEditKey, project)}
           </div>

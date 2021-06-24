@@ -10,3 +10,8 @@
   top: -8px;
   border: 1px solid #cccccc;
 }
+
+.small-img {
+  width: 90px;
+  height: 90px;
+}

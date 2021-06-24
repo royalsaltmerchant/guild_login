@@ -1,7 +1,8 @@
 import React, { Component } from 'react'
 import { inject, observer } from 'mobx-react'
-import { Spinner, Button } from 'react-bootstrap'
+import { Spinner, Button, Image } from 'react-bootstrap'
 import {withRouter, Link} from 'react-router-dom'
+import {finalConfig as config} from '../config/config'
 
 class Dashboard extends Component {
   constructor(props) {
@@ -117,7 +118,10 @@ class Dashboard extends Component {
         if(project.active && !project.complete) {
           return(
             <div key={project.id} className="card-style border rounded p-3 m-3 w-75" style={{backgroundColor: '#d6f2ff', fontFamily: 'Noto Sans'}}>
-              <h4 className="pb-2"><b>{project.title}</b></h4>
+              <div className="d-flex flex-row align-items-end">
+                <Image className="small-img pr-3" src={`${config.image_URL}${project.image_file}`} rounded />
+                <h2 className="pb-2"><b>{project.title}</b></h2>
+              </div>
               <p className="px-3">{project.description}</p>
               {this.renderProjectEntries(project.entries)}
             </div>
