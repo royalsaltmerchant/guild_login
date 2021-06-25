@@ -288,6 +288,25 @@ const deleteContribution = async (contributionId) => {
   }
 }
 
+const getPresignedURL = async (bucketName, objectName) => {
+  try {
+    const res = await axios({
+      method: 'post',
+      url: `${config.apiURL}/api/signed_URL`,
+      headers: {
+        "x-access-token": localStorage.getItem("token")
+      },
+      data: {
+        bucket_name: bucketName,
+        object_name: objectName
+      }
+    })
+    return res
+  } catch(err) {
+    throw(err)
+  }
+}
+
 export {
   login,
   authenticate,
@@ -304,5 +323,6 @@ export {
   deleteEntry,
   createContribution,
   editContribution,
-  deleteContribution
+  deleteContribution,
+  getPresignedURL
 }

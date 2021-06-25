@@ -2,14 +2,17 @@ import React, { Component } from 'react'
 import {withRouter, Link} from 'react-router-dom'
 import { Image, Button } from 'react-bootstrap'
 import {finalConfig as config, awsConfig} from '../config/config'
+import {getPresignedURL as getPresignedURLAPICall} from '../config/api'
 
 class PackDetails extends Component {
   constructor(props) {
     super(props)
     this.state = {
       packDetails: {},
-      assetTypes: []
+      assetTypes: [],
+      uri: ''
     }
+    this.downloadButtonRef = React.createRef()
   }
 
   componentDidMount() {
@@ -37,7 +40,20 @@ class PackDetails extends Component {
 
   async handleDownload() {
     const {packName} = this.props.match.params
+    const bucketName = awsConfig.bucketName
+    const objectName = `packs/${packName}/${packName}.zip`
 
+    try {
+      const res = await getPresignedURLAPICall(bucketName, objectName)
+      if(res.status === 200) {
+        const downloadLink = res.data
+        this.setState({
+          uri: downloadLink
+        }, () => this.downloadButtonRef.current.click())
+      }
+    } catch(err) {
+      console.log(err)
+    }
   }
 
   renderAssetTypes() {
@@ -62,7 +78,8 @@ class PackDetails extends Component {
           </div>
           <div className="my-5 d-flex flex-column justify-content-center align-items-center">
             {/* <Button as={'a'} href={`${config.s3_base_URL}packs/${packName}`} download>Download</Button> */}
-            <Button onClick={() => this.handleDownload()}>Download</Button>
+            <Button ref={this.downloadButtonRef} onClick={() => this.handleDownload()}>Download</Button>
+            <a ref={this.downloadButtonRef} href={this.state.uri} />
           </div>
         </div>
       )
