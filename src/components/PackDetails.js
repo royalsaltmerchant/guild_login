@@ -3,6 +3,8 @@ import {withRouter, Link} from 'react-router-dom'
 import { Image, Button } from 'react-bootstrap'
 import {finalConfig as config, awsConfig} from '../config/config'
 import {getPresignedURL as getPresignedURLAPICall} from '../config/api'
+import {inject, observer} from 'mobx-react'
+import {authenticate as authenticateAPICall} from '../config/api'
 
 class PackDetails extends Component {
   constructor(props) {
@@ -10,12 +12,47 @@ class PackDetails extends Component {
     this.state = {
       packDetails: {},
       assetTypes: [],
-      uri: ''
+      uri: '',
+      hasUserInfo: false,
+      loading: true,
+      userEligible: false
     }
     this.downloadButtonRef = React.createRef()
   }
 
+  async componentDidUpdate() {
+    const {authenticated, hasUserInfo} = this.state
+    if(authenticated && !hasUserInfo) {
+      try {
+        const res = await this.props.userStore.getUserInfo()
+        if(res.status === 200) {
+          this.setState({hasUserInfo: true})
+        }
+      } catch(err) {
+        console.log(err)
+      }
+    }
+  }
+
+  async authenticate() {
+    try {
+      const res = await authenticateAPICall()
+      if(res.status === 200) {
+        this.setState({
+          authenticated: true,
+          loading: false
+        })
+      }
+    } catch(err) {
+      console.log(err)
+      this.setState({
+        loading: false
+      })
+    }
+  }
+
   componentDidMount() {
+    this.authenticate()
     const {packName} = this.props.match.params
 
     if(packName === 'ancient-weapons-pack') {
@@ -52,6 +89,11 @@ class PackDetails extends Component {
         }, () => this.downloadButtonRef.current.click())
       }
     } catch(err) {
+      if(err.response) {
+        if(err.response.status === 400) {
+          alert('Either you are not eligible for downloads, or you are not logged in!')
+        }
+      }
       console.log(err)
     }
   }
@@ -78,8 +120,11 @@ class PackDetails extends Component {
           </div>
           <div className="my-5 d-flex flex-column justify-content-center align-items-center">
             {/* <Button as={'a'} href={`${config.s3_base_URL}packs/${packName}`} download>Download</Button> */}
-            <Button ref={this.downloadButtonRef} onClick={() => this.handleDownload()}>Download</Button>
-            <a ref={this.downloadButtonRef} href={this.state.uri} />
+            {this.state.hasUserInfo ? 
+              <div>
+                <Button disabled={!this.props.userStore.userInfo.eligible} ref={this.downloadButtonRef} onClick={() => this.handleDownload()}>Download</Button>
+                <a ref={this.downloadButtonRef} href={this.state.uri} />
+              </div>: null}
           </div>
         </div>
       )
@@ -122,4 +167,4 @@ class PackDetails extends Component {
   }
 }
 
-export default withRouter(PackDetails)
+export default inject('userStore')(observer(withRouter(PackDetails)));
