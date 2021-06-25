@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import {withRouter, Link} from 'react-router-dom'
-import { Image } from 'react-bootstrap'
-import {finalConfig as config} from '../config/config'
+import { Image, Button } from 'react-bootstrap'
+import {finalConfig as config, awsConfig} from '../config/config'
 
 class PackDetails extends Component {
   constructor(props) {
@@ -21,7 +21,7 @@ class PackDetails extends Component {
           title: 'Ancient Weapons Pack',
           Description: 'Combat sound effects for games set in medieval or fantasy settings. Complete with swings impacts and custom assembled attacks and combos for Swords, Daggers, Axes and more.',
         },
-        assetTypes: ['one', 'two', 'three', 'four']
+        assetTypes: ['Assembled(Swing + Impact)', 'Impacts(Blocks)', 'Swings(Axe, BroadSword, Dagger, Katana)', 'H2H Combat(Kick, Punch)', 'Bow & Arrow', 'Sheathe/Unsheathe']
       })
     }
     if(packName === 'ancient-magic-pack') {
@@ -33,6 +33,11 @@ class PackDetails extends Component {
         assetTypes: ['one', 'two', 'three', 'four']
       })
     }
+  }
+
+  async handleDownload() {
+    const {packName} = this.props.match.params
+
   }
 
   renderAssetTypes() {
@@ -54,6 +59,10 @@ class PackDetails extends Component {
             <p>"{packDetails.Description}"</p>
             <p>Asset Types:</p>
             {this.renderAssetTypes()}
+          </div>
+          <div className="my-5 d-flex flex-column justify-content-center align-items-center">
+            {/* <Button as={'a'} href={`${config.s3_base_URL}packs/${packName}`} download>Download</Button> */}
+            <Button onClick={() => this.handleDownload()}>Download</Button>
           </div>
         </div>
       )
