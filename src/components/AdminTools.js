@@ -472,6 +472,10 @@ class AdminTools extends Component {
         return(
           <div key={user.id} className="px-3 py-1">
             <p>{`${user.first_name} ${user.last_name} (${user.username}) ${user.email}`}</p>
+            <div className="px-3">
+              <p>- Approved Asset Count: {user.approved_asset_count}</p>
+              <p>- Eligible-Status: {user.eligible ? 'true' : 'false'}</p>
+            </div>
           </div>
         )
       })
