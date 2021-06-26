@@ -58,7 +58,7 @@ export default class CreateProject extends Component {
 
   render() {
     return (
-      <div className="p-3">
+      <div className="px-3">
         
         <Form onSubmit={(event) => this.handleSubmitProject(event)}>
           <Form.Group controlId="projectTitle">

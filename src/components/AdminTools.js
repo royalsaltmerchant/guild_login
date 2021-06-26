@@ -288,7 +288,7 @@ class AdminTools extends Component {
           return(
             <div key={contribution.id} className="px-3">
               <Button variant="link" onClick={() => this.handleContributionClick(contributionToggleKey, contributionEditKey)}>
-                {`${firstUser.first_name} ${firstUser.last_name} (${firstUser.username})`} ▼
+                {`${firstUser.first_name} ${firstUser.last_name} (${firstUser.username})`} {this.state[contributionToggleKey] ? "▼" : "▲"}
               </Button>
               <Button variant="link" disabled={!this.state[contributionToggleKey]} onClick={() => this.handleEditContributionClick(contributionEditKey)}>
                   Edit
@@ -381,7 +381,7 @@ class AdminTools extends Component {
         <div key={entry.id} className="px-3">
           <div className="d-flex justify-content-between">
             <Button variant="link" onClick={() => this.handleEntryClick(entryToggleKey, entryEditKey)}>
-              {entry.title} ▼
+              {entry.title} {this.state[entryToggleKey] ? "▼" : "▲"}
             </Button>
             <Button variant="link" disabled={!this.state[entryToggleKey]} onClick={() => this.handleEditEntryClick(entryEditKey)}>
                 Edit
@@ -404,7 +404,7 @@ class AdminTools extends Component {
           <p>Complete: {project.complete ? 'true' : 'false'}</p>
           <p>Entries:</p>
           {this.renderProjectEntries(project.entries)}
-          <Button variant="link" onClick={() => this.setState({createEntryBoolean: !this.state.createEntryBoolean})}>
+          <Button className="px-3 py-3" variant="link" onClick={() => this.setState({createEntryBoolean: !this.state.createEntryBoolean})}>
             {this.state.createEntryBoolean ? '- Create New Entry' : '+ Create New Entry'}
           </Button>
           {this.state.createEntryBoolean ? <CreateEntry projectId={project.id} getAndUpdateProjects={() => this.getAndUpdateProjects()} createEntryBoolean={value => this.setState({createEntryBoolean: value})}/> : null}
@@ -474,7 +474,7 @@ class AdminTools extends Component {
           <div key={project.id} className="px-3 py-1">
             <div className="d-flex justify-content-between">
               <Button variant="link" onClick={() => this.handleProjectClick(projectToggleKey, projectEditKey)}>
-                {project.title} ▼
+                {project.title} {this.state[projectToggleKey] ? "▼" : "▲"}
               </Button>
               <Button variant="link" disabled={!this.state[projectToggleKey]} onClick={() => this.handleEditProjectClick(projectEditKey)}>
                 Edit
@@ -547,10 +547,10 @@ class AdminTools extends Component {
         const userToggleKey = `user${user.id}Toggle`
         const userEditKey = `user${user.id}Edit`
         return(
-          <div>
+          <div className="px-3 py-1">
             <div className="d-flex justify-content-between">
               <Button variant="link" onClick={() => this.handleUserClick(userToggleKey, userEditKey)}>
-                {`${user.first_name} ${user.last_name} (${user.username}) ${user.email}`} ▼
+                {`${user.first_name} ${user.last_name} (${user.username}) ${user.email}`} {this.state[userToggleKey] ? "▼" : "▲"}
               </Button>
               <Button variant="link" disabled={!this.state[userToggleKey]} onClick={() => this.handleEditUserClick(userEditKey)}>
                 Edit
@@ -574,7 +574,7 @@ class AdminTools extends Component {
     return (
       <div className="border w-100 p-3 rounded">
         <p style={{fontSize:"20px"}}>Admin Tools</p>
-        <Button variant="link" onClick={() => this.setState({createProjectBoolean: !this.state.createProjectBoolean})}>
+        <Button className="px-3 py-1" variant="link" onClick={() => this.setState({createProjectBoolean: !this.state.createProjectBoolean})}>
           {this.state.createProjectBoolean ? '- Create New Project' : '+ Create New Project'}
         </Button>
         {this.state.createProjectBoolean ? <CreateProject getAndUpdateProjects={() => this.getAndUpdateProjects()} createProjectBoolean={value => this.setState({createProjectBoolean: value})}/> : null}
