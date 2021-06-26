@@ -92,7 +92,7 @@ class Dashboard extends Component {
 
   renderProjectEntries(entries) {
     const entriesMap = entries.map(entry => (
-      <div key={entry.id} className="p-3 flex-row border rounded my-3" style={{backgroundColor: 'white'}}>
+      <div key={entry.id} className="p-3 flex-row border rounded my-3" style={{backgroundColor: '#fff'}}>
         <div className="flex-column">
         <div className="d-flex flex-row justify-content-between">
           <p><b>{`(${entry.amount}) ${entry.title}`}</b></p>
@@ -117,10 +117,10 @@ class Dashboard extends Component {
       const projectsMap = projects.map(project => {
         if(project.active && !project.complete) {
           return(
-            <div key={project.id} className="card-style border rounded p-3 m-3 w-75" style={{backgroundColor: '#d6f2ff', fontFamily: 'Noto Sans'}}>
-              <div className="d-flex flex-row align-items-end">
+            <div key={project.id} className="card-style border rounded p-3 m-3 w-75" style={{backgroundColor: '#ebf0fa', fontFamily: 'Noto Sans'}}>
+              <div className="d-flex flex-row align-items-baseline">
                 <Image className="small-img pr-3" src={`${config.image_URL}${project.image_file}`} rounded />
-                <h2 className="pb-2"><b>{project.title}</b></h2>
+                <h2><b>{project.title}</b></h2>
                 <p className="pl-3" style={{color: 'purple'}}>{project.complete ? 'Completed' : 'In-Progress'}</p>
               </div>
               <hr />
