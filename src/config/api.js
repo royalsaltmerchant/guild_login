@@ -59,6 +59,26 @@ const getUsers = async () => {
   }
 }
 
+const editUser= async (userId, approvedAssetCount, eligible) => {
+  try {
+    const res = await axios({
+      method: 'post',
+      url: `${config.apiURL}/api/edit_user`,
+      headers: {
+        "x-access-token": localStorage.getItem("token")
+      },
+      data: {
+        user_id: userId,
+        approvedAssetCount: approvedAssetCount,
+        eligible: eligible,
+      }
+    })
+    return res
+  } catch(err) {
+    throw(err)
+  }
+}
+
 const getProjects = async () => {
   try {
     const res = await axios({
@@ -312,6 +332,7 @@ export {
   authenticate,
   getUser,
   getUsers,
+  editUser,
   getProject,
   getProjects,
   createProject,

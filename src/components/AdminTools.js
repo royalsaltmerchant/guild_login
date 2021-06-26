@@ -10,6 +10,7 @@ import {
   deleteEntry as deleteEntryAPICall,
   editContribution as editContributionAPICall,
   deleteContribution as deleteContributionAPICall,
+  editUser as editUserAPICall
 } from '../config/api'
 import {finalConfig as config} from '../config/config'
 
@@ -94,6 +95,13 @@ class AdminTools extends Component {
     })
   }
 
+  handleUserClick(userToggleKey, userEditKey) {
+    this.setState({
+      [userToggleKey]: !this.state[userToggleKey],
+      [userEditKey]: false
+    })
+  }
+
   handleEditProjectClick(projectEditKey) {
     this.setState({
       [projectEditKey]: !this.state[projectEditKey]
@@ -109,6 +117,12 @@ class AdminTools extends Component {
   handleEditContributionClick(contributionEditKey) {
     this.setState({
       [contributionEditKey]: !this.state[contributionEditKey]
+    })
+  }
+
+  handleEditUserClick(userEditKey) {
+    this.setState({
+      [userEditKey]: !this.state[userEditKey]
     })
   }
 
@@ -158,6 +172,22 @@ class AdminTools extends Component {
       if(res.status === 200) {
         this.setState({[contributionEditKey]: false})
         this.getAndUpdateProjects()
+      }
+    } catch(err) {
+      console.log(err)
+    }
+  }
+
+  async handleEditUserSave(event, userId, userEditKey) {
+    event.preventDefault()
+    const approvedAssetCount = event.target.form[`user${userId}ApprovedAssetCount`].value || event.target.form[`user${userId}ApprovedAssetCount`].placeholder
+    const eligible = event.target.form[`user${userId}Eligible`].checked
+    
+    try {
+      const res = await editUserAPICall(userId, approvedAssetCount, eligible)
+      if(res.status === 200) {
+        this.setState({[userEditKey]: false})
+        this.getAndUpdateUsersList()
       }
     } catch(err) {
       console.log(err)
@@ -464,18 +494,69 @@ class AdminTools extends Component {
     }
   }
 
+  renderUserToggleOrEdit(userToggleKey, userEditKey, user) {
+    if(this.state[userToggleKey] && !this.state[userEditKey]) {
+      return(
+        <div key={user.id} className="px-3 py-1">
+          <div className="px-3">
+            <p>- Approved Asset Count: {user.approved_asset_count}</p>
+            <p>- Eligible-Status: {user.eligible ? 'true' : 'false'}</p>
+          </div>
+        </div>
+      )
+    }
+    if(this.state[userToggleKey] && this.state[userEditKey]) {
+      return(
+        <Form className="px-3">
+          <Form.Group controlId={`user${user.id}ApprovedAssetCount`}>
+            <Form.Label>Approved Asset Count</Form.Label>
+            <Form.Control 
+              size="md"
+              type="number"
+              placeholder={user.approved_asset_count}
+            />
+          </Form.Group>
+          <Form.Group controlId={`user${user.id}Eligible`}>
+            <Form.Label>Eligible</Form.Label>
+            <Form.Check
+              size="md"
+              type="switch"
+              defaultChecked={user.eligible ? true : false}
+            />
+          </Form.Group>
+          <div className="d-flex justify-content-around">
+            <Button variant="outline-success" onClick={(event) => this.handleEditUserSave(event, user.id, userEditKey)}>
+              Save
+            </Button>
+            <Button variant="outline-secondary" onClick={() => this.setState({[userEditKey]: false})}>
+              Cancel
+            </Button>
+          </div>
+        </Form>
+      )
+    } else {
+      return null
+    }
+  }
+
   renderUsersList() {
     const {usersList} = this.props.userStore
     const {hasUsersList, loadingUsers} = this.state
     if(hasUsersList && !loadingUsers) {
       const usersMap = usersList.map(user => {
+        const userToggleKey = `user${user.id}Toggle`
+        const userEditKey = `user${user.id}Edit`
         return(
-          <div key={user.id} className="px-3 py-1">
-            <p>{`${user.first_name} ${user.last_name} (${user.username}) ${user.email}`}</p>
-            <div className="px-3">
-              <p>- Approved Asset Count: {user.approved_asset_count}</p>
-              <p>- Eligible-Status: {user.eligible ? 'true' : 'false'}</p>
+          <div>
+            <div className="d-flex justify-content-between">
+              <Button variant="link" onClick={() => this.handleUserClick(userToggleKey, userEditKey)}>
+                {`${user.first_name} ${user.last_name} (${user.username}) ${user.email}`} ▼
+              </Button>
+              <Button variant="link" disabled={!this.state[userToggleKey]} onClick={() => this.handleEditUserClick(userEditKey)}>
+                Edit
+              </Button>
             </div>
+            {this.renderUserToggleOrEdit(userToggleKey, userEditKey, user)}
           </div>
         )
       })

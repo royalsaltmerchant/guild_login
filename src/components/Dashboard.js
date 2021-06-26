@@ -96,9 +96,9 @@ class Dashboard extends Component {
         <div className="flex-column">
         <div className="d-flex flex-row justify-content-between">
           <p><b>{`(${entry.amount}) ${entry.title}`}</b></p>
-          <Link to={`/Upload/entry/${entry.id}`}>
+          {entry.complete ? <p style={{color: 'green'}}>Complete</p> : <Button as={Link} variant="outline-success" to={`/Upload/entry/${entry.id}`}>
             Contribute
-          </Link>
+          </Button>}
         </div>
         <p className="px-3">{entry.description}</p>
         <p className="px-3">Contributions:</p>
@@ -121,13 +121,17 @@ class Dashboard extends Component {
               <div className="d-flex flex-row align-items-end">
                 <Image className="small-img pr-3" src={`${config.image_URL}${project.image_file}`} rounded />
                 <h2 className="pb-2"><b>{project.title}</b></h2>
+                <p className="pl-3" style={{color: 'purple'}}>{project.complete ? 'Completed' : 'In-Progress'}</p>
               </div>
-              <p className="px-3">{project.description}</p>
+              <hr />
+              <div className="py-3">
+                <h4 className="px-3">{project.description}</h4>
+              </div>
               {this.renderProjectEntries(project.entries)}
             </div>
           )
         }
-      })
+      }).reverse()
       return projectsMap
     }
     if(!hasProjects && !loadingProjects) {
