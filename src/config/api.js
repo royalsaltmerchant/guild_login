@@ -59,6 +59,27 @@ const getUsers = async () => {
   }
 }
 
+const registerUser= async (username, firstName, lastName, email, password) => {
+  try {
+    const res = await axios({
+      method: 'post',
+      url: `${config.apiURL}/api/register`,
+
+      data: {
+        username: username,
+        first_name: firstName,
+        last_name: lastName,
+        email: email,
+        password: password,
+        admin: false
+      }
+    })
+    return res
+  } catch(err) {
+    throw(err)
+  }
+}
+
 const editUser= async (userId, approvedAssetCount, eligible) => {
   try {
     const res = await axios({
@@ -332,6 +353,7 @@ export {
   authenticate,
   getUser,
   getUsers,
+  registerUser,
   editUser,
   getProject,
   getProjects,

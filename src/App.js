@@ -8,6 +8,7 @@ import {
 } from "react-router-dom";
 import {Provider as MobxStoreProvider} from 'mobx-react';
 import mobxStoresToInject from './mobx'
+import Register from './components/Register'
 import Login from './components/Login'
 import Logout from './components/Logout'
 import Account from './components/Account'
@@ -31,6 +32,9 @@ function Root() {
       <NavBar />
       <div className="d-flex justify-content-center p-3 rounded border border-light" style={{backgroundColor: '#f6f6f6'}}>
         <Switch>
+        <Route path="/register">
+            <Register />
+          </Route>
           <Route path="/login">
             <Login />
           </Route>

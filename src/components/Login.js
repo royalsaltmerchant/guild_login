@@ -1,14 +1,14 @@
 import React, { Component } from 'react'
 import {Form, Button} from 'react-bootstrap'
 import {login as loginAPICall} from '../config/api'
-import {withRouter} from 'react-router-dom';
+import {withRouter, Link} from 'react-router-dom';
 
 class Login extends Component {
 
   async handleSubmit(event) {
     event.preventDefault()
     const username_or_email = event.target.username_or_email.value.trim()
-    const password = event.target.password.value
+    const password = event.target.password.value.trim()
 
     try {
       const res = await loginAPICall(username_or_email, password)
@@ -55,6 +55,11 @@ class Login extends Component {
               Login
             </Button>
         </Form>
+        <br />
+        <div className="d-flex flex-column">
+          <small>Need an Account?</small>
+          <Link to="/register">Join Us!</Link>
+        </div>
       </div>
     )
   }
