@@ -89,12 +89,7 @@ class PackDetails extends Component {
         }, () => this.downloadButtonRef.current.click())
       }
     } catch(err) {
-      if(err.response) {
-        if(err.response.status === 400) {
-          alert('Either you are not eligible for downloads, or you are not logged in!')
-        }
-      }
-      console.log(err)
+      alert('Something went wrong, please try again.')
     }
   }
 
