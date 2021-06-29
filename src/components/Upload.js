@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Form, Button, Spinner } from 'react-bootstrap'
+import { Form, Button, Spinner, Alert } from 'react-bootstrap'
 import {inject, observer} from 'mobx-react'
 import {awsConfig} from '../config/config'
 import S3 from 'react-aws-s3'
@@ -15,7 +15,10 @@ class Upload extends Component {
       hasEntry: false,
       hasProject: false,
       hasUser: false,
-      loading: true
+      loading: true,
+      alert: false,
+      alertType: 'warning',
+      alertText: 'Something went wrong, please try again.'
     }
   }
 
@@ -27,6 +30,23 @@ class Upload extends Component {
   componentDidUpdate(prevProps, prevState) {
     if(prevState.hasEntry !== this.state.hasEntry) {
       this.getAndUpdateProject()
+    }
+    if(this.state.alert) {
+      setTimeout(() => {
+        this.setState({
+          alert: false
+        })
+      }, 10000)
+    }
+  }
+
+  renderAlert() {
+    if(this.state.alert) {
+      return(
+        <Alert variant={this.state.alertType}>
+          {this.state.alertText}
+        </Alert>
+      )
     }
   }
 
@@ -98,8 +118,13 @@ class Upload extends Component {
     try {
       const res = await createContributionAPICall(entryInfo.id, entryInfo.project_id, amount)
       this.props.history.push('/dashboard')
+      this.props.history.go()
     } catch(err) {
-      console.log(err)
+      this.setState({
+        alert: true,
+        alertText: "Something went wrong, please try again.",
+        alertType: "danger"
+      })
     }
   }
 
@@ -178,6 +203,7 @@ class Upload extends Component {
         <div>
           <h2 className="text-center">{entryInfo.title}</h2>
           <p className="text-center">{entryInfo.description}</p>
+          {this.renderAlert()}
           <p>Uploaded Files:</p>
           <div className="p-1 rounded border border-dark" style={{width: '60vw', height: '25vh', backgroundColor: '#fff', overflowY: 'auto'}}>
             {this.renderFilesSuccessList()}
