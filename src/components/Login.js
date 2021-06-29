@@ -1,9 +1,37 @@
 import React, { Component } from 'react'
-import {Form, Button} from 'react-bootstrap'
+import {Form, Button, Alert} from 'react-bootstrap'
 import {login as loginAPICall} from '../config/api'
 import {withRouter, Link} from 'react-router-dom';
 
 class Login extends Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+      alert: false,
+      alertType: 'warning',
+      alertText: 'Something went wrong, please try again.'
+    }
+  }
+
+  componentDidUpdate() {
+    if(this.state.alert) {
+      setTimeout(() => {
+        this.setState({
+          alert: false
+        })
+      }, 10000)
+    }
+  }
+
+  renderAlert() {
+    if(this.state.alert) {
+      return(
+        <Alert variant={this.state.alertType}>
+          {this.state.alertText}
+        </Alert>
+      )
+    }
+  }
 
   async handleSubmit(event) {
     event.preventDefault()
@@ -19,12 +47,18 @@ class Login extends Component {
         this.props.history.go()
       }
     } catch(err) {
-      console.log(err)
-      if(err.response) {
-        console.log('error status', err.response.status)
-      }
-      else {
-        console.log('something went wrong')
+      if(err.response && err.response.status === 400) {
+        this.setState({
+          alert: true,
+          alertText: "Invalid Username/Email or Password.",
+          alertType: "warning"
+        })
+      } else {
+        this.setState({
+          alert: true,
+          alertText: "Something went wrong, please try again.",
+          alertType: "danger"
+        })
       }
     }
   }
@@ -32,6 +66,7 @@ class Login extends Component {
   render() {
     return (
       <div className="w-50">
+        {this.renderAlert()}
         <h2 className="text-center">Login</h2>
         <Form onSubmit={(event) => this.handleSubmit(event)}>
           <Form.Group controlId="username_or_email">
