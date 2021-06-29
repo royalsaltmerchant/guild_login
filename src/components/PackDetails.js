@@ -68,9 +68,9 @@ class PackDetails extends Component {
       this.setState({
         packDetails: {
           title: 'Ancient Magic Pack',
-          Description: 'its got wonderful amazing sounds',
+          Description: 'Creative and unique magic sound effects recorded and produced by our own in house Arch-Mage Audio Wizards. Everything from elemental blasts to heals and loopable buffs/debufs.',
         },
-        assetTypes: ['one', 'two', 'three', 'four']
+        assetTypes: ['Casts(Earth, Fire, Water, Ice, Lightning, Wind)', 'Impacts(Earth, Fire, Water, Ice, Lightning, Wind)', 'Buffs', 'Debuffs', 'Dark Magic']
       })
     }
   }
