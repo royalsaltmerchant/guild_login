@@ -62,6 +62,7 @@ class Account extends Component {
             <p>Email: {userInfo.email}</p>
             <p>Eligible to access community files: {userInfo.eligible ? 'yes' : 'no'}</p>
             <p>Approved asset count: {userInfo.approved_asset_count}</p>
+            <p>Coins: {userInfo.coins}</p>
           </div>
           <br />
           {userInfo.admin ? <AdminTools /> : null}

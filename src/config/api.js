@@ -80,7 +80,7 @@ const registerUser= async (username, firstName, lastName, email, password) => {
   }
 }
 
-const editUser= async (userId, approvedAssetCount, eligible) => {
+const editUser= async (userId, approvedAssetCount, coins, eligible) => {
   try {
     const res = await axios({
       method: 'post',
@@ -91,6 +91,7 @@ const editUser= async (userId, approvedAssetCount, eligible) => {
       data: {
         user_id: userId,
         approvedAssetCount: approvedAssetCount,
+        coins: coins,
         eligible: eligible,
       }
     })
