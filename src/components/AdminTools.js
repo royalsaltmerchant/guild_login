@@ -181,10 +181,11 @@ class AdminTools extends Component {
   async handleEditUserSave(event, userId, userEditKey) {
     event.preventDefault()
     const approvedAssetCount = event.target.form[`user${userId}ApprovedAssetCount`].value || event.target.form[`user${userId}ApprovedAssetCount`].placeholder
+    const coins = event.target.form[`user${userId}Coins`].value || event.target.form[`user${userId}Coins`].placeholder
     const eligible = event.target.form[`user${userId}Eligible`].checked
     
     try {
-      const res = await editUserAPICall(userId, approvedAssetCount, eligible)
+      const res = await editUserAPICall(userId, approvedAssetCount, coins, eligible)
       if(res.status === 200) {
         this.setState({[userEditKey]: false})
         this.getAndUpdateUsersList()
@@ -500,6 +501,7 @@ class AdminTools extends Component {
         <div key={user.id} className="px-3 py-1">
           <div className="px-3">
             <p>- Approved Asset Count: {user.approved_asset_count}</p>
+            <p>- Coins: {user.coins}</p>
             <p>- Eligible-Status: {user.eligible ? 'true' : 'false'}</p>
           </div>
         </div>
@@ -514,6 +516,14 @@ class AdminTools extends Component {
               size="md"
               type="number"
               placeholder={user.approved_asset_count}
+            />
+          </Form.Group>
+          <Form.Group controlId={`user${user.id}Coins`}>
+            <Form.Label>Coins</Form.Label>
+            <Form.Control 
+              size="md"
+              type="number"
+              placeholder={user.coins}
             />
           </Form.Group>
           <Form.Group controlId={`user${user.id}Eligible`}>
