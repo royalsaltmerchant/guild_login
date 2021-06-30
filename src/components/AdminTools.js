@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import {inject, observer} from 'mobx-react'
 import CreateProject from './CreateProject'
 import CreateEntry from './CreateEntry'
+import CreatePack from './CreatePack'
 import {Spinner, Button, Form, Image} from 'react-bootstrap'
 import {
   editProject as editProjectAPICall,
@@ -20,18 +21,42 @@ class AdminTools extends Component {
     this.state = {
       createProjectBoolean: false,
       createEntryBoolean: false,
+      createPackBoolean: false,
       loadingProjects: true,
       loadingEntries: true,
       loadingUsers: true,
+      loadingPacks: true,
       hasProjects: false,
       hasEntries: false,
-      hasUsersList: false
+      hasUsersList: false,
+      hasPacks: false
     }
   }
   
   componentDidMount() {
     this.getAndUpdateProjects()
     this.getAndUpdateUsersList()
+    this.getAndUpdatePacks()
+  }
+
+  async getAndUpdatePacks() {
+    this.setState({loadingPacks: true}, async () => {
+      try {
+        const res = await this.props.packsStore.getPacks()
+        if(res.status === 200) {
+          this.setState({
+            hasPacks: true,
+            loadingPacks: false
+          })
+        }
+      } catch(err) {
+        console.log(err)
+        this.setState({
+          hasPacks: false,
+          loadingPacks: false
+        })
+      }
+    })
   }
 
   async getAndUpdateUsersList() {
@@ -102,6 +127,13 @@ class AdminTools extends Component {
     })
   }
 
+  handlePackClick(packToggleKey, packEditKey) {
+    this.setState({
+      [packToggleKey]: !this.state[packToggleKey],
+      [packEditKey]: false
+    })
+  }
+
   handleEditProjectClick(projectEditKey) {
     this.setState({
       [projectEditKey]: !this.state[projectEditKey]
@@ -123,6 +155,12 @@ class AdminTools extends Component {
   handleEditUserClick(userEditKey) {
     this.setState({
       [userEditKey]: !this.state[userEditKey]
+    })
+  }
+
+  handleEditPackClick(packEditKey) {
+    this.setState({
+      [packEditKey]: !this.state[packEditKey]
     })
   }
 
@@ -400,7 +438,7 @@ class AdminTools extends Component {
       return(
         <div className="px-3">
           <p>Description: {project.description}</p>
-          <Image className="small-img" src={`${config.image_URL}${project.image_file}`} rounded />
+          <Image className="small-img" src={`${config.projectImageURL}${project.image_file}`} rounded />
           <p>Active: {project.active ? 'true' : 'false'}</p>
           <p>Complete: {project.complete ? 'true' : 'false'}</p>
           <p>Entries:</p>
@@ -495,6 +533,109 @@ class AdminTools extends Component {
     }
   }
 
+  renderPacksToggleOrEdit(packToggleKey, packEditKey, pack) {
+    if(this.state[packToggleKey] && !this.state[packEditKey]) {
+      return(
+        <div className="px-3">
+          <p>Title: {pack.title}</p>
+          <p>Description: {pack.description}</p>
+          <Image className="small-img" src={`${config.packImageURL}${pack.image_file}`} rounded />
+          <br />
+          <iframe class="video-sm" src={pack.video_file} frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+          <p>Coin Cost: {pack.coin_cost}</p>
+          <p>Active: {pack.active ? 'true' : 'false'}</p>
+          <p>Asset Types:</p>
+          {/* {this.renderPackEntries(pack.entries)} */}
+          {/* <Button className="px-3 py-3" variant="link" onClick={() => this.setState({createEntryBoolean: !this.state.createEntryBoolean})}>
+            {this.state.createEntryBoolean ? '- Create New Entry' : '+ Create New Entry'}
+          </Button> */}
+          {/* {this.state.createEntryBoolean ? <CreateEntry packId={pack.id} getAndUpdatePacks={() => this.getAndUpdatePacks()} createEntryBoolean={value => this.setState({createEntryBoolean: value})}/> : null} */}
+        </div>
+      )
+    }
+    if(this.state[packToggleKey] && this.state[packEditKey]) {
+      return(
+        <Form className="px-3">
+          <Form.Group controlId={`pack${pack.id}Title`}>
+            <Form.Label>Title</Form.Label>
+            <Form.Control 
+              size="md"
+              type="text"
+              placeholder={pack.title} />
+          </Form.Group>
+          <Form.Group controlId={`pack${pack.id}Description`}>
+            <Form.Label>Description</Form.Label>
+            <Form.Control 
+              as="textarea"
+              size="md"
+              type="text"
+              placeholder={pack.description} />
+          </Form.Group>
+          <Form.Group controlId={`pack${pack.id}Active`}>
+            <Form.Label>Active</Form.Label>
+            <Form.Check 
+              size="md"
+              type="switch"
+              defaultChecked={pack.active ? true : false}
+            />
+          </Form.Group>
+          <Form.Group controlId={`pack${pack.id}Complete`}>
+            <Form.Label>Complete</Form.Label>
+            <Form.Check
+              size="md"
+              type="switch"
+              defaultChecked={pack.complete ? true : false}
+            />
+          </Form.Group>
+          <div className="d-flex justify-content-around">
+            <Button variant="outline-success" onClick={(event) => this.handleEditPackSave(event, pack.id, packEditKey)}>
+              Save
+            </Button>
+            <Button variant="outline-secondary" onClick={() => this.setState({[packEditKey]: false})}>
+              Cancel
+            </Button>
+            <Button variant="outline-danger" onClick={() => this.handleDeletePack(pack.id)}>
+              Delete
+            </Button>
+          </div>
+        </Form>
+      )
+    } else {
+      return null
+    }
+  }
+
+  renderPacks() {
+    const {packs} = this.props.packsStore
+    const {hasPacks, loadingPacks} = this.state
+    if(hasPacks && !loadingPacks) {
+      const packMap = packs.map(pack => {
+        const packToggleKey = `pack${pack.id}Toggle`
+        const packEditKey = `pack${pack.id}Edit`
+        return(
+          <div key={pack.id} className="px-3 py-1">
+            <div className="d-flex justify-content-between">
+              <Button variant="link" onClick={() => this.handlePackClick(packToggleKey, packEditKey)}>
+                {pack.title} {this.state[packToggleKey] ? "▼" : "▲"}
+              </Button>
+              <Button variant="link" disabled={!this.state[packToggleKey]} onClick={() => this.handleEditPackClick(packEditKey)}>
+                Edit
+              </Button>
+            </div>
+            {this.renderPacksToggleOrEdit(packToggleKey, packEditKey, pack)}
+          </div>
+        )
+      })
+      return packMap
+    }
+    if(!hasPacks && !loadingPacks) {
+      return <p>Can't get packs!</p>
+    }
+    if(loadingPacks) {
+      return <Spinner />
+    }
+  }
+
   renderUserToggleOrEdit(userToggleKey, userEditKey, user) {
     if(this.state[userToggleKey] && !this.state[userEditKey]) {
       return(
@@ -584,13 +725,22 @@ class AdminTools extends Component {
     return (
       <div className="border w-100 p-3 rounded">
         <p style={{fontSize:"20px"}}>Admin Tools</p>
-        <Button className="px-3 py-1" variant="link" onClick={() => this.setState({createProjectBoolean: !this.state.createProjectBoolean})}>
-          {this.state.createProjectBoolean ? '- Create New Project' : '+ Create New Project'}
-        </Button>
-        {this.state.createProjectBoolean ? <CreateProject getAndUpdateProjects={() => this.getAndUpdateProjects()} createProjectBoolean={value => this.setState({createProjectBoolean: value})}/> : null}
+        <div className="d-flex flex-column justify-content-start align-items-start">
+          <Button className="px-3 py-1" variant="link" onClick={() => this.setState({createProjectBoolean: !this.state.createProjectBoolean})}>
+            {this.state.createProjectBoolean ? '- Create New Project' : '+ Create New Project'}
+          </Button>
+          {this.state.createProjectBoolean ? <CreateProject getAndUpdateProjects={() => this.getAndUpdateProjects()} createProjectBoolean={value => this.setState({createProjectBoolean: value})}/> : null}
+          <Button className="px-3 py-1" variant="link" onClick={() => this.setState({createPackBoolean: !this.state.createPackBoolean})}>
+            {this.state.createPackBoolean ? '- Create New Pack' : '+ Create New Pack'}
+          </Button>
+          {this.state.createPackBoolean ? <CreatePack getAndUpdatePack={() => this.getAndUpdatePacks()} createPackBoolean={value => this.setState({createPackBoolean: value})}/> : null}
+        </div>
         <hr />
         <p style={{fontSize:"20px"}}>Projects:</p>
         {this.renderProjects()}
+        <hr />
+        <p style={{fontSize:"20px"}}>Packs:</p>
+        {this.renderPacks()}
         <hr />
         <p style={{fontSize:"20px"}}>Users:</p>
         {this.renderUsersList()}
@@ -599,4 +749,4 @@ class AdminTools extends Component {
   }
 }
 
-export default inject('projectsStore', 'userStore')(observer(AdminTools));
+export default inject('projectsStore', 'userStore', 'packsStore')(observer(AdminTools));

@@ -135,7 +135,7 @@ class PackDetails extends Component {
     if(packName === 'ancient-weapons-pack') {
       return(
         <div className="d-flex flex-column">
-          <Image className="pack-img mr-3 mb-5" src={`${config.image_URL}weaponpackcolor.jpg`} />
+          <Image className="pack-img mr-3 mb-5" src={`${config.projectImageURL}weaponpackcolor.jpg`} />
           <h3 className="text-center">Audio Demo</h3>
           <iframe class="video" src="https://www.youtube.com/embed/gKJfZtoXlkg" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
         </div>
@@ -144,7 +144,7 @@ class PackDetails extends Component {
     if(packName === 'ancient-magic-pack') {
       return(
         <div className="d-flex flex-column">
-          <Image className="pack-img mr-3 mb-5" src={`${config.image_URL}magicpackcolor.jpg`} />
+          <Image className="pack-img mr-3 mb-5" src={`${config.projectImageURL}magicpackcolor.jpg`} />
           <h3 className="text-center">Audio Demo</h3>
           <iframe class="video" src="https://www.youtube.com/embed/dBPSmhcLOBA" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
         </div>

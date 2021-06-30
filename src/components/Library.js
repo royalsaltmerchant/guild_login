@@ -10,13 +10,13 @@ class Library extends Component {
     return(
       <div>
         <div className="img-div p-3 m-3">
-          <Image className="pack-img" src={`${config.image_URL}weaponpackcolor.jpg`} />
+          <Image className="pack-img" src={`${config.projectImageURL}weaponpackcolor.jpg`} />
           <button className="di-btn" onClick={() => this.props.history.push("/pack/ancient-weapons-pack")}>
             Details
           </button>
         </div>
         <div className="img-div p-3 m-3">
-          <Image className="pack-img" src={`${config.image_URL}magicpackcolor.jpg`} />
+          <Image className="pack-img" src={`${config.projectImageURL}magicpackcolor.jpg`} />
           <button className="di-btn" onClick={() => this.props.history.push("/pack/ancient-magic-pack")}>
             Details
           </button>

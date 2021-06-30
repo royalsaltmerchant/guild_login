@@ -349,6 +349,58 @@ const getPresignedURL = async (bucketName, objectName) => {
   }
 }
 
+const getPacks = async () => {
+  try {
+    const res = await axios({
+      method: 'get',
+      url: `${config.apiURL}/api/packs`,
+    })
+    return res
+  } catch(err) {
+    throw(err)
+  }
+}
+
+const getPack = async (packId) => {
+  // try {
+  //   const res = await axios({
+  //     method: 'post',
+  //     url: `${config.apiURL}/api/get_pack`,
+  //     headers: {
+  //       "x-access-token": localStorage.getItem("token")
+  //     },
+  //     data: {
+  //       pack_id: packId
+  //     }
+  //   })
+  //   return res
+  // } catch(err) {
+  //   throw(err)
+  // }
+}
+
+const createPack = async (title, description, image, video, coinCost) => {
+  try {
+    const res = await axios({
+      method: 'post',
+      url: `${config.apiURL}/api/add_pack`,
+      headers: {
+        "x-access-token": localStorage.getItem("token")
+      },
+      data: {
+        title: title,
+        description: description,
+        image_file: image,
+        video_file: video,
+        coin_cost: coinCost
+      }
+    })
+    return res
+  } catch(err) {
+    throw(err)
+  }
+}
+
 export {
   login,
   authenticate,
@@ -368,5 +420,8 @@ export {
   createContribution,
   editContribution,
   deleteContribution,
-  getPresignedURL
+  getPresignedURL,
+  getPacks,
+  getPack,
+  createPack
 }

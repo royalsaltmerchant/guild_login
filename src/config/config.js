@@ -1,7 +1,8 @@
 export const finalConfig = {
   apiURL: 'https://api.royalsaltserver.com',
   websiteURL: 'localhost:3000',
-  image_URL: 'https://sfguildsubmissions.s3.us-west-1.amazonaws.com/project_images/',
+  projectImageURL: 'https://sfguildsubmissions.s3.us-west-1.amazonaws.com/project_images/',
+  packImageURL: 'https://sfguildsubmissions.s3.us-west-1.amazonaws.com/pack_images/',
   s3_base_URL: 'https://sfguildsubmissions.s3.us-west-1.amazonaws.com/'
 }
 
