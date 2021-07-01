@@ -3,6 +3,7 @@ import {inject, observer} from 'mobx-react'
 import CreateProject from './CreateProject'
 import CreateEntry from './CreateEntry'
 import CreatePack from './CreatePack'
+import CreateAssetType from './CreateAssetType'
 import {Spinner, Button, Form, Image} from 'react-bootstrap'
 import {
   editProject as editProjectAPICall,
@@ -22,6 +23,7 @@ class AdminTools extends Component {
       createProjectBoolean: false,
       createEntryBoolean: false,
       createPackBoolean: false,
+      createAssetTypeBoolean: false,
       loadingProjects: true,
       loadingEntries: true,
       loadingUsers: true,
@@ -545,11 +547,11 @@ class AdminTools extends Component {
           <p>Coin Cost: {pack.coin_cost}</p>
           <p>Active: {pack.active ? 'true' : 'false'}</p>
           <p>Asset Types:</p>
-          {/* {this.renderPackEntries(pack.entries)} */}
-          {/* <Button className="px-3 py-3" variant="link" onClick={() => this.setState({createEntryBoolean: !this.state.createEntryBoolean})}>
-            {this.state.createEntryBoolean ? '- Create New Entry' : '+ Create New Entry'}
-          </Button> */}
-          {/* {this.state.createEntryBoolean ? <CreateEntry packId={pack.id} getAndUpdatePacks={() => this.getAndUpdatePacks()} createEntryBoolean={value => this.setState({createEntryBoolean: value})}/> : null} */}
+          {/* {this.renderPackEntries(pack.asset_types)} */}
+          <Button className="px-3 py-3" variant="link" onClick={() => this.setState({createAssetTypeBoolean: !this.state.createAssetTypeBoolean})}>
+            {this.state.createAssetTypeBoolean ? '- Create New Asset Type' : '+ Create New Asset Type'}
+          </Button>
+          {this.state.createAssetTypeBoolean ? <CreateAssetType packId={pack.id} getAndUpdateAssetTypes={() => this.getAndUpdateAssetTypes()} createAssetTypeBoolean={value => this.setState({createAssetTypeBoolean: value})}/> : null}
         </div>
       )
     }
