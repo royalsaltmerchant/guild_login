@@ -401,6 +401,102 @@ const createPack = async (title, description, image, video, coinCost) => {
   }
 }
 
+const editPack = async (packId, title, description, coinCost, active) => {
+  try {
+    const res = await axios({
+      method: 'post',
+      url: `${config.apiURL}/api/edit_pack`,
+      headers: {
+        "x-access-token": localStorage.getItem("token")
+      },
+      data: {
+        pack_id: packId,
+        title: title,
+        description: description,
+        coin_cost: coinCost,
+        active: active
+      }
+    })
+    return res
+  } catch(err) {
+    throw(err)
+  }
+}
+
+const deletePack = async (packId) => {
+  try {
+    const res = await axios({
+      method: 'post',
+      url: `${config.apiURL}/api/remove_pack`,
+      headers: {
+        "x-access-token": localStorage.getItem("token")
+      },
+      data: {
+        pack_id: packId,
+      }
+    })
+    return res
+  } catch(err) {
+    throw(err)
+  }
+}
+
+const createAssetType = async (packId, description) => {
+  try {
+    const res = await axios({
+      method: 'post',
+      url: `${config.apiURL}/api/add_asset_type`,
+      headers: {
+        "x-access-token": localStorage.getItem("token")
+      },
+      data: {
+        pack_id: packId,
+        description: description
+      }
+    })
+    return res
+  } catch(err) {
+    throw(err)
+  }
+}
+
+const editAssetType = async (assetTypeId, description) => {
+  try {
+    const res = await axios({
+      method: 'post',
+      url: `${config.apiURL}/api/edit_asset_type`,
+      headers: {
+        "x-access-token": localStorage.getItem("token")
+      },
+      data: {
+        asset_type_id: assetTypeId,
+        description: description
+      }
+    })
+    return res
+  } catch(err) {
+    throw(err)
+  }
+}
+
+const deleteAssetType = async (assetTypeId) => {
+  try {
+    const res = await axios({
+      method: 'post',
+      url: `${config.apiURL}/api/remove_asset_type`,
+      headers: {
+        "x-access-token": localStorage.getItem("token")
+      },
+      data: {
+        asset_type_id: assetTypeId,
+      }
+    })
+    return res
+  } catch(err) {
+    throw(err)
+  }
+}
+
 export {
   login,
   authenticate,
@@ -423,5 +519,10 @@ export {
   getPresignedURL,
   getPacks,
   getPack,
-  createPack
+  createPack,
+  editPack,
+  deletePack,
+  createAssetType,
+  editAssetType,
+  deleteAssetType
 }
