@@ -52,6 +52,11 @@ class AdminTools extends Component {
             hasPacks: true,
             loadingPacks: false
           })
+        } else {
+          this.setState({
+            hasPacks: false,
+            loadingPacks: false
+          })
         }
       } catch(err) {
         console.log(err)
@@ -72,6 +77,11 @@ class AdminTools extends Component {
             hasUsersList: true,
             loadingUsers: false
           })
+        } else {
+          this.setState({
+            hasUsersList: false,
+            loadingUsers: false
+          })
         }
       } catch(err) {
         console.log(err)
@@ -90,6 +100,11 @@ class AdminTools extends Component {
         if(res.status === 200) {
           this.setState({
             hasProjects: true,
+            loadingProjects: false
+          })
+        } else {
+          this.setState({
+            hasProjects: false,
             loadingProjects: false
           })
         }
