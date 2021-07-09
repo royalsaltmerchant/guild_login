@@ -82,7 +82,8 @@ export default class CreatePack extends Component {
           </Form.Group>
 
           <Form.Group controlId="packVideo">
-            <Form.Label>Video Link</Form.Label>
+            <Form.Label>Video Embed Link</Form.Label>
+            <small class="ml-2" style={{color: 'red'}}>The embed url, not the regular url</small>
             <Form.Control 
               required
               size="md"

@@ -663,6 +663,7 @@ class AdminTools extends Component {
 
   renderPacksToggleOrEdit(packToggleKey, packEditKey, pack) {
     if(this.state[packToggleKey] && !this.state[packEditKey]) {
+      console.log(pack.video_file)
       return(
         <div className="px-3">
           <p>Title: {pack.title}</p>
@@ -861,7 +862,7 @@ class AdminTools extends Component {
           <Button className="px-3 py-1" variant="link" onClick={() => this.setState({createPackBoolean: !this.state.createPackBoolean})}>
             {this.state.createPackBoolean ? '- Create New Pack' : '+ Create New Pack'}
           </Button>
-          {this.state.createPackBoolean ? <CreatePack getAndUpdatePack={() => this.getAndUpdatePacks()} createPackBoolean={value => this.setState({createPackBoolean: value})}/> : null}
+          {this.state.createPackBoolean ? <CreatePack getAndUpdatePacks={() => this.getAndUpdatePacks()} createPackBoolean={value => this.setState({createPackBoolean: value})}/> : null}
         </div>
         <hr />
         <p style={{fontSize:"20px"}}>Projects:</p>

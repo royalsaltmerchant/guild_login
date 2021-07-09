@@ -47,17 +47,21 @@ class Library extends Component {
   renderSFXPacks() {
     const {packs} = this.props.packsStore
     const {hasPacks, loadingPacks} = this.state
-    console.log(packs)
+
     if(hasPacks, !loadingPacks) {
       const packMap = packs.map(pack => {
-        return(
-          <div className="img-div p-3 m-3">
-            <Image className="pack-img" src={`${config.packImageURL}${pack.image_file}`} />
-            <button className="di-btn" onClick={() => this.props.history.push("/pack/ancient-weapons-pack")}>
-              Details
-            </button>
-          </div>
-        )    
+        const editedPackTitle = pack.title.replaceAll(' ', '-').toLowerCase()
+
+        if(pack.active) {
+          return(
+            <div key={pack.id} className="img-div p-3 m-3">
+              <Image className="pack-img" src={`${config.packImageURL}${pack.image_file}`} />
+              <button className="di-btn" onClick={() => this.props.history.push(`/pack/${editedPackTitle}`)}>
+                Details
+              </button>
+            </div>
+          )   
+        } 
       })
       return packMap
     }
@@ -83,4 +87,4 @@ class Library extends Component {
   }
 }
 
-export default inject('packsStore')(observer(Library));
+export default inject('packsStore')(observer(withRouter(Library)))
