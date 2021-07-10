@@ -663,7 +663,6 @@ class AdminTools extends Component {
 
   renderPacksToggleOrEdit(packToggleKey, packEditKey, pack) {
     if(this.state[packToggleKey] && !this.state[packEditKey]) {
-      console.log(pack.video_file)
       return(
         <div className="px-3">
           <p>Title: {pack.title}</p>

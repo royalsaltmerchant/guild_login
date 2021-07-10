@@ -10,8 +10,6 @@ class PackDetails extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      packDetails: {},
-      assetTypes: [],
       uri: '',
       hasUserInfo: false,
       loading: true,
@@ -54,25 +52,6 @@ class PackDetails extends Component {
   componentDidMount() {
     this.authenticate()
     const {packName} = this.props.match.params
-
-    if(packName === 'ancient-weapons-pack') {
-      this.setState({
-        packDetails: {
-          title: 'Ancient Weapons Pack',
-          Description: 'Combat sound effects for games set in medieval or fantasy settings. Complete with swings impacts and custom assembled attacks and combos for Swords, Daggers, Axes and more.',
-        },
-        assetTypes: ['Assembled(Swing + Impact)', 'Impacts(Blocks)', 'Swings(Axe, BroadSword, Dagger, Katana)', 'H2H Combat(Kick, Punch)', 'Bow & Arrow', 'Sheathe/Unsheathe']
-      })
-    }
-    if(packName === 'ancient-magic-pack') {
-      this.setState({
-        packDetails: {
-          title: 'Ancient Magic Pack',
-          Description: 'Creative and unique magic sound effects recorded and produced by our own in house Arch-Mage Audio Wizards. Everything from elemental blasts to heals and loopable buffs/debufs.',
-        },
-        assetTypes: ['Casts(Earth, Fire, Water, Ice, Lightning, Wind)', 'Impacts(Earth, Fire, Water, Ice, Lightning, Wind)', 'Buffs', 'Debuffs', 'Dark Magic']
-      })
-    }
   }
 
   async handleDownload() {
@@ -132,21 +111,13 @@ class PackDetails extends Component {
 
   renderPackImageAndVideo() {
     const {packName} = this.props.match.params
+    
     if(packName === 'ancient-weapons-pack') {
       return(
         <div className="d-flex flex-column">
           <Image className="pack-img mr-3 mb-5" src={`${config.projectImageURL}weaponpackcolor.jpg`} />
           <h3 className="text-center">Audio Demo</h3>
           <iframe class="video" src="https://www.youtube.com/embed/gKJfZtoXlkg" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-        </div>
-      )
-    }
-    if(packName === 'ancient-magic-pack') {
-      return(
-        <div className="d-flex flex-column">
-          <Image className="pack-img mr-3 mb-5" src={`${config.projectImageURL}magicpackcolor.jpg`} />
-          <h3 className="text-center">Audio Demo</h3>
-          <iframe class="video" src="https://www.youtube.com/embed/dBPSmhcLOBA" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
         </div>
       )
     }
