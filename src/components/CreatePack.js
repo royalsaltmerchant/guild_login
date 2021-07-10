@@ -36,11 +36,11 @@ export default class CreatePack extends Component {
 
   async handleSubmitPack(event) {
     event.preventDefault()
-    const title = event.target.packTitle.value
-    const description = event.target.packDescription.value
+    const title = event.target.packTitle.value.trim()
+    const description = event.target.packDescription.value.trim()
     const image = event.target.packImage.files[0].name
     const imageFile = event.target.packImage.files[0]
-    const video = event.target.packVideo.value
+    const video = event.target.packVideo.value.trim()
     const coinCost = event.target.packCoinCost.value
     
     try {

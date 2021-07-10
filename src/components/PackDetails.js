@@ -12,10 +12,17 @@ class PackDetails extends Component {
     this.state = {
       uri: '',
       hasUserInfo: false,
-      loading: true,
+      loadingUser: true,
+      loadingPack: true,
       userEligible: false
     }
     this.downloadButtonRef = React.createRef()
+  }
+
+  componentDidMount() {
+    this.authenticate()
+    this.getAndUpdatePack()
+    const {packName} = this.props.match.params
   }
 
   async componentDidUpdate() {
@@ -38,20 +45,33 @@ class PackDetails extends Component {
       if(res.status === 200) {
         this.setState({
           authenticated: true,
-          loading: false
+          loadingUser: false
         })
       }
     } catch(err) {
       console.log(err)
       this.setState({
-        loading: false
+        loadingUser: false
       })
     }
   }
 
-  componentDidMount() {
-    this.authenticate()
-    const {packName} = this.props.match.params
+  async getAndUpdatePack() {
+    this.setState({loadingPack: true}, async () => {
+      const {packName} = this.props.match.params
+      const packTitleSpaces = packName.replaceAll('-', ' ')
+      const packTitle = packTitleSpaces.toLowerCase()
+        .split(' ')
+        .map((s) => s.charAt(0).toUpperCase() + s.substring(1))
+        .join(' ')
+      console.log(packTitle)
+      try {
+        const res = await this.props.packsStore.getPackInfo(packTitle)
+        console.log(res)
+      } catch(err) {
+        console.log(err)
+      }
+    })
   }
 
   async handleDownload() {
@@ -94,11 +114,11 @@ class PackDetails extends Component {
           </div>
           <div className="my-5 d-flex flex-column justify-content-center align-items-center">
             {/* <Button as={'a'} href={`${config.s3_base_URL}packs/${packName}`} download>Download</Button> */}
-            {this.state.hasUserInfo ? 
+            {/* {this.state.hasUserInfo ? 
               <div>
                 <Button disabled={!this.props.userStore.userInfo.eligible} ref={this.downloadButtonRef} onClick={() => this.handleDownload()}>Download</Button>
                 <a ref={this.downloadButtonRef} href={this.state.uri} />
-              </div>: null}
+              </div>: null} */}
           </div>
         </div>
       )
@@ -126,11 +146,11 @@ class PackDetails extends Component {
   render() {
     return (
       <div className="d-flex flex-row flex-wrap justify-content-center w-75 p-3 border border-light rounded" style={{backgroundColor: '#fff'}}>
-        {this.renderPackImageAndVideo()}
-        {this.renderTrackDetails()}
+        {/* {this.renderPackImageAndVideo()}
+        {this.renderTrackDetails()} */}
       </div>
     )
   }
 }
 
-export default inject('userStore')(observer(withRouter(PackDetails)));
+export default inject('userStore', 'packsStore')(observer(withRouter(PackDetails)));

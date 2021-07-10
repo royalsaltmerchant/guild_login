@@ -364,22 +364,22 @@ const getPacks = async () => {
   }
 }
 
-const getPack = async (packId) => {
-  // try {
-  //   const res = await axios({
-  //     method: 'post',
-  //     url: `${config.apiURL}/api/get_pack`,
-  //     headers: {
-  //       "x-access-token": localStorage.getItem("token")
-  //     },
-  //     data: {
-  //       pack_id: packId
-  //     }
-  //   })
-  //   return res
-  // } catch(err) {
-  //   throw(err)
-  // }
+const getPack = async (packTitle) => {
+  try {
+    const res = await axios({
+      method: 'post',
+      url: `${config.apiURL}/api/get_pack_by_title`,
+      headers: {
+        "x-access-token": localStorage.getItem("token")
+      },
+      data: {
+        pack_title: packTitle
+      }
+    })
+    return res
+  } catch(err) {
+    throw(err)
+  }
 }
 
 const createPack = async (title, description, image, video, coinCost) => {

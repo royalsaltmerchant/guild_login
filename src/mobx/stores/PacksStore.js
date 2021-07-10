@@ -33,9 +33,9 @@ export default class PacksStore extends Component {
     }
   }
 
-  async getPackInfo(packId) {
+  async getPackInfo(packTitle) {
     try {
-      const res = await getPackAPICall(packId)
+      const res = await getPackAPICall(packTitle)
       if(res.status === 200) {
         const data = toJS(res.data)
         this.packInfo = data

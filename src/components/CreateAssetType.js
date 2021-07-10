@@ -14,7 +14,7 @@ export default class CreateAssetType extends Component {
   async handleSubmitAssetType(event) {
     event.preventDefault()
     const packId = this.props.packId
-    const description = event.target.assetTypeDescription.value
+    const description = event.target.assetTypeDescription.value.trim()
 
     try {
       const res = await createAssetTypeAPICall(packId, description)
