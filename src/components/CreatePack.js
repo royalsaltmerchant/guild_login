@@ -1,10 +1,10 @@
 import React, { Component } from 'react'
 import {Spinner, Button, Form} from 'react-bootstrap'
-import {createProject as createProjectAPICall} from '../config/api'
+import {createPack as createPackAPICall} from '../config/api'
 import S3 from 'react-aws-s3'
 import {awsConfig} from '../config/config'
 
-export default class CreateProject extends Component {
+export default class CreatePack extends Component {
   constructor(props) {
     super(props)
 
@@ -16,7 +16,7 @@ export default class CreateProject extends Component {
   async uploadImageFile(imageFile) {
     const config = {
       bucketName: awsConfig.bucketName,
-      dirName: "project_images",
+      dirName: "pack_images",
       region: awsConfig.region,
       accessKeyId: awsConfig.accessKeyId,
       secretAccessKey: awsConfig.secretAccessKey
@@ -34,19 +34,21 @@ export default class CreateProject extends Component {
     }
   }
 
-  async handleSubmitProject(event) {
+  async handleSubmitPack(event) {
     event.preventDefault()
-    const title = event.target.projectTitle.value
-    const description = event.target.projectDescription.value
-    const image = event.target.projectImage.files[0].name
-    const imageFile = event.target.projectImage.files[0]
+    const title = event.target.packTitle.value.trim()
+    const description = event.target.packDescription.value.trim()
+    const image = event.target.packImage.files[0].name
+    const imageFile = event.target.packImage.files[0]
+    const video = event.target.packVideo.value.trim()
+    const coinCost = event.target.packCoinCost.value
     
     try {
-      const res = await createProjectAPICall(title, description, image)
+      const res = await createPackAPICall(title, description, image, video, coinCost)
       if(res.status === 201) {
         console.log(res)
-        this.props.getAndUpdateProjects()
-        this.props.createProjectBoolean(false)
+        this.props.getAndUpdatePacks()
+        this.props.createPackBoolean(false)
         this.uploadImageFile(imageFile)
       }
     } catch(err) {
@@ -58,18 +60,18 @@ export default class CreateProject extends Component {
     return (
       <div className="px-3">
         
-        <Form onSubmit={(event) => this.handleSubmitProject(event)}>
-          <Form.Group controlId="projectTitle">
+        <Form onSubmit={(event) => this.handleSubmitPack(event)}>
+          <Form.Group controlId="packTitle">
             <Form.Label>Title</Form.Label>
             <Form.Control 
               required
               size="md"
               type="text"
-              placeholder="Project Title"
+              placeholder="Pack Title"
             />
           </Form.Group>
 
-          <Form.Group controlId="projectImage">
+          <Form.Group controlId="packImage">
             <Form.Label>Image</Form.Label>
             <Form.Control 
               required
@@ -79,19 +81,40 @@ export default class CreateProject extends Component {
              />
           </Form.Group>
 
-          <Form.Group controlId="projectDescription">
+          <Form.Group controlId="packVideo">
+            <Form.Label>Video Embed Link</Form.Label>
+            <small class="ml-2" style={{color: 'red'}}>The embed url, not the regular url</small>
+            <Form.Control 
+              required
+              size="md"
+              type="text"
+              placeholder="Pack Video Link"
+            />
+          </Form.Group>
+
+          <Form.Group controlId="packDescription">
             <Form.Label>Description</Form.Label>
             <Form.Control 
               as="textarea"
               required
               size="md"
               type="text"
-              placeholder="Project Description"
+              placeholder="Pack Description"
+            />
+          </Form.Group>
+
+          <Form.Group controlId="packCoinCost">
+            <Form.Label>Coin Cost</Form.Label>
+            <Form.Control 
+              required
+              size="md"
+              type="number"
+              placeholder="Pack Coin Cost"
             />
           </Form.Group>
 
           <Button variant="outline-success" type="submit">
-            Create Project
+            Create Pack
           </Button>
         </Form>
       </div>

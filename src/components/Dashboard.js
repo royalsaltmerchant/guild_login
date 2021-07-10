@@ -119,7 +119,7 @@ class Dashboard extends Component {
           return(
             <div key={project.id} className="card-style border rounded p-3 m-3 w-75" style={{color: '#0066cc', backgroundColor: '#ebf0fa', fontFamily: 'Noto Sans'}}>
               <div className="d-flex flex-row align-items-baseline">
-                <Image className="small-img pr-3" src={`${config.image_URL}${project.image_file}`} rounded />
+                <Image className="small-img pr-3" src={`${config.projectImageURL}${project.image_file}`} rounded />
                 <h2><b>{project.title}</b></h2>
                 <p className="pl-3" style={{color: 'purple'}}>{project.complete ? 'Completed' : 'In-Progress'}</p>
               </div>
