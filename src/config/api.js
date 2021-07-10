@@ -52,6 +52,9 @@ const getUsers = async () => {
     const res = await axios({
       method: 'get',
       url: `${config.apiURL}/api/users`,
+      headers: {
+        "x-access-token": localStorage.getItem("token")
+      }
     })
     return res
   } catch(err) {
