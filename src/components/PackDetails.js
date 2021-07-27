@@ -102,10 +102,12 @@ class PackDetails extends Component {
   }
 
   renderAssetTypes(assetTypes) {
-    const assetTypesMap = assetTypes.map(assetType => (
+    if(assetTypes) {
+      const assetTypesMap = assetTypes.map(assetType => (
         <li key={assetType.id} className="px-3">{assetType.description}</li>
     ))
     return <ul>{assetTypesMap}</ul>
+    }
   }
 
   renderPackDetails() {
@@ -114,6 +116,7 @@ class PackDetails extends Component {
 
     if(hasPackInfo && !loadingPack) {
       const {packInfo} = this.props.packsStore
+      
       return(
         <div className="d-flex flex-row">
           <div className="d-flex flex-column">
