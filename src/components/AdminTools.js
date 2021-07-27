@@ -262,11 +262,12 @@ class AdminTools extends Component {
     event.preventDefault()
     const title = event.target.form[`pack${packId}Title`].value || event.target.form[`pack${packId}Title`].placeholder
     const description = event.target.form[`pack${packId}Description`].value || event.target.form[`pack${packId}Description`].placeholder
+    const video = event.target.form[`pack${packId}Video`].value.trim() || event.target.form[`pack${packId}Video`].placeholder
     const coinCost = event.target.form[`pack${packId}CoinCost`].value || event.target.form[`pack${packId}CoinCost`].placeholder
     const active = event.target.form[`pack${packId}Active`].checked
 
     try {
-      const res = await editPackAPICall(packId, title, description, coinCost, active)
+      const res = await editPackAPICall(packId, title, description, video, coinCost, active)
       if(res.status === 200) {
         this.setState({[packEditKey]: false})
         this.getAndUpdatePacks()
@@ -698,6 +699,16 @@ class AdminTools extends Component {
               size="md"
               type="text"
               placeholder={pack.description} />
+          </Form.Group>
+          <Form.Group controlId={`pack${pack.id}Video`}>
+            <Form.Label>Video Embed Link</Form.Label>
+            <small class="ml-2" style={{color: 'red'}}>The embed url, not the regular url</small>
+            <Form.Control 
+              required
+              size="md"
+              type="text"
+              placeholder={pack.video_file}
+            />
           </Form.Group>
           <Form.Group controlId={`pack${pack.id}CoinCost`}>
             <Form.Label>Coin Cost</Form.Label>
