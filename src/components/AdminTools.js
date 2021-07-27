@@ -19,6 +19,8 @@ import {
   deleteAssetType as deleteAssetTypeAPICall
 } from '../config/api'
 import {finalConfig as config} from '../config/config'
+import S3 from 'react-aws-s3'
+import {awsConfig} from '../config/config'
 
 class AdminTools extends Component {
   constructor(props) {
@@ -262,15 +264,20 @@ class AdminTools extends Component {
     event.preventDefault()
     const title = event.target.form[`pack${packId}Title`].value || event.target.form[`pack${packId}Title`].placeholder
     const description = event.target.form[`pack${packId}Description`].value || event.target.form[`pack${packId}Description`].placeholder
+    const image = event.target.form[`pack${packId}Image`].files[0] ? event.target.form[`pack${packId}Image`].files[0].name : event.target.form[`pack${packId}Image`].placeholder
+    const imageFile = event.target.form[`pack${packId}Image`].files[0]
     const video = event.target.form[`pack${packId}Video`].value.trim() || event.target.form[`pack${packId}Video`].placeholder
     const coinCost = event.target.form[`pack${packId}CoinCost`].value || event.target.form[`pack${packId}CoinCost`].placeholder
     const active = event.target.form[`pack${packId}Active`].checked
 
     try {
-      const res = await editPackAPICall(packId, title, description, video, coinCost, active)
+      const res = await editPackAPICall(packId, title, description, image, video, coinCost, active)
       if(res.status === 200) {
         this.setState({[packEditKey]: false})
         this.getAndUpdatePacks()
+        if(imageFile) {
+          this.uploadPackImageFile(imageFile)
+        }
       }
     } catch(err) {
       console.log(err)
@@ -700,6 +707,16 @@ class AdminTools extends Component {
               type="text"
               placeholder={pack.description} />
           </Form.Group>
+          <Form.Group controlId={`pack${pack.id}Image`}>
+            <Form.Label>Image</Form.Label>
+            <Form.Control 
+              required
+              size="md" 
+              type="file"
+              accept="image/*"
+              placeholder={pack.image_file}
+             />
+          </Form.Group>
           <Form.Group controlId={`pack${pack.id}Video`}>
             <Form.Label>Video Embed Link</Form.Label>
             <small class="ml-2" style={{color: 'red'}}>The embed url, not the regular url</small>
@@ -857,6 +874,27 @@ class AdminTools extends Component {
     }
     if(loadingUsers) {
       return <Spinner />
+    }
+  }
+
+  async uploadPackImageFile(imageFile) {
+    const config = {
+      bucketName: awsConfig.bucketName,
+      dirName: "pack_images",
+      region: awsConfig.region,
+      accessKeyId: awsConfig.accessKeyId,
+      secretAccessKey: awsConfig.secretAccessKey
+    }
+    const S3Client = new S3(config)
+
+    try {
+      const res = await S3Client.uploadFile(imageFile, imageFile.name)
+      console.log(res)
+      if(res.status === 204) {
+        console.log('succesful upload to aws')
+      }
+    } catch(err) {
+      console.log('failed to upload image to amazon',err)
     }
   }
 
