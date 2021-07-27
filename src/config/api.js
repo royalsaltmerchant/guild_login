@@ -154,7 +154,7 @@ const createProject = async (title, description, image) => {
   }
 }
 
-const editProject = async (projectId, title, description, active, complete) => {
+const editProject = async (projectId, title, description, image, active, complete) => {
   try {
     const res = await axios({
       method: 'post',
@@ -166,6 +166,7 @@ const editProject = async (projectId, title, description, active, complete) => {
         project_id: projectId,
         title: title,
         description: description,
+        image_file: image,
         active: active,
         complete: complete
 
@@ -404,7 +405,7 @@ const createPack = async (title, description, image, video, coinCost) => {
   }
 }
 
-const editPack = async (packId, title, description, coinCost, active) => {
+const editPack = async (packId, title, description, image, video, coinCost, active) => {
   try {
     const res = await axios({
       method: 'post',
@@ -416,6 +417,8 @@ const editPack = async (packId, title, description, coinCost, active) => {
         pack_id: packId,
         title: title,
         description: description,
+        image_file: image,
+        video_file: video,
         coin_cost: coinCost,
         active: active
       }
