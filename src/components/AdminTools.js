@@ -195,14 +195,19 @@ class AdminTools extends Component {
     event.preventDefault()
     const title = event.target.form[`project${projectId}Title`].value || event.target.form[`project${projectId}Title`].placeholder
     const description = event.target.form[`project${projectId}Description`].value || event.target.form[`project${projectId}Description`].placeholder
+    const image = event.target.form[`project${projectId}Image`].files[0] ? event.target.form[`project${projectId}Image`].files[0].name : event.target.form[`project${projectId}Image`].placeholder
+    const imageFile = event.target.form[`project${projectId}Image`].files[0]
     const active = event.target.form[`project${projectId}Active`].checked
     const complete = event.target.form[`project${projectId}Complete`].checked
 
     try {
-      const res = await editProjectAPICall(projectId, title, description, active, complete)
+      const res = await editProjectAPICall(projectId, title, description, image, active, complete)
       if(res.status === 200) {
         this.setState({[projectEditKey]: false})
         this.getAndUpdateProjects()
+        if(imageFile) {
+          this.uploadImageFile(imageFile, "project_images")
+        }
       }
     } catch(err) {
       console.log(err)
@@ -276,7 +281,7 @@ class AdminTools extends Component {
         this.setState({[packEditKey]: false})
         this.getAndUpdatePacks()
         if(imageFile) {
-          this.uploadPackImageFile(imageFile)
+          this.uploadImageFile(imageFile, "pack_images")
         }
       }
     } catch(err) {
@@ -555,6 +560,16 @@ class AdminTools extends Component {
               size="md"
               type="text"
               placeholder={project.description} />
+          </Form.Group>
+          <Form.Group controlId={`project${project.id}Image`}>
+            <Form.Label>Image</Form.Label>
+            <Form.Control 
+              required
+              size="md" 
+              type="file"
+              accept="image/*"
+              placeholder={project.image_file}
+             />
           </Form.Group>
           <Form.Group controlId={`project${project.id}Active`}>
             <Form.Label>Active</Form.Label>
@@ -877,10 +892,10 @@ class AdminTools extends Component {
     }
   }
 
-  async uploadPackImageFile(imageFile) {
+  async uploadImageFile(imageFile, dirName) {
     const config = {
       bucketName: awsConfig.bucketName,
-      dirName: "pack_images",
+      dirName: dirName,
       region: awsConfig.region,
       accessKeyId: awsConfig.accessKeyId,
       secretAccessKey: awsConfig.secretAccessKey
