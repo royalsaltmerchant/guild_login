@@ -49,6 +49,18 @@ class Account extends Component {
     }
   }
 
+  renderContributions(contributions) {
+    const contributionsMap = contributions.map(contribution => {
+      return(
+        <div className="px-3">
+          <p>Amount: {contribution.amount}</p>
+          <p>Status: {contribution.status}</p>
+        </div>
+      )
+    })
+    return contributionsMap
+  }
+
   renderLoadingOrAccount() {
     const {loading, authenticated, hasUserInfo} = this.state
     if(!loading && authenticated && hasUserInfo) {
@@ -63,6 +75,8 @@ class Account extends Component {
             <p>Eligible to access community files: {userInfo.eligible ? 'yes' : 'no'}</p>
             <p>Approved asset count: {userInfo.approved_asset_count}</p>
             <p>Coins: {userInfo.coins}</p>
+            <p>Contributions:</p>
+            {this.renderContributions(userInfo.contributions)}
           </div>
           <br />
           {userInfo.admin ? <AdminTools /> : null}
