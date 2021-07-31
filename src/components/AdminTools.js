@@ -176,7 +176,7 @@ class AdminTools extends Component {
       const res = await editProjectAPICall(projectId, title, description, image, active, complete)
       if(res.status === 200) {
         this.setState({[projectEditKey]: false})
-        this.getAndUpdateProjects()
+        this.props.getAndUpdateProjects()
         if(imageFile) {
           this.uploadImageFile(imageFile, "project_images")
         }
@@ -197,7 +197,7 @@ class AdminTools extends Component {
       const res = await editEntryAPICall(entryId, amount, title, description, complete)
       if(res.status === 200) {
         this.setState({[entryEditKey]: false})
-        this.getAndUpdateProjects()
+        this.props.getAndUpdateProjects()
       }
     } catch(err) {
       console.log(err)
@@ -213,7 +213,7 @@ class AdminTools extends Component {
       const res = await editContributionAPICall(contributionId, amount, status)
       if(res.status === 200) {
         this.setState({[contributionEditKey]: false})
-        this.getAndUpdateProjects()
+        this.props.getAndUpdateProjects()
       }
     } catch(err) {
       console.log(err)
@@ -280,7 +280,7 @@ class AdminTools extends Component {
     try {
       const res = await deleteProjectAPICall(projectId)
       if(res.status === 200) {
-        this.getAndUpdateProjects()
+        this.props.getAndUpdateProjects()
       }
     } catch(err) {
       console.log(err)
@@ -291,7 +291,7 @@ class AdminTools extends Component {
     try {
       const res = await deleteEntryAPICall(entryId)
       if(res.status === 200) {
-        this.getAndUpdateProjects()
+        this.props.getAndUpdateProjects()
       }
     } catch(err) {
       console.log(err)
@@ -302,7 +302,7 @@ class AdminTools extends Component {
     try {
       const res = await deleteContributionAPICall(contributionId)
       if(res.status === 200) {
-        this.getAndUpdateProjects()
+        this.props.getAndUpdateProjects()
       }
     } catch(err) {
       console.log(err)
@@ -511,7 +511,7 @@ class AdminTools extends Component {
           <Button className="px-3 py-3" variant="link" onClick={() => this.setState({createEntryBoolean: !this.state.createEntryBoolean})}>
             {this.state.createEntryBoolean ? '- Create New Entry' : '+ Create New Entry'}
           </Button>
-          {this.state.createEntryBoolean ? <CreateEntry projectId={project.id} getAndUpdateProjects={() => this.getAndUpdateProjects()} createEntryBoolean={value => this.setState({createEntryBoolean: value})}/> : null}
+          {this.state.createEntryBoolean ? <CreateEntry projectId={project.id} getAndUpdateProjects={() => this.props.getAndUpdateProjects()} createEntryBoolean={value => this.setState({createEntryBoolean: value})}/> : null}
         </div>
       )
     }
@@ -893,7 +893,7 @@ class AdminTools extends Component {
           <Button className="px-3 py-1" variant="link" onClick={() => this.setState({createProjectBoolean: !this.state.createProjectBoolean})}>
             {this.state.createProjectBoolean ? '- Create New Project' : '+ Create New Project'}
           </Button>
-          {this.state.createProjectBoolean ? <CreateProject getAndUpdateProjects={() => this.getAndUpdateProjects()} createProjectBoolean={value => this.setState({createProjectBoolean: value})}/> : null}
+          {this.state.createProjectBoolean ? <CreateProject getAndUpdateProjects={() => this.props.getAndUpdateProjects()} createProjectBoolean={value => this.setState({createProjectBoolean: value})}/> : null}
           <Button className="px-3 py-1" variant="link" onClick={() => this.setState({createPackBoolean: !this.state.createPackBoolean})}>
             {this.state.createPackBoolean ? '- Create New Pack' : '+ Create New Pack'}
           </Button>

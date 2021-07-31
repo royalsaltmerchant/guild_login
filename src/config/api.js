@@ -334,6 +334,25 @@ const deleteContribution = async (contributionId) => {
   }
 }
 
+const createContributedAsset = async (contributionId, name) => {
+  try {
+    const res = await axios({
+      method: 'post',
+      url: `${config.apiURL}/api/add_contributed_asset`,
+      headers: {
+        "x-access-token": localStorage.getItem("token")
+      },
+      data: {
+        contribution_id: contributionId,
+        name: name
+      }
+    })
+    return res
+  } catch(err) {
+    throw(err)
+  }
+}
+
 const getPresignedURL = async (bucketName, objectName) => {
   try {
     const res = await axios({
@@ -522,6 +541,7 @@ export {
   createContribution,
   editContribution,
   deleteContribution,
+  createContributedAsset,
   getPresignedURL,
   getPacks,
   getPack,

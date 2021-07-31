@@ -77,6 +77,17 @@ class Account extends Component {
     }
   }
 
+  renderContributedAssets(contributedAssets) {
+    const contributedAssetMap = contributedAssets.map(asset => {
+      return(
+        <div className="px-3">
+          <p>{asset.name}</p>
+        </div>
+      )
+    })
+    return contributedAssetMap
+  }
+
   renderContributions(contributions) {
     const {hasProjects, loadingProjects} = this.state
     if(hasProjects && !loadingProjects) {
@@ -95,6 +106,8 @@ class Account extends Component {
                   <p>Entry: {entry.title}</p>
                   <p>Amount: {contribution.amount}</p>
                   <p>Status: {contribution.status}</p>
+                  <p>Assets:</p>
+                  {this.renderContributedAssets(contribution.contributed_assets)}
                 </div>
                 <br />
               </div>
@@ -136,7 +149,7 @@ class Account extends Component {
             {this.renderContributions(userInfo.contributions)}
           </div>
           <br />
-          {userInfo.admin ? <AdminTools hasProjects={this.state.hasProjects} loadingProjects={this.state.loadingProjects}/> : null}
+          {userInfo.admin ? <AdminTools hasProjects={this.state.hasProjects} loadingProjects={this.state.loadingProjects} getAndUpdateProjects={() => this.getAndUpdateProjects()}/> : null}
         </div>
       )
     }
