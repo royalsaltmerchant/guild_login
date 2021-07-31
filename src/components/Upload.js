@@ -3,8 +3,11 @@ import { Form, Button, Spinner, Alert } from 'react-bootstrap'
 import {inject, observer} from 'mobx-react'
 import {awsConfig} from '../config/config'
 import S3 from 'react-aws-s3'
-import {withRouter} from 'react-router-dom'
-import {createContribution as createContributionAPICall} from '../config/api'
+import {withRouter, Prompt} from 'react-router-dom'
+import {
+  createContribution as createContributionAPICall,
+  createContributedAsset as createContributedAssetAPICall
+} from '../config/api'
 
 class Upload extends Component {
   constructor(props) {
@@ -18,7 +21,8 @@ class Upload extends Component {
       loading: true,
       alert: false,
       alertType: 'warning',
-      alertText: 'Something went wrong, please try again.'
+      alertText: 'Something went wrong, please try again.',
+      complete: false
     }
   }
 
@@ -28,6 +32,12 @@ class Upload extends Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
+    if(this.state.successList.length !== 0 && !this.state.complete) {
+      window.onbeforeunload = () => true
+    } else {
+      window.onbeforeunload = undefined
+    }
+
     if(prevState.hasEntry !== this.state.hasEntry) {
       this.getAndUpdateProject()
     }
@@ -111,20 +121,47 @@ class Upload extends Component {
   }
 
   async handleComplete() {
+    
+    const {successList} = this.state
+    const contributionSuccess = await this.handleContributionCall()
+    if(contributionSuccess) {
+      const contributionId = contributionSuccess.data.id
+      await Promise.all(
+        successList.map(async asset => {
+          try {
+            const assetRes = await createContributedAssetAPICall(contributionId, asset)
+          } catch(err) {
+            console.log(err)
+          }
+        })
+        )
+        this.setState({complete: true}, () => {
+          this.props.history.push('/dashboard')
+          this.props.history.go()
+        })
+    }
+  }
+  
+  async handleContributionCall() {
     const {successList} = this.state
     const {entryInfo} = this.props.entryStore
     const amount = successList.length
 
     try {
       const res = await createContributionAPICall(entryInfo.id, entryInfo.project_id, amount)
-      this.props.history.push('/dashboard')
-      this.props.history.go()
+      if(res.status === 201) {
+        return res
+      }
+      else {
+        return false
+      }
     } catch(err) {
       this.setState({
         alert: true,
         alertText: "Something went wrong, please try again.",
         alertType: "danger"
       })
+      return false
     }
   }
 
@@ -195,12 +232,16 @@ class Upload extends Component {
   }
 
   renderUploaderOrLoading() {
-    const {hasEntry, hasProject, hasUser, loading} = this.state
+    const {hasEntry, hasProject, hasUser, loading, successList, complete} = this.state
     const {entryInfo} = this.props.entryStore
 
     if(hasEntry && hasProject && hasUser && !loading) {
       return(
         <div>
+          <Prompt
+            when={successList.length != 0 && !complete}
+            message="If you leave without pressing Complete your contribution will be lost! Are you sure you want to navigate away?"
+          />
           <h2 className="text-center">{entryInfo.title}</h2>
           <p className="text-center">{entryInfo.description}</p>
           {this.renderAlert()}
