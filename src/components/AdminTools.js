@@ -30,17 +30,14 @@ class AdminTools extends Component {
       createEntryBoolean: false,
       createPackBoolean: false,
       createAssetTypeBoolean: false,
-      loadingProjects: true,
       loadingUsers: true,
       loadingPacks: true,
-      hasProjects: false,
       hasUsersList: false,
       hasPacks: false,
     }
   }
   
   componentDidMount() {
-    this.getAndUpdateProjects()
     this.getAndUpdateUsersList()
     this.getAndUpdatePacks()
   }
@@ -90,31 +87,6 @@ class AdminTools extends Component {
         this.setState({
           hasUsersList: false,
           loadingUsers: false
-        })
-      }
-    })
-  }
-  
-  async getAndUpdateProjects() {
-    this.setState({loadingProjects: true}, async () => {
-      try {
-        const res = await this.props.projectsStore.getProjects()
-        if(res.status === 200) {
-          this.setState({
-            hasProjects: true,
-            loadingProjects: false
-          })
-        } else {
-          this.setState({
-            hasProjects: false,
-            loadingProjects: false
-          })
-        }
-      } catch(err) {
-        console.log(err)
-        this.setState({
-          hasProjects: false,
-          loadingProjects: false
         })
       }
     })
@@ -607,7 +579,7 @@ class AdminTools extends Component {
 
   renderProjects() {
     const {projects} = this.props.projectsStore
-    const {hasProjects, loadingProjects} = this.state
+    const {hasProjects, loadingProjects} = this.props
     if(hasProjects && !loadingProjects) {
       const projectMap = projects.map(project => {
         const projectToggleKey = `project${project.id}Toggle`

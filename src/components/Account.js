@@ -9,13 +9,16 @@ class Account extends Component {
     super(props)
     this.state = {
       authenticated: false,
-      loading: true,
+      loadingAuth: true,
       hasUserInfo: false,
+      hasProjects: false,
+      loadingProjects: true
     }
   }
 
   componentDidMount() {
     this.authenticate()
+    this.getAndUpdateProjects()
   }
 
   async componentDidUpdate() {
@@ -32,38 +35,92 @@ class Account extends Component {
     }
   }
 
+  async getAndUpdateProjects() {
+    this.setState({loadingProjects: true}, async () => {
+      try {
+        const res = await this.props.projectsStore.getProjects()
+        if(res.status === 200) {
+          this.setState({
+            hasProjects: true,
+            loadingProjects: false
+          })
+        } else {
+          this.setState({
+            hasProjects: false,
+            loadingProjects: false
+          })
+        }
+      } catch(err) {
+        console.log(err)
+        this.setState({
+          hasProjects: false,
+          loadingProjects: false
+        })
+      }
+    })
+  }
+
   async authenticate() {
     try {
       const res = await authenticateAPICall()
       if(res.status === 200) {
         this.setState({
           authenticated: true,
-          loading: false
+          loadingAuth: false
         })
       }
     } catch(err) {
       console.log(err)
       this.setState({
-        loading: false
+        loadingAuth: false
       })
     }
   }
 
   renderContributions(contributions) {
-    const contributionsMap = contributions.map(contribution => {
-      return(
-        <div className="px-3">
-          <p>Amount: {contribution.amount}</p>
-          <p>Status: {contribution.status}</p>
-        </div>
-      )
-    })
-    return contributionsMap
+    const {hasProjects, loadingProjects} = this.state
+    if(hasProjects && !loadingProjects) {
+      const {projects} = this.props.projectsStore
+      const contributionsMap = contributions.map(contribution => {
+        const contributionProject = projects.filter(project => project.id === contribution.project_id)
+        if(contributionProject.length !== 0) {
+          const project = contributionProject[0]
+          const contributionProjectEntry = project.entries.filter(entry => entry.id === contribution.entry_id)
+          if(contributionProjectEntry.length !== 0) {
+            const entry = contributionProjectEntry[0]
+            return(
+              <div>
+                <div className="px-3">
+                  <p>Project: {project.title}</p>
+                  <p>Entry: {entry.title}</p>
+                  <p>Amount: {contribution.amount}</p>
+                  <p>Status: {contribution.status}</p>
+                </div>
+                <br />
+              </div>
+            )
+          } else {
+            <p>Can't get contribution info...</p>
+          }
+        } else {
+          return <p>Can't get contribution info...</p>
+        }
+      })
+      return contributionsMap
+    }
+    if(!hasProjects && !loadingProjects) {
+      return <p>Can't get contribution info...</p>
+    }
+    if(loadingProjects) {
+      return <Spinner animation="border" role="status">
+        <span className="sr-only">Loading...</span>
+        </Spinner>
+    }
   }
 
   renderLoadingOrAccount() {
-    const {loading, authenticated, hasUserInfo} = this.state
-    if(!loading && authenticated && hasUserInfo) {
+    const {loadingAuth, authenticated, hasUserInfo} = this.state
+    if(!loadingAuth && authenticated && hasUserInfo) {
       const {userInfo} = this.props.userStore
       return(
         <div className="d-flex flex-column justify-content-start align-items-start p-3 rounded" style={{width: '75vw', backgroundColor: '#fff'}}>
@@ -79,11 +136,11 @@ class Account extends Component {
             {this.renderContributions(userInfo.contributions)}
           </div>
           <br />
-          {userInfo.admin ? <AdminTools /> : null}
+          {userInfo.admin ? <AdminTools hasProjects={this.state.hasProjects} loadingProjects={this.state.loadingProjects}/> : null}
         </div>
       )
     }
-    if(loading) {
+    if(loadingAuth) {
       return(
         <div className="d-flex justify-content-center align-items-center" style={{width: '75vw', backgroundColor: '#fff'}}>
           <Spinner animation="border" role="status">
@@ -92,7 +149,7 @@ class Account extends Component {
         </div>
       )
     }
-    if(!loading && !authenticated) {
+    if(!loadingAuth && !authenticated) {
       return(
         <div className="d-flex justify-content-center align-items-center" style={{width: '75vw', backgroundColor: '#fff'}}>
           <p>Can't find user data...</p>
@@ -111,4 +168,4 @@ class Account extends Component {
   }
 }
 
-export default inject('userStore')(observer(Account));
+export default inject('userStore', 'projectsStore')(observer(Account));
