@@ -12,7 +12,8 @@ class Account extends Component {
       loadingAuth: true,
       hasUserInfo: false,
       hasProjects: false,
-      loadingProjects: true
+      loadingProjects: true,
+      contributionsToggle: false
     }
   }
 
@@ -77,6 +78,14 @@ class Account extends Component {
     }
   }
 
+  handleContributionsClick() {
+    this.setState({contributionsToggle: !this.state.contributionsToggle})
+  }
+
+  handleContributedAssetsClick(contributedAssetsToggleKey) {
+    this.setState({[contributedAssetsToggleKey]: !this.state[contributedAssetsToggleKey]})
+  }
+
   renderContributedAssets(contributedAssets) {
     const contributedAssetMap = contributedAssets.map(asset => {
       return(
@@ -99,15 +108,18 @@ class Account extends Component {
           const contributionProjectEntry = project.entries.filter(entry => entry.id === contribution.entry_id)
           if(contributionProjectEntry.length !== 0) {
             const entry = contributionProjectEntry[0]
+            const contributedAssetsToggleKey = `contributedAsset${contribution.id}Toggle`
             return(
               <div>
-                <div className="px-3">
+                <div className="p-3 border rounded">
                   <p>Project: {project.title}</p>
                   <p>Entry: {entry.title}</p>
                   <p>Amount: {contribution.amount}</p>
                   <p>Status: {contribution.status}</p>
-                  <p>Assets:</p>
-                  {this.renderContributedAssets(contribution.contributed_assets)}
+                  <Button variant="link" onClick={() => this.handleContributedAssetsClick(contributedAssetsToggleKey)}>
+                    Assets: {this.state[contributedAssetsToggleKey] ? "▼" : "▲"}
+                  </Button>
+                  {this.state[contributedAssetsToggleKey] ? this.renderContributedAssets(contribution.contributed_assets) : null}
                 </div>
                 <br />
               </div>
@@ -145,8 +157,10 @@ class Account extends Component {
             <p>Eligible to access community files: {userInfo.eligible ? 'yes' : 'no'}</p>
             <p>Approved asset count: {userInfo.approved_asset_count}</p>
             <p>Coins: {userInfo.coins}</p>
-            <p>Contributions:</p>
-            {this.renderContributions(userInfo.contributions)}
+            <Button variant="link" onClick={() => this.handleContributionsClick()}>
+              Contributions: {this.state.contributionsToggle ? "▼" : "▲"}
+            </Button>
+            {this.state.contributionsToggle ? this.renderContributions(userInfo.contributions) : null}
           </div>
           <br />
           {userInfo.admin ? <AdminTools hasProjects={this.state.hasProjects} loadingProjects={this.state.loadingProjects} getAndUpdateProjects={() => this.getAndUpdateProjects()}/> : null}
