@@ -4,7 +4,11 @@ import { Image, Button, Spinner } from 'react-bootstrap'
 import {finalConfig as config, awsConfig} from '../config/config'
 import {getPresignedURL as getPresignedURLAPICall} from '../config/api'
 import {inject, observer} from 'mobx-react'
-import {authenticate as authenticateAPICall} from '../config/api'
+import {
+  authenticate as authenticateAPICall,
+  editUser as editUserAPICall,
+  editPack as editPackAPICall
+} from '../config/api'
 
 class PackDetails extends Component {
   constructor(props) {
@@ -83,6 +87,22 @@ class PackDetails extends Component {
     })
   }
 
+  async handleDownloadClick(packInfo) {
+    const {userInfo} = this.props.userStore
+    const downloadSuccess = await this.handleDownload()
+    const newCoinsAmount = userInfo.coins - packInfo.coin_cost
+    const newDownloadsAmount = packInfo.downloads + 1
+
+    if(downloadSuccess) {
+      try {
+        const userRes = await editUserAPICall(userInfo.id, userInfo.approvedAssetCount, newCoinsAmount, userInfo.eligible)
+        const packRes = await editPackAPICall(packInfo.id, packInfo.title, packInfo.description, packInfo.image, packInfo.video, packInfo.coinCost, packInfo.active, newDownloadsAmount)
+      } catch(err) {
+        console.log(err)
+      }
+    }
+  }
+
   async handleDownload() {
     const {packName} = this.props.match.params
     const bucketName = awsConfig.bucketName
@@ -95,9 +115,11 @@ class PackDetails extends Component {
         this.setState({
           uri: downloadLink
         }, () => this.downloadButtonRef.current.click())
+        return true
       }
     } catch(err) {
       alert('Something went wrong, please try again.')
+      return false
     }
   }
 
@@ -134,8 +156,13 @@ class PackDetails extends Component {
             <div className="my-5 d-flex flex-column justify-content-center align-items-center">
               {/* <Button as={'a'} href={`${config.s3_base_URL}packs/${packName}`} download>Download</Button> */}
               {this.state.hasUserInfo ? 
-                <div>
-                  <Button disabled={!this.props.userStore.userInfo.eligible} ref={this.downloadButtonRef} onClick={() => this.handleDownload()}>Download</Button>
+                <div className="d-flex flex-column justify-content-center align-items-center">
+                  <h3>Cost:</h3>
+                  <h4>{packInfo.coin_cost} Coins</h4>
+                  <br />
+                  <Button disabled={this.props.userStore.userInfo.coins < packInfo.coin_cost} ref={this.downloadButtonRef} onClick={() => this.handleDownloadClick(packInfo)}>Download</Button>
+                  <br />
+                  <small style={{color: 'red'}}>*{packInfo.coin_cost} coins will be deducted from your account</small>
                   <a ref={this.downloadButtonRef} href={this.state.uri} />
                 </div>: <Spinner />}
             </div>

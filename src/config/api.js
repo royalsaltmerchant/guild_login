@@ -424,7 +424,7 @@ const createPack = async (title, description, image, video, coinCost) => {
   }
 }
 
-const editPack = async (packId, title, description, image, video, coinCost, active) => {
+const editPack = async (packId, title, description, image, video, coinCost, active, downloads) => {
   try {
     const res = await axios({
       method: 'post',
@@ -439,7 +439,8 @@ const editPack = async (packId, title, description, image, video, coinCost, acti
         image_file: image,
         video_file: video,
         coin_cost: coinCost,
-        active: active
+        active: active,
+        downloads: downloads
       }
     })
     return res
