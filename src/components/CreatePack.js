@@ -13,10 +13,10 @@ export default class CreatePack extends Component {
     }
   }
 
-  async uploadImageFile(imageFile) {
+  async uploadFile(file, fileDir, fileName) {
     const config = {
       bucketName: awsConfig.bucketName,
-      dirName: "pack_images",
+      dirName: fileDir,
       region: awsConfig.region,
       accessKeyId: awsConfig.accessKeyId,
       secretAccessKey: awsConfig.secretAccessKey
@@ -24,13 +24,13 @@ export default class CreatePack extends Component {
     const S3Client = new S3(config)
 
     try {
-      const res = await S3Client.uploadFile(imageFile, imageFile.name)
+      const res = await S3Client.uploadFile(file, fileName)
       console.log(res)
       if(res.status === 204) {
         console.log('succesful upload to aws')
       }
     } catch(err) {
-      console.log('failed to upload image to amazon',err)
+      console.log('failed to upload image to amazon', err)
     }
   }
 
@@ -42,6 +42,9 @@ export default class CreatePack extends Component {
     const imageFile = event.target.packImage.files[0]
     const video = event.target.packVideo.value.trim()
     const coinCost = event.target.packCoinCost.value
+    const audioFile = event.target.packAudio.files[0]
+
+    const editedPackTitle = title.replaceAll(' ', '-').toLowerCase()
     
     try {
       const res = await createPackAPICall(title, description, image, video, coinCost)
@@ -49,7 +52,8 @@ export default class CreatePack extends Component {
         console.log(res)
         this.props.getAndUpdatePacks()
         this.props.createPackBoolean(false)
-        this.uploadImageFile(imageFile)
+        this.uploadFile(imageFile, "pack_images", imageFile.name)
+        this.uploadFile(audioFile, `packs/${editedPackTitle}`, editedPackTitle)
       }
     } catch(err) {
       console.log(err)
@@ -112,6 +116,17 @@ export default class CreatePack extends Component {
               type="number"
               placeholder="Pack Coin Cost"
             />
+          </Form.Group>
+
+          <Form.Group controlId="packAudio">
+            <Form.Label>Audio Package</Form.Label>
+            <small class="ml-2" style={{color: 'red'}}>Must be a zipped folder!</small>
+            <Form.Control 
+              required
+              size="md" 
+              type="file"
+              accept=".zip"
+             />
           </Form.Group>
 
           <Button variant="outline-success" type="submit">
