@@ -237,7 +237,7 @@ class AdminTools extends Component {
     }
   }
 
-  async handleEditPackSave(event, packId, packEditKey) {
+  async handleEditPackSave(event, packId, packEditKey, downloads) {
     event.preventDefault()
     const title = event.target.form[`pack${packId}Title`].value || event.target.form[`pack${packId}Title`].placeholder
     const description = event.target.form[`pack${packId}Description`].value || event.target.form[`pack${packId}Description`].placeholder
@@ -248,7 +248,7 @@ class AdminTools extends Component {
     const active = event.target.form[`pack${packId}Active`].checked
 
     try {
-      const res = await editPackAPICall(packId, title, description, image, video, coinCost, active)
+      const res = await editPackAPICall(packId, title, description, image, video, coinCost, active, downloads)
       if(res.status === 200) {
         this.setState({[packEditKey]: false})
         this.getAndUpdatePacks()
@@ -667,6 +667,7 @@ class AdminTools extends Component {
           <iframe class="video-sm" src={pack.video_file} frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
           <p>Coin Cost: {pack.coin_cost}</p>
           <p>Active: {pack.active ? 'true' : 'false'}</p>
+          <p>Downloads: {pack.downloads}</p>
           <p>Asset Types:</p>
           {this.renderPackAssetTypes(pack.asset_types)}
           <Button className="px-3 py-3" variant="link" onClick={() => this.setState({createAssetTypeBoolean: !this.state.createAssetTypeBoolean})}>
@@ -731,7 +732,7 @@ class AdminTools extends Component {
             />
           </Form.Group>
           <div className="d-flex justify-content-around">
-            <Button variant="outline-success" onClick={(event) => this.handleEditPackSave(event, pack.id, packEditKey)}>
+            <Button variant="outline-success" onClick={(event) => this.handleEditPackSave(event, pack.id, packEditKey, pack.downloads)}>
               Save
             </Button>
             <Button variant="outline-secondary" onClick={() => this.setState({[packEditKey]: false})}>

@@ -6,7 +6,8 @@ import {getPresignedURL as getPresignedURLAPICall} from '../config/api'
 import {inject, observer} from 'mobx-react'
 import {
   authenticate as authenticateAPICall,
-  editUser as editUserAPICall
+  editUser as editUserAPICall,
+  editPack as editPackAPICall
 } from '../config/api'
 
 class PackDetails extends Component {
@@ -86,14 +87,16 @@ class PackDetails extends Component {
     })
   }
 
-  async handleDownloadClick(coinCost) {
+  async handleDownloadClick(packInfo) {
     const {userInfo} = this.props.userStore
     const downloadSuccess = await this.handleDownload()
-    const newCoinsAmount = userInfo.coins - coinCost
+    const newCoinsAmount = userInfo.coins - packInfo.coin_cost
+    const newDownloadsAmount = packInfo.downloads + 1
 
     if(downloadSuccess) {
       try {
-        const res = await editUserAPICall(userInfo.id, userInfo.approvedAssetCount, newCoinsAmount, userInfo.eligible)
+        const userRes = await editUserAPICall(userInfo.id, userInfo.approvedAssetCount, newCoinsAmount, userInfo.eligible)
+        const packRes = await editPackAPICall(packInfo.id, packInfo.title, packInfo.description, packInfo.image, packInfo.video, packInfo.coinCost, packInfo.active, newDownloadsAmount)
       } catch(err) {
         console.log(err)
       }
@@ -157,7 +160,7 @@ class PackDetails extends Component {
                   <h3>Cost:</h3>
                   <h4>{packInfo.coin_cost} Coins</h4>
                   <br />
-                  <Button disabled={this.props.userStore.userInfo.coins < packInfo.coin_cost} ref={this.downloadButtonRef} onClick={() => this.handleDownloadClick(packInfo.coin_cost)}>Download</Button>
+                  <Button disabled={this.props.userStore.userInfo.coins < packInfo.coin_cost} ref={this.downloadButtonRef} onClick={() => this.handleDownloadClick(packInfo)}>Download</Button>
                   <br />
                   <small style={{color: 'red'}}>*{packInfo.coin_cost} coins will be deducted from your account</small>
                   <a ref={this.downloadButtonRef} href={this.state.uri} />
