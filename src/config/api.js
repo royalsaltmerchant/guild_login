@@ -93,7 +93,7 @@ const editUser= async (userId, approvedAssetCount, coins, eligible) => {
       },
       data: {
         user_id: userId,
-        approvedAssetCount: approvedAssetCount,
+        approved_asset_count: approvedAssetCount,
         coins: coins,
         eligible: eligible,
       }
