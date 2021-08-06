@@ -36,8 +36,8 @@ export default class NavBar extends Component {
     return(
       <div className="d-flex flex-column align-items-center justify-content-center">
         <div className="w-75 d-flex justify-content-around">
-          <Link to="/account">Account</Link>
-          <Link to="/dashboard">Dashboard</Link>
+          {this.state.authorized ? <Link to="/account">Account</Link> : null}
+          {this.state.authorized ? <Link to="/dashboard">Dashboard</Link> : null}
           <Link to="/library">Library</Link>
           {this.state.authorized ? <Link to="/logout">Logout</Link> : <Link to="/login">Login</Link>}
         </div>
