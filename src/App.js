@@ -4,7 +4,8 @@ import {
   BrowserRouter as Router,
   Switch,
   Route,
-  Link
+  Link,
+  Redirect
 } from "react-router-dom";
 import {Provider as MobxStoreProvider} from 'mobx-react';
 import mobxStoresToInject from './mobx'
@@ -32,6 +33,9 @@ function Root() {
       <NavBar />
       <div className="d-flex justify-content-center p-3 rounded border border-light" style={{backgroundColor: '#f6f6f6'}}>
         <Switch>
+        <Route exact path="/">
+            <Redirect to="/login" />
+          </Route>
         <Route path="/register">
             <Register />
           </Route>
