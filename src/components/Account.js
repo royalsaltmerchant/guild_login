@@ -101,7 +101,8 @@ class Account extends Component {
     const {hasProjects, loadingProjects} = this.state
     if(hasProjects && !loadingProjects) {
       const {projects} = this.props.projectsStore
-      const contributionsMap = contributions.map(contribution => {
+      const contributionsReverse = contributions.slice().reverse()
+      const contributionsMap = contributionsReverse.map(contribution => {
         const contributionProject = projects.filter(project => project.id === contribution.project_id)
         if(contributionProject.length !== 0) {
           const project = contributionProject[0]
@@ -109,9 +110,11 @@ class Account extends Component {
           if(contributionProjectEntry.length !== 0) {
             const entry = contributionProjectEntry[0]
             const contributedAssetsToggleKey = `contributedAsset${contribution.id}Toggle`
+            console.log(contributions)
             return(
               <div>
                 <div className="p-3 border rounded">
+                  <p>{contribution.date_created}</p>
                   <p>Project: {project.title}</p>
                   <p>Entry: {entry.title}</p>
                   <p>Amount: {contribution.amount}</p>
