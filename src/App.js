@@ -39,7 +39,7 @@ class Root extends React.Component{
     }
   }
 
-  async componentDidMount() {
+  async authorization(){
     const token = localStorage.getItem('token')
     if(token) {
       try {
@@ -57,6 +57,11 @@ class Root extends React.Component{
         authorized: false
       })
     }
+  }
+
+  async componentDidMount() {
+    try{const authorize = await this.authorization()}
+    catch(err){console.log(err)}
   } 
 
   render(){
