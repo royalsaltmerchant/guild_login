@@ -60,8 +60,7 @@ class Root extends React.Component{
   }
 
   async componentDidMount() {
-    try{const authorize = await this.authorization()}
-    catch(err){console.log(err)}
+    const authorize = await this.authorization()
   } 
 
   render(){
