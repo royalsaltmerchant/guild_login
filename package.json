@@ -11,6 +11,7 @@
     "bootstrap": "^4.6.0",
     "mobx": "^6.3.2",
     "mobx-react": "^7.2.0",
+    "moment": "^2.29.1",
     "react": "^17.0.2",
     "react-aws-s3": "^1.5.0",
     "react-bootstrap": "^1.6.1",

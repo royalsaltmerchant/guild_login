@@ -5,7 +5,7 @@ import {
   Switch,
   Route,
   Link,
-  Redirect,
+  Redirect
 } from "react-router-dom";
 import {Provider as MobxStoreProvider} from 'mobx-react';
 import mobxStoresToInject from './mobx'
