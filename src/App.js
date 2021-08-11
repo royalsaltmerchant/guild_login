@@ -63,7 +63,7 @@ class Root extends React.Component{
     const {authenticated} = this.state
     return <Container fluid className="App">
       <Header />
-      <NavBar authenticated={this.state.authenticated} />
+      <NavBar authenticated={authenticated} />
       <div className="d-flex justify-content-center p-3 rounded border border-light" style={{backgroundColor: '#f6f6f6'}}>
         <Switch>
           <Route exact path="/">
@@ -88,10 +88,10 @@ class Root extends React.Component{
             <Account />
           </Route>
           <Route path="/Dashboard">
-            {this.state.authenticated? <Dashboard /> : <AccessDenied />}
+            {authenticated ? <Dashboard /> : <AccessDenied />}
           </Route>
           <Route path="/Upload/entry/:entryId">
-            {this.state.authenticated? <Upload /> : <AccessDenied />}
+            {authenticated ? <Upload /> : <AccessDenied />}
           </Route>
           <Route render={() => <NoMatch />}/>
         </Switch>
