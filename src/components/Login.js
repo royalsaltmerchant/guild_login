@@ -2,16 +2,39 @@ import React, { Component } from 'react'
 import {Form, Button, Alert} from 'react-bootstrap'
 import {login as loginAPICall} from '../config/api'
 import {withRouter, Link} from 'react-router-dom';
+import {authenticate as authenticateAPICall} from '../config/api'
+import { Spinner } from 'react-bootstrap';
 
 class Login extends Component {
   constructor(props) {
     super(props)
     this.state = {
+      authenticated: false,
+      loadingAuth: true,
       alert: false,
       alertType: 'warning',
       alertText: 'Something went wrong, please try again.'
     }
   }
+
+  async authenticate() {
+    try {
+      const res = await authenticateAPICall()
+      if(res.status === 200) {
+        this.setState({
+          authenticated: true,
+          loadingAuth: false
+        })
+      }
+    } catch(err) {
+      console.log(err)
+      this.setState({
+        loadingAuth: false
+      })
+    }
+  }
+
+  componentDidMount(){this.authenticate()}
 
   componentDidUpdate() {
     if(this.state.alert) {
@@ -63,12 +86,27 @@ class Login extends Component {
     }
   }
 
-  render() {
-    return (
-      <div className="w-50">
+  renderLogin(){
+    if(this.state.loadingAuth){
+      return(
+        <div>
         {this.renderAlert()}
-        <h2 className="text-center">Login</h2>
-        <Form onSubmit={(event) => this.handleSubmit(event)}>
+        <h2 className="pb-3 text-center">Login</h2>
+        <div className="d-flex justify-content-center align-items-center" style={{width: '75vw', backgroundColor: '#fff'}}>
+          <Spinner animation="border" role="status">
+            <span className="sr-only">Loading...</span>
+          </Spinner>
+        </div>
+        </div>
+      )
+    } else {
+      if(!this.state.authenticated){
+        return(
+        <div className="w-50">
+          {this.renderAlert()}
+          <h2 className="pb-3 text-center">Login</h2>
+          <div>
+            <Form onSubmit={(event) => this.handleSubmit(event)}>
           <Form.Group controlId="username_or_email">
             <Form.Label>Username or Email</Form.Label>
             <Form.Control 
@@ -95,8 +133,24 @@ class Login extends Component {
           <small>Need an Account?</small>
           <Link to="/register">Join Us!</Link>
         </div>
-      </div>
-    )
+          </div>
+        </div>
+        )
+      }
+      else {
+        return(
+          <div>
+            {this.renderAlert()}
+            <h2 className="pb-3 text-center">Login</h2>
+            <p className="text-center"> already logged in</p>
+          </div>
+        )
+      }
+    }
+  }
+
+  render() {
+    return this.renderLogin()
   }
 }
 
