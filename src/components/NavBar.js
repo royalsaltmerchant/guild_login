@@ -6,13 +6,14 @@ import {
 export default class NavBar extends Component {
 
   render() {
+    const {authenticated} = this.props
     return(
       <div className="d-flex flex-column align-items-center justify-content-center">
         <div className="w-75 d-flex justify-content-around">
-          {this.props.authorized && <Link to="/account">Account</Link>}
-          {this.props.authorized && <Link to="/dashboard">Dashboard</Link>}
+          {authenticated && <Link to="/account">Account</Link>}
+          {authenticated && <Link to="/dashboard">Dashboard</Link>}
           <Link to="/library">Library</Link>
-          {this.props.authorized ? <Link to="/logout">Logout</Link> : <Link to="/login">Login</Link>}
+          {authenticated ? <Link to="/logout">Logout</Link> : <Link to="/login">Login</Link>}
         </div>
         <hr style={{width: '75%'}}/>
       </div>

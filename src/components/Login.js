@@ -87,7 +87,8 @@ class Login extends Component {
   }
 
   renderLogin(){
-    if(this.state.loadingAuth){
+    const {authenticated, loadingAuth} = this.state
+    if(loadingAuth){
       return(
         <div>
         {this.renderAlert()}
@@ -100,7 +101,7 @@ class Login extends Component {
         </div>
       )
     } else {
-      if(!this.state.authenticated){
+      if(!authenticated){
         return(
         <div className="w-50">
           {this.renderAlert()}
