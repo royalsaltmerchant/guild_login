@@ -35,38 +35,35 @@ class Root extends React.Component{
   constructor(props) {
     super(props)
     this.state = {
-      authorized: false
+      authenticated: false,
+      loadingAuth: true
     }
   }
 
-  async authorization(){
-    const token = localStorage.getItem('token')
-    if(token) {
-      try {
-        const res = await authenticateAPICall()
-        if(res.status === 200) {
-          this.setState({
-            authorized: true
-          })
-        }
-      } catch(err) {
-        console.log(err)
+  async authenticate() {
+    try {
+      const res = await authenticateAPICall()
+      if(res.status === 200) {
+        this.setState({
+          authenticated: true,
+          loadingAuth: false
+        })
       }
-    } else {
+    } catch(err) {
+      console.log(err)
       this.setState({
-        authorized: false
+        loadingAuth: false
       })
     }
   }
 
-  async componentDidMount() {
-    const authorize = await this.authorization()
-  } 
+  componentDidMount() {this.authenticate()} 
 
   render(){
+    const {authenticated} = this.state
     return <Container fluid className="App">
       <Header />
-      <NavBar authorized={this.state.authorized} />
+      <NavBar authenticated={this.state.authenticated} />
       <div className="d-flex justify-content-center p-3 rounded border border-light" style={{backgroundColor: '#f6f6f6'}}>
         <Switch>
           <Route exact path="/">
@@ -85,16 +82,16 @@ class Root extends React.Component{
             <Register />
           </Route>
           <Route path="/login">
-            {!this.state.authorized? <Login /> : <div><h2 className="text-center">Login</h2><p> already logged in</p> </div>}
+            <Login />
           </Route>
           <Route path="/account">
-            {this.state.authorized? <Account /> : <AccessDenied />}
+            <Account />
           </Route>
           <Route path="/Dashboard">
-            {this.state.authorized? <Dashboard /> : <AccessDenied />}
+            {this.state.authenticated? <Dashboard /> : <AccessDenied />}
           </Route>
           <Route path="/Upload/entry/:entryId">
-            {this.state.authorized? <Upload /> : <AccessDenied />}
+            {this.state.authenticated? <Upload /> : <AccessDenied />}
           </Route>
           <Route render={() => <NoMatch />}/>
         </Switch>
