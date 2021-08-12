@@ -40,10 +40,6 @@ class Root extends React.Component{
     }
   }
 
-  isLoading = () => {
-    this.setState({loadingAuth: true})
-  }
-
   authenticate = async () => {
     const token = localStorage.getItem('token')
     if(token) {
@@ -80,7 +76,7 @@ class Root extends React.Component{
             <Redirect to="/login" />
           </Route>
           <Route path="/logout">
-            <Logout />
+            <Logout isLoading={() => this.setState({loadingAuth: true})} />
           </Route>
           <Route path="/library">
             <Library />
@@ -92,7 +88,7 @@ class Root extends React.Component{
             <Register />
           </Route>
           <Route path="/login">
-            <Login isLoading={this.isLoading} authenticate={this.authenticate} authenticated={authenticated} loadingAuth={loadingAuth} />
+            <Login isLoading={() => this.setState({loadingAuth: true})} authenticate={this.authenticate} authenticated={authenticated} loadingAuth={loadingAuth} />
           </Route>
           <Route path="/account">
             <Account authenticate={this.authenticate} authenticated={authenticated} loadingAuth={loadingAuth} />
