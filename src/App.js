@@ -40,27 +40,37 @@ class Root extends React.Component{
     }
   }
 
-  async authenticate() {
-    try {
-      const res = await authenticateAPICall()
-      if(res.status === 200) {
-        this.setState({
-          authenticated: true,
-          loadingAuth: false
-        })
-      }
-    } catch(err) {
-      console.log(err)
-      this.setState({
-        loadingAuth: false
-      })
-    }
+  isLoading = () => {
+    this.setState({loadingAuth: true})
   }
 
+  authenticate = async () => {
+    const token = localStorage.getItem('token')
+    if(token) {
+      try {
+        const res = await authenticateAPICall()
+        if(res.status === 200) {
+          this.setState({
+            authenticated: true,
+            loadingAuth: false
+          })
+        }
+      } catch(err) {
+        console.log(err)
+      }
+    }
+    else {
+      this.setState({
+        authenticated: false,
+        loadingAuth: false
+      })
+    } 
+  }
+  
   componentDidMount() {this.authenticate()} 
 
   render(){
-    const {authenticated} = this.state
+    const {authenticated, loadingAuth} = this.state
     return <Container fluid className="App">
       <Header />
       <NavBar authenticated={authenticated} />
@@ -82,10 +92,10 @@ class Root extends React.Component{
             <Register />
           </Route>
           <Route path="/login">
-            <Login />
+            <Login isLoading={this.isLoading} authenticate={this.authenticate} authenticated={authenticated} loadingAuth={loadingAuth} />
           </Route>
           <Route path="/account">
-            <Account />
+            <Account authenticate={this.authenticate} authenticated={authenticated} loadingAuth={loadingAuth} />
           </Route>
           <Route path="/Dashboard">
             {authenticated ? <Dashboard /> : <AccessDenied />}
