@@ -9,8 +9,6 @@ class Account extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      authenticated: false,
-      loadingAuth: true,
       hasUserInfo: false,
       hasProjects: false,
       loadingProjects: true,
@@ -19,12 +17,12 @@ class Account extends Component {
   }
 
   componentDidMount() {
-    this.authenticate()
     this.getAndUpdateProjects()
   }
 
   async componentDidUpdate() {
-    const {authenticated, hasUserInfo} = this.state
+    const {hasUserInfo} = this.state
+    const {authenticated, loadingAuth} = this.props
     if(authenticated && !hasUserInfo) {
       try {
         const res = await this.props.userStore.getUserInfo()
@@ -62,22 +60,6 @@ class Account extends Component {
     })
   }
 
-  async authenticate() {
-    try {
-      const res = await authenticateAPICall()
-      if(res.status === 200) {
-        this.setState({
-          authenticated: true,
-          loadingAuth: false
-        })
-      }
-    } catch(err) {
-      console.log(err)
-      this.setState({
-        loadingAuth: false
-      })
-    }
-  }
 
   handleContributionsClick() {
     this.setState({contributionsToggle: !this.state.contributionsToggle})
@@ -148,7 +130,8 @@ class Account extends Component {
   }
 
   renderLoadingOrAccount() {
-    const {loadingAuth, authenticated, hasUserInfo} = this.state
+    const {hasUserInfo} = this.state
+    const {authenticated, loadingAuth} = this.props
     if(!loadingAuth && authenticated && hasUserInfo) {
       const {userInfo} = this.props.userStore
       return(

@@ -2,6 +2,8 @@ import React, { Component } from 'react'
 import {Form, Button, Alert} from 'react-bootstrap'
 import {login as loginAPICall} from '../config/api'
 import {withRouter, Link} from 'react-router-dom';
+import {authenticate as authenticateAPICall} from '../config/api'
+import { Spinner } from 'react-bootstrap';
 
 class Login extends Component {
   constructor(props) {
@@ -12,7 +14,6 @@ class Login extends Component {
       alertText: 'Something went wrong, please try again.'
     }
   }
-
   componentDidUpdate() {
     if(this.state.alert) {
       setTimeout(() => {
@@ -37,10 +38,10 @@ class Login extends Component {
     event.preventDefault()
     const username_or_email = event.target.username_or_email.value.trim()
     const password = event.target.password.value.trim()
-
     try {
       const res = await loginAPICall(username_or_email, password)
       if(res.status === 200) {
+        this.props.isLoading()
         const token = res.data.token
         localStorage.setItem('token', "Bearer " + token)
         this.props.history.push('/account')
@@ -63,12 +64,28 @@ class Login extends Component {
     }
   }
 
-  render() {
-    return (
-      <div className="w-50">
+  renderLogin(){
+    const {authenticated, loadingAuth} = this.props
+    if(loadingAuth){
+      return(
+        <div>
         {this.renderAlert()}
-        <h2 className="text-center">Login</h2>
-        <Form onSubmit={(event) => this.handleSubmit(event)}>
+        <h2 className="pb-3 text-center">Login</h2>
+        <div className="d-flex justify-content-center align-items-center" style={{width: '75vw', backgroundColor: '#fff'}}>
+          <Spinner animation="border" role="status">
+            <span className="sr-only">Loading...</span>
+          </Spinner>
+        </div>
+        </div>
+      )
+    } else {
+      if(!authenticated){
+        return(
+        <div className="w-50">
+          {this.renderAlert()}
+          <h2 className="pb-3 text-center">Login</h2>
+          <div>
+            <Form onSubmit={(event) => this.handleSubmit(event)}>
           <Form.Group controlId="username_or_email">
             <Form.Label>Username or Email</Form.Label>
             <Form.Control 
@@ -95,8 +112,24 @@ class Login extends Component {
           <small>Need an Account?</small>
           <Link to="/register">Join Us!</Link>
         </div>
-      </div>
-    )
+          </div>
+        </div>
+        )
+      }
+      else {
+        return(
+          <div>
+            {this.renderAlert()}
+            <h2 className="pb-3 text-center">Login</h2>
+            <p className="text-center"> already logged in</p>
+          </div>
+        )
+      }
+    }
+  }
+
+  render() {
+    return this.renderLogin()
   }
 }
 

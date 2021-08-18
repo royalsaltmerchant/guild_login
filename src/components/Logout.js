@@ -11,6 +11,7 @@ class Logout extends Component {
   componentDidMount() {
     const token = localStorage.getItem('token')
     if(token) {
+      this.props.isLoading()
       localStorage.removeItem('token')
       this.props.history.push('/login')
       this.props.history.go()
