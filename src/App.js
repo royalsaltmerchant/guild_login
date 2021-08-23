@@ -50,8 +50,17 @@ class Root extends React.Component{
             authenticated: true,
             loadingAuth: false
           })
+        } else {
+          this.setState({
+            authenticated: false,
+            loadingAuth: false
+          })      
         }
       } catch(err) {
+        this.setState({
+          authenticated: false,
+          loadingAuth: false
+        })
         console.log(err)
       }
     }
