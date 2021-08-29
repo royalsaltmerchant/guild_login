@@ -18,8 +18,7 @@ class PackDetails extends Component {
       hasUserInfo: false,
       hasPackInfo: false,
       loadingUser: true,
-      loadingPack: true,
-      userEligible: false
+      loadingPack: true
     }
     this.downloadButtonRef = React.createRef()
   }
@@ -95,7 +94,7 @@ class PackDetails extends Component {
 
     if(downloadSuccess) {
       try {
-        const userRes = await editUserAPICall(userInfo.id, userInfo.approvedAssetCount, newCoinsAmount, userInfo.eligible)
+        const userRes = await editUserAPICall(userInfo.id, userInfo.approvedAssetCount, newCoinsAmount)
         const packRes = await editPackAPICall(packInfo.id, packInfo.title, packInfo.description, packInfo.image, packInfo.video, packInfo.coinCost, packInfo.active, newDownloadsAmount)
       } catch(err) {
         console.log(err)

@@ -141,7 +141,6 @@ class Account extends Component {
             <p>First Name: {userInfo.first_name}</p>
             <p>Last Name: {userInfo.last_name}</p>
             <p>Email: {userInfo.email}</p>
-            <p>Eligible to access community files: {userInfo.eligible ? 'yes' : 'no'}</p>
             <p>Approved asset count: {userInfo.approved_asset_count}</p>
             <p>Coins: {userInfo.coins}</p>
             <Button variant="link" onClick={() => this.handleContributionsClick()}>
