@@ -60,10 +60,16 @@ export default function Register(props) {
     const password = event.target.password.value.trim()
     const firstName = event.target.firstName.value.trim()
     const lastName = event.target.lastName.value.trim()
-
+    const params = {
+      username: username,
+      first_name: firstName,
+      last_name: lastName,
+      email: email,
+      password: password
+    }
     if(!warningPasswordToggle && !warningUsernameToggle) {
       try {
-        const res = await registerUserAPICall(username, firstName, lastName, email, password)
+        const res = await registerUserAPICall(params)
         if(res.status === 201) {
           history.push("/login")
         }

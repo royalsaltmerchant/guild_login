@@ -91,11 +91,25 @@ class PackDetails extends Component {
     const downloadSuccess = await this.handleDownload()
     const newCoinsAmount = userInfo.coins - packInfo.coin_cost
     const newDownloadsAmount = packInfo.downloads + 1
-
+    const editUserParams = {
+      user_id: userInfo.id,
+      approved_asset_count: userInfo.approvedAssetCount,
+      coins: newCoinsAmount
+    }
+    const editPackParams = {
+      pack_id: packInfo.id,
+      title: packInfo.title,
+      description: packInfo.description,
+      image_file: packInfo.image,
+      video_file: packInfo.video,
+      coin_cost: packInfo.coinCost,
+      active: packInfo.active,
+      downloads: newDownloadsAmount
+    }
     if(downloadSuccess) {
       try {
-        const userRes = await editUserAPICall(userInfo.id, userInfo.approvedAssetCount, newCoinsAmount)
-        const packRes = await editPackAPICall(packInfo.id, packInfo.title, packInfo.description, packInfo.image, packInfo.video, packInfo.coinCost, packInfo.active, newDownloadsAmount)
+        const userRes = await editUserAPICall(editUserParams)
+        const packRes = await editPackAPICall(editPackParams)
       } catch(err) {
         console.log(err)
       }
@@ -106,9 +120,12 @@ class PackDetails extends Component {
     const {packName} = this.props.match.params
     const bucketName = awsConfig.bucketName
     const objectName = `packs/${packName}/${packName}.zip`
-
+    const params = {
+      bucket_name: bucketName,
+      object_name: objectName
+    }
     try {
-      const res = await getPresignedURLAPICall(bucketName, objectName)
+      const res = await getPresignedURLAPICall(params)
       if(res.status === 200) {
         const downloadLink = res.data
         this.setState({

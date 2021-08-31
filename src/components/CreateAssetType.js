@@ -15,12 +15,10 @@ export default class CreateAssetType extends Component {
     event.preventDefault()
     const packId = this.props.packId
     const description = event.target.assetTypeDescription.value.trim()
-
     const params = {
-      packId: packId,
+      pack_id: packId,
       description: description
     }
-
     try {
       const res = await createAssetTypeAPICall(params)
       if(res.status === 201) {

@@ -40,13 +40,11 @@ export default class CreateProject extends Component {
     const description = event.target.projectDescription.value
     const image = event.target.projectImage.files[0].name
     const imageFile = event.target.projectImage.files[0]
-    
     const params = {
       title: title,
       description: description,
       image: image
     }
-
     try {
       const res = await createProjectAPICall(params)
       if(res.status === 201) {

@@ -171,16 +171,14 @@ class AdminTools extends Component {
     const imageFile = event.target.form[`project${projectId}Image`].files[0]
     const active = event.target.form[`project${projectId}Active`].checked
     const complete = event.target.form[`project${projectId}Complete`].checked
-
     const params =  {
-      projectId: projectId,
+      project_id: projectId,
       title: title,
       description: description,
-      image: image,
+      image_file: image,
       active: active,
       complete: complete
     }
-
     try {
       const res = await editProjectAPICall(params)
       if(res.status === 200) {
@@ -201,15 +199,13 @@ class AdminTools extends Component {
     const title = event.target.form[`entry${entryId}Title`].value || event.target.form[`entry${entryId}Title`].placeholder
     const description = event.target.form[`entry${entryId}Description`].value || event.target.form[`entry${entryId}Description`].placeholder
     const complete = event.target.form[`entry${entryId}Complete`].checked
-
     const params = {
-      entryId: entryId,
+      entry_id: entryId,
       amount: amount,
       title: title,
       description: description,
       complete: complete
     }
-
     try {
       const res = await editEntryAPICall(params)
       if(res.status === 200) {
@@ -226,7 +222,7 @@ class AdminTools extends Component {
     const amount = event.target.form[`contribution${contributionId}Amount`].value || event.target.form[`contribution${contributionId}Amount`].placeholder
     const status = event.target.form[`contribution${contributionId}Status`].value || event.target.form[`contribution${contributionId}Status`].placeholder
     const params = {
-      contributionId: contributionId,
+      contribution_id: contributionId,
       amount: amount,
       status: status
     }
@@ -246,8 +242,8 @@ class AdminTools extends Component {
     const approvedAssetCount = event.target.form[`user${userId}ApprovedAssetCount`].value || event.target.form[`user${userId}ApprovedAssetCount`].placeholder
     const coins = event.target.form[`user${userId}Coins`].value || event.target.form[`user${userId}Coins`].placeholder
     const params = {
-      userId: userId,
-      approvedAssetCount: approvedAssetCount,
+      user_id: userId,
+      approved_asset_count: approvedAssetCount,
       coins: coins
     }
     try {
@@ -270,18 +266,16 @@ class AdminTools extends Component {
     const video = event.target.form[`pack${packId}Video`].value.trim() || event.target.form[`pack${packId}Video`].placeholder
     const coinCost = event.target.form[`pack${packId}CoinCost`].value || event.target.form[`pack${packId}CoinCost`].placeholder
     const active = event.target.form[`pack${packId}Active`].checked
-
     const params =  {
-      packId: packId,
+      pack_id: packId,
       title: title,
       description: description,
-      image: image,
-      video: video,
-      coinCost: coinCost,
+      image_file: image,
+      video_file: video,
+      coin_cost: coinCost,
       active: active,
       downloads: downloads
     }
-
     try {
       const res = await editPackAPICall(params)
       if(res.status === 200) {
@@ -300,7 +294,7 @@ class AdminTools extends Component {
     event.preventDefault()
     const description = event.target.form[`assetType${assetTypeId}Description`].value || event.target.form[`assetType${assetTypeId}Description`].placeholder
     const params =  {
-      assetTypeId: assetTypeId,
+      asset_type_id: assetTypeId,
       description: description
     }
     try {
