@@ -224,10 +224,9 @@ class AdminTools extends Component {
     event.preventDefault()
     const approvedAssetCount = event.target.form[`user${userId}ApprovedAssetCount`].value || event.target.form[`user${userId}ApprovedAssetCount`].placeholder
     const coins = event.target.form[`user${userId}Coins`].value || event.target.form[`user${userId}Coins`].placeholder
-    const eligible = event.target.form[`user${userId}Eligible`].checked
     
     try {
-      const res = await editUserAPICall(userId, approvedAssetCount, coins, eligible)
+      const res = await editUserAPICall(userId, approvedAssetCount, coins)
       if(res.status === 200) {
         this.setState({[userEditKey]: false})
         this.getAndUpdateUsersList()
@@ -787,7 +786,6 @@ class AdminTools extends Component {
           <div className="px-3">
             <p>- Approved Asset Count: {user.approved_asset_count}</p>
             <p>- Coins: {user.coins}</p>
-            <p>- Eligible-Status: {user.eligible ? 'true' : 'false'}</p>
           </div>
         </div>
       )
@@ -809,14 +807,6 @@ class AdminTools extends Component {
               size="md"
               type="number"
               placeholder={user.coins}
-            />
-          </Form.Group>
-          <Form.Group controlId={`user${user.id}Eligible`}>
-            <Form.Label>Eligible</Form.Label>
-            <Form.Check
-              size="md"
-              type="switch"
-              defaultChecked={user.eligible ? true : false}
             />
           </Form.Group>
           <div className="d-flex justify-content-around">
