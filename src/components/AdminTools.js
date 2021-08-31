@@ -172,8 +172,17 @@ class AdminTools extends Component {
     const active = event.target.form[`project${projectId}Active`].checked
     const complete = event.target.form[`project${projectId}Complete`].checked
 
+    const params =  {
+      projectId: projectId,
+      title: title,
+      description: description,
+      image: image,
+      active: active,
+      complete: complete
+    }
+
     try {
-      const res = await editProjectAPICall(projectId, title, description, image, active, complete)
+      const res = await editProjectAPICall(params)
       if(res.status === 200) {
         this.setState({[projectEditKey]: false})
         this.props.getAndUpdateProjects()
@@ -193,8 +202,16 @@ class AdminTools extends Component {
     const description = event.target.form[`entry${entryId}Description`].value || event.target.form[`entry${entryId}Description`].placeholder
     const complete = event.target.form[`entry${entryId}Complete`].checked
 
+    const params = {
+      entryId: entryId,
+      amount: amount,
+      title: title,
+      description: description,
+      complete: complete
+    }
+
     try {
-      const res = await editEntryAPICall(entryId, amount, title, description, complete)
+      const res = await editEntryAPICall(params)
       if(res.status === 200) {
         this.setState({[entryEditKey]: false})
         this.props.getAndUpdateProjects()
@@ -208,9 +225,13 @@ class AdminTools extends Component {
     event.preventDefault()
     const amount = event.target.form[`contribution${contributionId}Amount`].value || event.target.form[`contribution${contributionId}Amount`].placeholder
     const status = event.target.form[`contribution${contributionId}Status`].value || event.target.form[`contribution${contributionId}Status`].placeholder
-    
+    const params = {
+      contributionId: contributionId,
+      amount: amount,
+      status: status
+    }
     try {
-      const res = await editContributionAPICall(contributionId, amount, status)
+      const res = await editContributionAPICall(params)
       if(res.status === 200) {
         this.setState({[contributionEditKey]: false})
         this.props.getAndUpdateProjects()
@@ -224,9 +245,13 @@ class AdminTools extends Component {
     event.preventDefault()
     const approvedAssetCount = event.target.form[`user${userId}ApprovedAssetCount`].value || event.target.form[`user${userId}ApprovedAssetCount`].placeholder
     const coins = event.target.form[`user${userId}Coins`].value || event.target.form[`user${userId}Coins`].placeholder
-    
+    const params = {
+      userId: userId,
+      approvedAssetCount: approvedAssetCount,
+      coins: coins
+    }
     try {
-      const res = await editUserAPICall(userId, approvedAssetCount, coins)
+      const res = await editUserAPICall(params)
       if(res.status === 200) {
         this.setState({[userEditKey]: false})
         this.getAndUpdateUsersList()
@@ -246,8 +271,19 @@ class AdminTools extends Component {
     const coinCost = event.target.form[`pack${packId}CoinCost`].value || event.target.form[`pack${packId}CoinCost`].placeholder
     const active = event.target.form[`pack${packId}Active`].checked
 
+    const params =  {
+      packId: packId,
+      title: title,
+      description: description,
+      image: image,
+      video: video,
+      coinCost: coinCost,
+      active: active,
+      downloads: downloads
+    }
+
     try {
-      const res = await editPackAPICall(packId, title, description, image, video, coinCost, active, downloads)
+      const res = await editPackAPICall(params)
       if(res.status === 200) {
         this.setState({[packEditKey]: false})
         this.getAndUpdatePacks()
@@ -263,9 +299,12 @@ class AdminTools extends Component {
   async handleEditAssetTypeSave(event, assetTypeId, assetTypeEditKey) {
     event.preventDefault()
     const description = event.target.form[`assetType${assetTypeId}Description`].value || event.target.form[`assetType${assetTypeId}Description`].placeholder
-
+    const params =  {
+      assetTypeId: assetTypeId,
+      description: description
+    }
     try {
-      const res = await editAssetTypeAPICall(assetTypeId, description)
+      const res = await editAssetTypeAPICall(params)
       if(res.status === 200) {
         this.setState({[assetTypeEditKey]: false})
         this.getAndUpdatePacks()

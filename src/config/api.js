@@ -83,7 +83,8 @@ const registerUser= async (username, firstName, lastName, email, password) => {
   }
 }
 
-const editUser= async (userId, approvedAssetCount, coins) => {
+const editUser= async (params) => {
+  const {userId, approvedAssetCount, coins} = params
   try {
     const res = await axios({
       method: 'post',
@@ -133,7 +134,8 @@ const getProject = async (projectId) => {
   }
 }
 
-const createProject = async (title, description, image) => {
+const createProject = async (params) => {
+  const {title, description, image} = params
   try {
     const res = await axios({
       method: 'post',
@@ -153,7 +155,8 @@ const createProject = async (title, description, image) => {
   }
 }
 
-const editProject = async (projectId, title, description, image, active, complete) => {
+const editProject = async (params) => {
+  const {projectId, title, description, image, active, complete} = params
   try {
     const res = await axios({
       method: 'post',
@@ -213,7 +216,8 @@ const getEntry = async (entryId) => {
   }
 }
 
-const createEntry = async (projectId, amount, title, description) => {
+const createEntry = async (params) => {
+  const {projectId, amount, title, description} = params
   try {
     const res = await axios({
       method: 'post',
@@ -234,7 +238,8 @@ const createEntry = async (projectId, amount, title, description) => {
   }
 }
 
-const editEntry = async (entryId, amount, title, description, complete) => {
+const editEntry = async (params) => {
+  const {entryId, amount, title, description, complete} = params
   try {
     const res = await axios({
       method: 'post',
@@ -295,7 +300,8 @@ const createContribution = async (entryId, projectId, amount) => {
   }
 }
 
-const editContribution = async (contributionId, amount, status) => {
+const editContribution = async (params) => {
+  const {contributionId, amount, status} = params
   try {
     const res = await axios({
       method: 'post',
@@ -401,7 +407,8 @@ const getPack = async (packTitle) => {
   }
 }
 
-const createPack = async (title, description, image, video, coinCost) => {
+const createPack = async (params) => {
+  const {title, description, image, video, coinCost} = params
   try {
     const res = await axios({
       method: 'post',
@@ -423,7 +430,8 @@ const createPack = async (title, description, image, video, coinCost) => {
   }
 }
 
-const editPack = async (packId, title, description, image, video, coinCost, active, downloads) => {
+const editPack = async (params) => {
+  const {packId, title, description, image, video, coinCost, active, downloads} = params
   try {
     const res = await axios({
       method: 'post',
@@ -466,7 +474,8 @@ const deletePack = async (packId) => {
   }
 }
 
-const createAssetType = async (packId, description) => {
+const createAssetType = async (params) => {
+  const {packId, description} = params
   try {
     const res = await axios({
       method: 'post',
@@ -485,7 +494,8 @@ const createAssetType = async (packId, description) => {
   }
 }
 
-const editAssetType = async (assetTypeId, description) => {
+const editAssetType = async (params) => {
+  const {assetTypeId, description} = params
   try {
     const res = await axios({
       method: 'post',
