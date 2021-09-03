@@ -93,17 +93,10 @@ class PackDetails extends Component {
     const newDownloadsAmount = packInfo.downloads + 1
     const editUserParams = {
       user_id: userInfo.id,
-      approved_asset_count: userInfo.approvedAssetCount,
       coins: newCoinsAmount
     }
     const editPackParams = {
       pack_id: packInfo.id,
-      title: packInfo.title,
-      description: packInfo.description,
-      image_file: packInfo.image,
-      video_file: packInfo.video,
-      coin_cost: packInfo.coinCost,
-      active: packInfo.active,
       downloads: newDownloadsAmount
     }
     if(downloadSuccess) {
