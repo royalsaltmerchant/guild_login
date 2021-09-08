@@ -152,6 +152,7 @@ class Upload extends Component {
     const amount = successList.length
     const params = {
         entry_id: entryInfo.id,
+        project_id: entryInfo.project_id,
         amount: amount
       }
     try {
