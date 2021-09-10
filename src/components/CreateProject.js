@@ -43,7 +43,7 @@ export default class CreateProject extends Component {
     const params = {
       title: title,
       description: description,
-      image: image
+      image_file: image
     }
     try {
       const res = await createProjectAPICall(params)
