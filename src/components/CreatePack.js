@@ -45,9 +45,15 @@ export default class CreatePack extends Component {
     const audioFile = event.target.packAudio.files[0]
 
     const editedPackTitle = title.replaceAll(' ', '-').toLowerCase()
-    
+    const params = {
+      title: title,
+      description: description,
+      image_file: image,
+      video_file: video,
+      coin_cost: coinCost
+    }
     try {
-      const res = await createPackAPICall(title, description, image, video, coinCost)
+      const res = await createPackAPICall(params)
       if(res.status === 201) {
         console.log(res)
         this.props.getAndUpdatePacks()

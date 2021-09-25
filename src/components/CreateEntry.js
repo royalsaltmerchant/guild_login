@@ -17,9 +17,14 @@ export default class CreateEntry extends Component {
     const amount = event.target.entryAmount.value
     const title = event.target.entryTitle.value
     const description = event.target.entryDescription.value
-
+    const params =  {
+      project_id: projectId,
+      amount: amount,
+      title: title,
+      description: description
+    }
     try {
-      const res = await createEntryAPICall(projectId, amount, title, description)
+      const res = await createEntryAPICall(params)
       if(res.status === 201) {
         this.props.getAndUpdateProjects()
         this.props.createEntryBoolean(false)

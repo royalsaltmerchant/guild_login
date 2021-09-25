@@ -129,7 +129,11 @@ class Upload extends Component {
       await Promise.all(
         successList.map(async asset => {
           try {
-            const assetRes = await createContributedAssetAPICall(contributionId, asset)
+            const params = {
+              contribution_id: contributionId,
+              name: asset
+            }
+            const assetRes = await createContributedAssetAPICall(params)
           } catch(err) {
             console.log(err)
           }
@@ -146,9 +150,13 @@ class Upload extends Component {
     const {successList} = this.state
     const {entryInfo} = this.props.entryStore
     const amount = successList.length
-
+    const params = {
+        entry_id: entryInfo.id,
+        project_id: entryInfo.project_id,
+        amount: amount
+      }
     try {
-      const res = await createContributionAPICall(entryInfo.id, entryInfo.project_id, amount)
+      const res = await createContributionAPICall(params)
       if(res.status === 201) {
         return res
       }

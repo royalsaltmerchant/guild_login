@@ -38,8 +38,12 @@ class Login extends Component {
     event.preventDefault()
     const username_or_email = event.target.username_or_email.value.trim()
     const password = event.target.password.value.trim()
+    const params = {
+      username_or_email: username_or_email,
+      password: password
+    }
     try {
-      const res = await loginAPICall(username_or_email, password)
+      const res = await loginAPICall(params)
       if(res.status === 200) {
         this.props.isLoading()
         const token = res.data.token

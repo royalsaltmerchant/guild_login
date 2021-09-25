@@ -15,9 +15,12 @@ export default class CreateAssetType extends Component {
     event.preventDefault()
     const packId = this.props.packId
     const description = event.target.assetTypeDescription.value.trim()
-
+    const params = {
+      pack_id: packId,
+      description: description
+    }
     try {
-      const res = await createAssetTypeAPICall(packId, description)
+      const res = await createAssetTypeAPICall(params)
       if(res.status === 201) {
         this.props.getAndUpdatePacks()
         this.props.createAssetTypeBoolean(false)

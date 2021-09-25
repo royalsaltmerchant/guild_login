@@ -163,116 +163,238 @@ class AdminTools extends Component {
     })
   }
 
-  async handleEditProjectSave(event, projectId, projectEditKey) {
+  async handleEditProjectSave(event, project, projectEditKey) {
     event.preventDefault()
-    const title = event.target.form[`project${projectId}Title`].value || event.target.form[`project${projectId}Title`].placeholder
-    const description = event.target.form[`project${projectId}Description`].value || event.target.form[`project${projectId}Description`].placeholder
-    const image = event.target.form[`project${projectId}Image`].files[0] ? event.target.form[`project${projectId}Image`].files[0].name : event.target.form[`project${projectId}Image`].placeholder
-    const imageFile = event.target.form[`project${projectId}Image`].files[0]
-    const active = event.target.form[`project${projectId}Active`].checked
-    const complete = event.target.form[`project${projectId}Complete`].checked
 
-    try {
-      const res = await editProjectAPICall(projectId, title, description, image, active, complete)
-      if(res.status === 200) {
-        this.setState({[projectEditKey]: false})
-        this.props.getAndUpdateProjects()
-        if(imageFile) {
-          this.uploadImageFile(imageFile, "project_images")
-        }
+    const title = event.target.form[`project${project.id}Title`].value
+    const description = event.target.form[`project${project.id}Description`].value 
+    const image = event.target.form[`project${project.id}Image`].files[0] ? event.target.form[`project${project.id}Image`].files[0].name : null
+    const imageFile = event.target.form[`project${project.id}Image`].files[0]
+    const active = event.target.form[`project${project.id}Active`].checked
+    const complete = event.target.form[`project${project.id}Complete`].checked
+
+    const params =  {
+      project_id: project.id
+    }
+    if(title !== '' && title !== ' ') {
+      params.title = title
+    }
+    if(description !== '' && description !== ' ') {
+      params.description = description
+    }
+    if(image !== null) {
+      params.image_file = image
+    }
+    if(project.active !== active) {
+      params.active = active
+    }
+    if(project.complete !== complete) {
+      params.complete = complete
+    }
+
+    const paramsSize = Object.keys(params).length
+
+    if(paramsSize > 1) {
+      try {
+        const res = await editProjectAPICall(params)
+        if(res.status === 200) {
+          this.setState({[projectEditKey]: false})
+          this.props.getAndUpdateProjects()
+          if(imageFile) {
+            this.uploadImageFile(imageFile, "project_images")
+          }
+        } else throw new Error
+      } catch(err) {
+        console.log(err)
       }
-    } catch(err) {
-      console.log(err)
+    } else {
+      this.setState({[projectEditKey]: false})
     }
   }
 
-  async handleEditEntrySave(event, entryId, entryEditKey) {
+  async handleEditEntrySave(event, entry, entryEditKey) {
     event.preventDefault()
-    const amount = event.target.form[`entry${entryId}Amount`].value || event.target.form[`entry${entryId}Amount`].placeholder
-    const title = event.target.form[`entry${entryId}Title`].value || event.target.form[`entry${entryId}Title`].placeholder
-    const description = event.target.form[`entry${entryId}Description`].value || event.target.form[`entry${entryId}Description`].placeholder
-    const complete = event.target.form[`entry${entryId}Complete`].checked
+    
+    const amount = event.target.form[`entry${entry.id}Amount`].value 
+    const title = event.target.form[`entry${entry.id}Title`].value 
+    const description = event.target.form[`entry${entry.id}Description`].value
+    const complete = event.target.form[`entry${entry.id}Complete`].checked
 
-    try {
-      const res = await editEntryAPICall(entryId, amount, title, description, complete)
-      if(res.status === 200) {
-        this.setState({[entryEditKey]: false})
-        this.props.getAndUpdateProjects()
-      }
-    } catch(err) {
-      console.log(err)
+    const params = {
+      entry_id: entry.id
     }
+    if(amount !== '' && amount !== ' ') {
+      params.amount = amount
+    }
+    if(title !== '' && title !== ' ') {
+      params.title = title
+    }
+    if(entry.complete !== complete) {
+      params.complete = complete
+    }
+    const paramsSize = Object.keys(params).length
+
+    if(paramsSize > 1) {
+      try {
+        const res = await editEntryAPICall(params)
+        if(res.status === 200) {
+          this.setState({[entryEditKey]: false})
+          this.props.getAndUpdateProjects()
+        } else throw new Error
+      } catch(err) {
+        console.log(err)
+      }
+    } else {
+      this.setState({[entryEditKey]: false})
+    }
+
   }
 
   async handleEditContributionSave(event, contributionId, contributionEditKey) {
     event.preventDefault()
-    const amount = event.target.form[`contribution${contributionId}Amount`].value || event.target.form[`contribution${contributionId}Amount`].placeholder
-    const status = event.target.form[`contribution${contributionId}Status`].value || event.target.form[`contribution${contributionId}Status`].placeholder
-    
-    try {
-      const res = await editContributionAPICall(contributionId, amount, status)
-      if(res.status === 200) {
-        this.setState({[contributionEditKey]: false})
-        this.props.getAndUpdateProjects()
-      }
-    } catch(err) {
-      console.log(err)
+
+    const amount = event.target.form[`contribution${contributionId}Amount`].value 
+    const status = event.target.form[`contribution${contributionId}Status`].value
+
+    const params = {
+      contribution_id: contributionId
     }
+    if(amount !== '' && amount !== ' ') {
+      params.amount = amount
+    }
+    if(status !== '' && status !== ' ') {
+      params.status = status
+    }
+    const paramsSize = Object.keys(params).length
+
+    if(paramsSize > 1) {
+      try {
+        const res = await editContributionAPICall(params)
+        if(res.status === 200) {
+          this.setState({[contributionEditKey]: false})
+          this.props.getAndUpdateProjects()
+        } else throw new Error
+      } catch(err) {
+        console.log(err)
+      }
+    } else {
+      this.setState({[contributionEditKey]: false})
+    }
+
   }
 
   async handleEditUserSave(event, userId, userEditKey) {
     event.preventDefault()
-    const approvedAssetCount = event.target.form[`user${userId}ApprovedAssetCount`].value || event.target.form[`user${userId}ApprovedAssetCount`].placeholder
-    const coins = event.target.form[`user${userId}Coins`].value || event.target.form[`user${userId}Coins`].placeholder
-    
-    try {
-      const res = await editUserAPICall(userId, approvedAssetCount, coins)
-      if(res.status === 200) {
-        this.setState({[userEditKey]: false})
-        this.getAndUpdateUsersList()
+
+    const approvedAssetCount = event.target.form[`user${userId}ApprovedAssetCount`].value
+    const coins = event.target.form[`user${userId}Coins`].value
+
+    const params = {
+      user_id: userId
+    }
+    if(approvedAssetCount !== '' && approvedAssetCount !== ' ') {
+      params.approved_asset_count = approvedAssetCount
+    }
+    if(coins !== '' && coins !== ' ') {
+      params.coins = coins
+    }
+    const paramsSize = Object.keys(params).length
+
+    if(paramsSize > 1) {
+      try {
+        const res = await editUserAPICall(params)
+        if(res.status === 200) {
+          this.setState({[userEditKey]: false})
+          this.getAndUpdateUsersList()
+        } else throw new Error
+      } catch(err) {
+        console.log(err)
       }
-    } catch(err) {
-      console.log(err)
+    } else {
+      this.setState({[userEditKey]: false})
     }
   }
 
-  async handleEditPackSave(event, packId, packEditKey, downloads) {
+  async handleEditPackSave(event, pack, packEditKey) {
     event.preventDefault()
-    const title = event.target.form[`pack${packId}Title`].value || event.target.form[`pack${packId}Title`].placeholder
-    const description = event.target.form[`pack${packId}Description`].value || event.target.form[`pack${packId}Description`].placeholder
-    const image = event.target.form[`pack${packId}Image`].files[0] ? event.target.form[`pack${packId}Image`].files[0].name : event.target.form[`pack${packId}Image`].placeholder
-    const imageFile = event.target.form[`pack${packId}Image`].files[0]
-    const video = event.target.form[`pack${packId}Video`].value.trim() || event.target.form[`pack${packId}Video`].placeholder
-    const coinCost = event.target.form[`pack${packId}CoinCost`].value || event.target.form[`pack${packId}CoinCost`].placeholder
-    const active = event.target.form[`pack${packId}Active`].checked
 
-    try {
-      const res = await editPackAPICall(packId, title, description, image, video, coinCost, active, downloads)
-      if(res.status === 200) {
-        this.setState({[packEditKey]: false})
-        this.getAndUpdatePacks()
-        if(imageFile) {
-          this.uploadImageFile(imageFile, "pack_images")
-        }
-      }
-    } catch(err) {
-      console.log(err)
+    const title = event.target.form[`pack${pack.id}Title`].value
+    const description = event.target.form[`pack${pack.id}Description`].value
+    const image = event.target.form[`pack${pack.id}Image`].files[0] ? event.target.form[`pack${pack.id}Image`].files[0].name : null
+    const imageFile = event.target.form[`pack${pack.id}Image`].files[0]
+    const video = event.target.form[`pack${pack.id}Video`].value.trim()
+    const coinCost = event.target.form[`pack${pack.id}CoinCost`].value
+    const active = event.target.form[`pack${pack.id}Active`].checked
+
+    const params =  {
+      pack_id: pack.id
     }
+    if(title !== '' && title !== ' ') {
+      params.title = title
+    }
+    if(description !== '' && description !== ' ') {
+      params.description = description
+    }
+    if(image !== null) {
+      params.image_file = image
+    }
+    if(video !== '' && video !== ' ') {
+      params.video_file = video
+    }
+    if(coinCost !== '' && coinCost !== ' ') {
+      params.coin_cost = coinCost
+    }
+    if(pack.active !== active) {
+      params.active = active
+    }
+    const paramsSize = Object.keys(params).length
+
+    if(paramsSize > 1) {
+      try {
+        const res = await editPackAPICall(params)
+        if(res.status === 200) {
+          this.setState({[packEditKey]: false})
+          this.getAndUpdatePacks()
+          if(imageFile) {
+            this.uploadImageFile(imageFile, "pack_images")
+          }
+        } else throw new Error
+      } catch(err) {
+        console.log(err)
+      }
+    } else {
+      this.setState({[packEditKey]: false})
+    }
+
   }
 
   async handleEditAssetTypeSave(event, assetTypeId, assetTypeEditKey) {
     event.preventDefault()
-    const description = event.target.form[`assetType${assetTypeId}Description`].value || event.target.form[`assetType${assetTypeId}Description`].placeholder
 
-    try {
-      const res = await editAssetTypeAPICall(assetTypeId, description)
-      if(res.status === 200) {
-        this.setState({[assetTypeEditKey]: false})
-        this.getAndUpdatePacks()
-      }
-    } catch(err) {
-      console.log(err)
+    const description = event.target.form[`assetType${assetTypeId}Description`].value
+
+    const params =  {
+      asset_type_id: assetTypeId
     }
+    if(description !== '' && description !== ' ') {
+      params.description = description
+    }
+    const paramsSize = Object.keys(params).length
+
+    if(paramsSize > 1) {
+      try {
+        const res = await editAssetTypeAPICall(params)
+        if(res.status === 200) {
+          this.setState({[assetTypeEditKey]: false})
+          this.getAndUpdatePacks()
+        } else throw new Error
+      } catch(err) {
+        console.log(err)
+      }
+    } else {
+      this.setState({[assetTypeEditKey]: false})
+    }
+
   }
 
   async handleDeleteProject(projectId) {
@@ -459,7 +581,7 @@ class AdminTools extends Component {
             />
           </Form.Group>
           <div className="d-flex justify-content-around">
-            <Button variant="outline-success" onClick={(event) => this.handleEditEntrySave(event, entry.id, entryEditKey)}>
+            <Button variant="outline-success" onClick={(event) => this.handleEditEntrySave(event, entry, entryEditKey)}>
               Save
             </Button>
             <Button variant="outline-secondary" onClick={() => this.setState({[entryEditKey]: false})}>
@@ -559,7 +681,7 @@ class AdminTools extends Component {
             />
           </Form.Group>
           <div className="d-flex justify-content-around">
-            <Button variant="outline-success" onClick={(event) => this.handleEditProjectSave(event, project.id, projectEditKey)}>
+            <Button variant="outline-success" onClick={(event) => this.handleEditProjectSave(event, project, projectEditKey)}>
               Save
             </Button>
             <Button variant="outline-secondary" onClick={() => this.setState({[projectEditKey]: false})}>
@@ -731,7 +853,7 @@ class AdminTools extends Component {
             />
           </Form.Group>
           <div className="d-flex justify-content-around">
-            <Button variant="outline-success" onClick={(event) => this.handleEditPackSave(event, pack.id, packEditKey, pack.downloads)}>
+            <Button variant="outline-success" onClick={(event) => this.handleEditPackSave(event, pack, packEditKey)}>
               Save
             </Button>
             <Button variant="outline-secondary" onClick={() => this.setState({[packEditKey]: false})}>

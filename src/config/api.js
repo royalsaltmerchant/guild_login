@@ -1,15 +1,12 @@
 import {finalConfig as config} from './config'
 import axios from 'axios'
 
-const login = async (username_or_email, password) => {
+const login = async (params) => {
   try {
     const res = await axios({
       method: 'post',
       url: `${config.apiURL}/api/login`,
-      data: {
-        username_or_email: username_or_email,
-        password: password
-      }
+      data: params
     })
     return res
   } catch(err) {
@@ -62,20 +59,12 @@ const getUsers = async () => {
   }
 }
 
-const registerUser= async (username, firstName, lastName, email, password) => {
+const registerUser= async (params) => {
   try {
     const res = await axios({
       method: 'post',
       url: `${config.apiURL}/api/register`,
-
-      data: {
-        username: username,
-        first_name: firstName,
-        last_name: lastName,
-        email: email,
-        password: password,
-        admin: false
-      }
+      data: params
     })
     return res
   } catch(err) {
@@ -83,7 +72,7 @@ const registerUser= async (username, firstName, lastName, email, password) => {
   }
 }
 
-const editUser= async (userId, approvedAssetCount, coins) => {
+const editUser= async (params) => {
   try {
     const res = await axios({
       method: 'post',
@@ -91,11 +80,7 @@ const editUser= async (userId, approvedAssetCount, coins) => {
       headers: {
         "x-access-token": localStorage.getItem("token")
       },
-      data: {
-        user_id: userId,
-        approved_asset_count: approvedAssetCount,
-        coins: coins
-      }
+      data: params
     })
     return res
   } catch(err) {
@@ -133,7 +118,7 @@ const getProject = async (projectId) => {
   }
 }
 
-const createProject = async (title, description, image) => {
+const createProject = async (params) => {
   try {
     const res = await axios({
       method: 'post',
@@ -141,11 +126,7 @@ const createProject = async (title, description, image) => {
       headers: {
         "x-access-token": localStorage.getItem("token")
       },
-      data: {
-        title: title,
-        description: description,
-        image_file: image
-      }
+      data: params
     })
     return res
   } catch(err) {
@@ -153,7 +134,7 @@ const createProject = async (title, description, image) => {
   }
 }
 
-const editProject = async (projectId, title, description, image, active, complete) => {
+const editProject = async (params) => {
   try {
     const res = await axios({
       method: 'post',
@@ -161,15 +142,7 @@ const editProject = async (projectId, title, description, image, active, complet
       headers: {
         "x-access-token": localStorage.getItem("token")
       },
-      data: {
-        project_id: projectId,
-        title: title,
-        description: description,
-        image_file: image,
-        active: active,
-        complete: complete
-
-      }
+      data: params
     })
     return res
   } catch(err) {
@@ -213,7 +186,7 @@ const getEntry = async (entryId) => {
   }
 }
 
-const createEntry = async (projectId, amount, title, description) => {
+const createEntry = async (params) => {
   try {
     const res = await axios({
       method: 'post',
@@ -221,12 +194,7 @@ const createEntry = async (projectId, amount, title, description) => {
       headers: {
         "x-access-token": localStorage.getItem("token")
       },
-      data: {
-        project_id: projectId,
-        amount: amount,
-        title: title,
-        description: description,
-      }
+      data: params
     })
     return res
   } catch(err) {
@@ -234,7 +202,7 @@ const createEntry = async (projectId, amount, title, description) => {
   }
 }
 
-const editEntry = async (entryId, amount, title, description, complete) => {
+const editEntry = async (params) => {
   try {
     const res = await axios({
       method: 'post',
@@ -242,14 +210,7 @@ const editEntry = async (entryId, amount, title, description, complete) => {
       headers: {
         "x-access-token": localStorage.getItem("token")
       },
-      data: {
-        entry_id: entryId,
-        amount: amount,
-        title: title,
-        description: description,
-        complete: complete
-
-      }
+      data: params
     })
     return res
   } catch(err) {
@@ -275,7 +236,7 @@ const deleteEntry = async (entryId) => {
   }
 }
 
-const createContribution = async (entryId, projectId, amount) => {
+const createContribution = async (params) => {
   try {
     const res = await axios({
       method: 'post',
@@ -283,11 +244,7 @@ const createContribution = async (entryId, projectId, amount) => {
       headers: {
         "x-access-token": localStorage.getItem("token")
       },
-      data: {
-        entry_id: entryId,
-        project_id: projectId,
-        amount: amount,
-      }
+      data: params
     })
     return res
   } catch(err) {
@@ -295,7 +252,7 @@ const createContribution = async (entryId, projectId, amount) => {
   }
 }
 
-const editContribution = async (contributionId, amount, status) => {
+const editContribution = async (params) => {
   try {
     const res = await axios({
       method: 'post',
@@ -303,11 +260,7 @@ const editContribution = async (contributionId, amount, status) => {
       headers: {
         "x-access-token": localStorage.getItem("token")
       },
-      data: {
-        contribution_id: contributionId,
-        amount: amount,
-        status: status,
-      }
+      data: params
     })
     return res
   } catch(err) {
@@ -333,7 +286,7 @@ const deleteContribution = async (contributionId) => {
   }
 }
 
-const createContributedAsset = async (contributionId, name) => {
+const createContributedAsset = async (params) => {
   try {
     const res = await axios({
       method: 'post',
@@ -341,10 +294,7 @@ const createContributedAsset = async (contributionId, name) => {
       headers: {
         "x-access-token": localStorage.getItem("token")
       },
-      data: {
-        contribution_id: contributionId,
-        name: name
-      }
+      data: params
     })
     return res
   } catch(err) {
@@ -352,7 +302,7 @@ const createContributedAsset = async (contributionId, name) => {
   }
 }
 
-const getPresignedURL = async (bucketName, objectName) => {
+const getPresignedURL = async (params) => {
   try {
     const res = await axios({
       method: 'post',
@@ -360,10 +310,7 @@ const getPresignedURL = async (bucketName, objectName) => {
       headers: {
         "x-access-token": localStorage.getItem("token")
       },
-      data: {
-        bucket_name: bucketName,
-        object_name: objectName
-      }
+      data: params
     })
     return res
   } catch(err) {
@@ -401,7 +348,7 @@ const getPack = async (packTitle) => {
   }
 }
 
-const createPack = async (title, description, image, video, coinCost) => {
+const createPack = async (params) => {
   try {
     const res = await axios({
       method: 'post',
@@ -409,13 +356,7 @@ const createPack = async (title, description, image, video, coinCost) => {
       headers: {
         "x-access-token": localStorage.getItem("token")
       },
-      data: {
-        title: title,
-        description: description,
-        image_file: image,
-        video_file: video,
-        coin_cost: coinCost
-      }
+      data: params
     })
     return res
   } catch(err) {
@@ -423,7 +364,7 @@ const createPack = async (title, description, image, video, coinCost) => {
   }
 }
 
-const editPack = async (packId, title, description, image, video, coinCost, active, downloads) => {
+const editPack = async (params) => {
   try {
     const res = await axios({
       method: 'post',
@@ -431,16 +372,7 @@ const editPack = async (packId, title, description, image, video, coinCost, acti
       headers: {
         "x-access-token": localStorage.getItem("token")
       },
-      data: {
-        pack_id: packId,
-        title: title,
-        description: description,
-        image_file: image,
-        video_file: video,
-        coin_cost: coinCost,
-        active: active,
-        downloads: downloads
-      }
+      data: params
     })
     return res
   } catch(err) {
@@ -466,7 +398,7 @@ const deletePack = async (packId) => {
   }
 }
 
-const createAssetType = async (packId, description) => {
+const createAssetType = async (params) => {
   try {
     const res = await axios({
       method: 'post',
@@ -474,10 +406,7 @@ const createAssetType = async (packId, description) => {
       headers: {
         "x-access-token": localStorage.getItem("token")
       },
-      data: {
-        pack_id: packId,
-        description: description
-      }
+      data: params
     })
     return res
   } catch(err) {
@@ -485,7 +414,7 @@ const createAssetType = async (packId, description) => {
   }
 }
 
-const editAssetType = async (assetTypeId, description) => {
+const editAssetType = async (params) => {
   try {
     const res = await axios({
       method: 'post',
@@ -493,10 +422,7 @@ const editAssetType = async (assetTypeId, description) => {
       headers: {
         "x-access-token": localStorage.getItem("token")
       },
-      data: {
-        asset_type_id: assetTypeId,
-        description: description
-      }
+      data: params
     })
     return res
   } catch(err) {
