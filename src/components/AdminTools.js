@@ -252,22 +252,35 @@ class AdminTools extends Component {
 
   async handleEditContributionSave(event, contributionId, contributionEditKey) {
     event.preventDefault()
-    const amount = event.target.form[`contribution${contributionId}Amount`].value || event.target.form[`contribution${contributionId}Amount`].placeholder
-    const status = event.target.form[`contribution${contributionId}Status`].value || event.target.form[`contribution${contributionId}Status`].placeholder
+
+    const amount = event.target.form[`contribution${contributionId}Amount`].value 
+    const status = event.target.form[`contribution${contributionId}Status`].value
+
     const params = {
-      contribution_id: contributionId,
-      amount: amount,
-      status: status
+      contribution_id: contributionId
     }
-    try {
-      const res = await editContributionAPICall(params)
-      if(res.status === 200) {
-        this.setState({[contributionEditKey]: false})
-        this.props.getAndUpdateProjects()
+    if(amount !== '' && amount !== ' ') {
+      params.amount = amount
+    }
+    if(status !== '' && status !== ' ') {
+      params.status = status
+    }
+    const paramsSize = Object.keys(params).length
+
+    if(paramsSize > 1) {
+      try {
+        const res = await editContributionAPICall(params)
+        if(res.status === 200) {
+          this.setState({[contributionEditKey]: false})
+          this.props.getAndUpdateProjects()
+        } else throw new Error
+      } catch(err) {
+        console.log(err)
       }
-    } catch(err) {
-      console.log(err)
+    } else {
+      this.setState({[contributionEditKey]: false})
     }
+
   }
 
   async handleEditUserSave(event, userId, userEditKey) {
