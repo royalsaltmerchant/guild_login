@@ -370,20 +370,31 @@ class AdminTools extends Component {
 
   async handleEditAssetTypeSave(event, assetTypeId, assetTypeEditKey) {
     event.preventDefault()
-    const description = event.target.form[`assetType${assetTypeId}Description`].value || event.target.form[`assetType${assetTypeId}Description`].placeholder
+
+    const description = event.target.form[`assetType${assetTypeId}Description`].value
+
     const params =  {
-      asset_type_id: assetTypeId,
-      description: description
+      asset_type_id: assetTypeId
     }
-    try {
-      const res = await editAssetTypeAPICall(params)
-      if(res.status === 200) {
-        this.setState({[assetTypeEditKey]: false})
-        this.getAndUpdatePacks()
+    if(description !== '' && description !== ' ') {
+      params.description = description
+    }
+    const paramsSize = Object.keys(params).length
+
+    if(paramsSize > 1) {
+      try {
+        const res = await editAssetTypeAPICall(params)
+        if(res.status === 200) {
+          this.setState({[assetTypeEditKey]: false})
+          this.getAndUpdatePacks()
+        } else throw new Error
+      } catch(err) {
+        console.log(err)
       }
-    } catch(err) {
-      console.log(err)
+    } else {
+      this.setState({[assetTypeEditKey]: false})
     }
+
   }
 
   async handleDeleteProject(projectId) {
