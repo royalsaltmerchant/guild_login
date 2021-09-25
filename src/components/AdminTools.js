@@ -212,28 +212,42 @@ class AdminTools extends Component {
     }
   }
 
-  async handleEditEntrySave(event, entryId, entryEditKey) {
+  async handleEditEntrySave(event, entry, entryEditKey) {
     event.preventDefault()
-    const amount = event.target.form[`entry${entryId}Amount`].value || event.target.form[`entry${entryId}Amount`].placeholder
-    const title = event.target.form[`entry${entryId}Title`].value || event.target.form[`entry${entryId}Title`].placeholder
-    const description = event.target.form[`entry${entryId}Description`].value || event.target.form[`entry${entryId}Description`].placeholder
-    const complete = event.target.form[`entry${entryId}Complete`].checked
+    
+    const amount = event.target.form[`entry${entry.id}Amount`].value 
+    const title = event.target.form[`entry${entry.id}Title`].value 
+    const description = event.target.form[`entry${entry.id}Description`].value
+    const complete = event.target.form[`entry${entry.id}Complete`].checked
+
     const params = {
-      entry_id: entryId,
-      amount: amount,
-      title: title,
-      description: description,
-      complete: complete
+      entry_id: entry.id
     }
-    try {
-      const res = await editEntryAPICall(params)
-      if(res.status === 200) {
-        this.setState({[entryEditKey]: false})
-        this.props.getAndUpdateProjects()
+    if(amount !== '' && amount !== ' ') {
+      params.amount = amount
+    }
+    if(title !== '' && title !== ' ') {
+      params.title = title
+    }
+    if(entry.complete !== complete) {
+      params.complete = complete
+    }
+    const paramsSize = Object.keys(params).length
+
+    if(paramsSize > 1) {
+      try {
+        const res = await editEntryAPICall(params)
+        if(res.status === 200) {
+          this.setState({[entryEditKey]: false})
+          this.props.getAndUpdateProjects()
+        } else throw new Error
+      } catch(err) {
+        console.log(err)
       }
-    } catch(err) {
-      console.log(err)
+    } else {
+      this.setState({[entryEditKey]: false})
     }
+
   }
 
   async handleEditContributionSave(event, contributionId, contributionEditKey) {
@@ -279,7 +293,7 @@ class AdminTools extends Component {
         if(res.status === 200) {
           this.setState({[userEditKey]: false})
           this.getAndUpdateUsersList()
-        }
+        } else throw new Error
       } catch(err) {
         console.log(err)
       }
@@ -523,7 +537,7 @@ class AdminTools extends Component {
             />
           </Form.Group>
           <div className="d-flex justify-content-around">
-            <Button variant="outline-success" onClick={(event) => this.handleEditEntrySave(event, entry.id, entryEditKey)}>
+            <Button variant="outline-success" onClick={(event) => this.handleEditEntrySave(event, entry, entryEditKey)}>
               Save
             </Button>
             <Button variant="outline-secondary" onClick={() => this.setState({[entryEditKey]: false})}>
