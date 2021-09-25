@@ -239,21 +239,33 @@ class AdminTools extends Component {
 
   async handleEditUserSave(event, userId, userEditKey) {
     event.preventDefault()
-    const approvedAssetCount = event.target.form[`user${userId}ApprovedAssetCount`].value || event.target.form[`user${userId}ApprovedAssetCount`].placeholder
-    const coins = event.target.form[`user${userId}Coins`].value || event.target.form[`user${userId}Coins`].placeholder
+
+    const approvedAssetCount = event.target.form[`user${userId}ApprovedAssetCount`].value
+    const coins = event.target.form[`user${userId}Coins`].value
+
     const params = {
-      user_id: userId,
-      approved_asset_count: approvedAssetCount,
-      coins: coins
+      user_id: userId
     }
-    try {
-      const res = await editUserAPICall(params)
-      if(res.status === 200) {
-        this.setState({[userEditKey]: false})
-        this.getAndUpdateUsersList()
+    if(approvedAssetCount !== '' && approvedAssetCount !== ' ') {
+      params.approved_asset_count = approvedAssetCount
+    }
+    if(coins !== '' && coins !== ' ') {
+      params.coins = coins
+    }
+    const paramsSize = Object.keys(params).length
+
+    if(paramsSize > 1) {
+      try {
+        const res = await editUserAPICall(params)
+        if(res.status === 200) {
+          this.setState({[userEditKey]: false})
+          this.getAndUpdateUsersList()
+        }
+      } catch(err) {
+        console.log(err)
       }
-    } catch(err) {
-      console.log(err)
+    } else {
+      this.setState({[userEditKey]: false})
     }
   }
 
