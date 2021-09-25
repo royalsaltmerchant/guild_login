@@ -315,37 +315,57 @@ class AdminTools extends Component {
     }
   }
 
-  async handleEditPackSave(event, packId, packEditKey, downloads) {
+  async handleEditPackSave(event, pack, packEditKey) {
     event.preventDefault()
-    const title = event.target.form[`pack${packId}Title`].value || event.target.form[`pack${packId}Title`].placeholder
-    const description = event.target.form[`pack${packId}Description`].value || event.target.form[`pack${packId}Description`].placeholder
-    const image = event.target.form[`pack${packId}Image`].files[0] ? event.target.form[`pack${packId}Image`].files[0].name : event.target.form[`pack${packId}Image`].placeholder
-    const imageFile = event.target.form[`pack${packId}Image`].files[0]
-    const video = event.target.form[`pack${packId}Video`].value.trim() || event.target.form[`pack${packId}Video`].placeholder
-    const coinCost = event.target.form[`pack${packId}CoinCost`].value || event.target.form[`pack${packId}CoinCost`].placeholder
-    const active = event.target.form[`pack${packId}Active`].checked
+
+    const title = event.target.form[`pack${pack.id}Title`].value
+    const description = event.target.form[`pack${pack.id}Description`].value
+    const image = event.target.form[`pack${pack.id}Image`].files[0] ? event.target.form[`pack${pack.id}Image`].files[0].name : null
+    const imageFile = event.target.form[`pack${pack.id}Image`].files[0]
+    const video = event.target.form[`pack${pack.id}Video`].value.trim()
+    const coinCost = event.target.form[`pack${pack.id}CoinCost`].value
+    const active = event.target.form[`pack${pack.id}Active`].checked
+
     const params =  {
-      pack_id: packId,
-      title: title,
-      description: description,
-      image_file: image,
-      video_file: video,
-      coin_cost: coinCost,
-      active: active,
-      downloads: downloads
+      pack_id: pack.id
     }
-    try {
-      const res = await editPackAPICall(params)
-      if(res.status === 200) {
-        this.setState({[packEditKey]: false})
-        this.getAndUpdatePacks()
-        if(imageFile) {
-          this.uploadImageFile(imageFile, "pack_images")
-        }
+    if(title !== '' && title !== ' ') {
+      params.title = title
+    }
+    if(description !== '' && description !== ' ') {
+      params.description = description
+    }
+    if(image !== null) {
+      params.image_file = image
+    }
+    if(video !== '' && video !== ' ') {
+      params.video_file = video
+    }
+    if(coinCost !== '' && coinCost !== ' ') {
+      params.coin_cost = coinCost
+    }
+    if(pack.active !== active) {
+      params.active = active
+    }
+    const paramsSize = Object.keys(params).length
+
+    if(paramsSize > 1) {
+      try {
+        const res = await editPackAPICall(params)
+        if(res.status === 200) {
+          this.setState({[packEditKey]: false})
+          this.getAndUpdatePacks()
+          if(imageFile) {
+            this.uploadImageFile(imageFile, "pack_images")
+          }
+        } else throw new Error
+      } catch(err) {
+        console.log(err)
       }
-    } catch(err) {
-      console.log(err)
+    } else {
+      this.setState({[packEditKey]: false})
     }
+
   }
 
   async handleEditAssetTypeSave(event, assetTypeId, assetTypeEditKey) {
@@ -822,7 +842,7 @@ class AdminTools extends Component {
             />
           </Form.Group>
           <div className="d-flex justify-content-around">
-            <Button variant="outline-success" onClick={(event) => this.handleEditPackSave(event, pack.id, packEditKey, pack.downloads)}>
+            <Button variant="outline-success" onClick={(event) => this.handleEditPackSave(event, pack, packEditKey)}>
               Save
             </Button>
             <Button variant="outline-secondary" onClick={() => this.setState({[packEditKey]: false})}>
