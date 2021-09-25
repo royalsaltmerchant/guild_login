@@ -163,33 +163,52 @@ class AdminTools extends Component {
     })
   }
 
-  async handleEditProjectSave(event, projectId, projectEditKey) {
+  async handleEditProjectSave(event, project, projectEditKey) {
     event.preventDefault()
-    const title = event.target.form[`project${projectId}Title`].value || event.target.form[`project${projectId}Title`].placeholder
-    const description = event.target.form[`project${projectId}Description`].value || event.target.form[`project${projectId}Description`].placeholder
-    const image = event.target.form[`project${projectId}Image`].files[0] ? event.target.form[`project${projectId}Image`].files[0].name : event.target.form[`project${projectId}Image`].placeholder
-    const imageFile = event.target.form[`project${projectId}Image`].files[0]
-    const active = event.target.form[`project${projectId}Active`].checked
-    const complete = event.target.form[`project${projectId}Complete`].checked
+
+    const title = event.target.form[`project${project.id}Title`].value
+    const description = event.target.form[`project${project.id}Description`].value 
+    const image = event.target.form[`project${project.id}Image`].files[0] ? event.target.form[`project${project.id}Image`].files[0].name : null
+    const imageFile = event.target.form[`project${project.id}Image`].files[0]
+    const active = event.target.form[`project${project.id}Active`].checked
+    const complete = event.target.form[`project${project.id}Complete`].checked
+
     const params =  {
-      project_id: projectId,
-      title: title,
-      description: description,
-      image_file: image,
-      active: active,
-      complete: complete
+      project_id: project.id
     }
-    try {
-      const res = await editProjectAPICall(params)
-      if(res.status === 200) {
-        this.setState({[projectEditKey]: false})
-        this.props.getAndUpdateProjects()
-        if(imageFile) {
-          this.uploadImageFile(imageFile, "project_images")
-        }
+    if(title !== '' && title !== ' ') {
+      params.title = title
+    }
+    if(description !== '' && description !== ' ') {
+      params.description = description
+    }
+    if(image !== null) {
+      params.image_file = image
+    }
+    if(project.active !== active) {
+      params.active = active
+    }
+    if(project.complete !== complete) {
+      params.complete = complete
+    }
+
+    const paramsSize = Object.keys(params).length
+
+    if(paramsSize > 1) {
+      try {
+        const res = await editProjectAPICall(params)
+        if(res.status === 200) {
+          this.setState({[projectEditKey]: false})
+          this.props.getAndUpdateProjects()
+          if(imageFile) {
+            this.uploadImageFile(imageFile, "project_images")
+          }
+        } else throw new Error
+      } catch(err) {
+        console.log(err)
       }
-    } catch(err) {
-      console.log(err)
+    } else {
+      this.setState({[projectEditKey]: false})
     }
   }
 
@@ -604,7 +623,7 @@ class AdminTools extends Component {
             />
           </Form.Group>
           <div className="d-flex justify-content-around">
-            <Button variant="outline-success" onClick={(event) => this.handleEditProjectSave(event, project.id, projectEditKey)}>
+            <Button variant="outline-success" onClick={(event) => this.handleEditProjectSave(event, project, projectEditKey)}>
               Save
             </Button>
             <Button variant="outline-secondary" onClick={() => this.setState({[projectEditKey]: false})}>
