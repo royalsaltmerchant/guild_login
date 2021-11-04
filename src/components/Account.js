@@ -96,7 +96,7 @@ class Account extends Component {
             const contributedAssetsToggleKey = `contributedAsset${contribution.id}Toggle`
             return(
               <div>
-                <div className="p-3 border rounded">
+                <div className="p-3 m-1 border rounded">
                   <p>Created: {date}</p>
                   <p>Project: {project.title}</p>
                   <p>Entry: {entry.title}</p>
@@ -146,7 +146,9 @@ class Account extends Component {
             <Button variant="link" onClick={() => this.handleContributionsClick()}>
               Contributions: {this.state.contributionsToggle ? "▼" : "▲"}
             </Button>
-            {this.state.contributionsToggle ? this.renderContributions(userInfo.contributions) : null}
+            <div className="d-flex flex-row flex-wrap">
+              {this.state.contributionsToggle ? this.renderContributions(userInfo.contributions) : null}
+            </div>
           </div>
           <br />
           {userInfo.admin ? <AdminTools hasProjects={this.state.hasProjects} loadingProjects={this.state.loadingProjects} getAndUpdateProjects={() => this.getAndUpdateProjects()}/> : null}
