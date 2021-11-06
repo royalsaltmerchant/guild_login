@@ -173,43 +173,62 @@ class Upload extends Component {
     }
   }
 
-  async handleSubmit(event) {
+  async handleUploadFiles(event) {
+    event.preventDefault()
     const {entryInfo} = this.props.entryStore
     const {userInfo} = this.props.userStore
     const {projectInfo} = this.props.projectsStore
-    const config = {
-      bucketName: awsConfig.bucketName,
-      dirName: `${projectInfo.title}/${entryInfo.title}/${userInfo.first_name}_${userInfo.last_name}`,
-      region: awsConfig.region,
-      accessKeyId: awsConfig.accessKeyId,
-      secretAccessKey: awsConfig.secretAccessKey
-    }
-    event.preventDefault()
+
     const toUploadFilesList = Object.values(event.target.file.files)
-    const S3Client = new S3(config)
-    const successList = []
-    const failedList = []
-    await Promise.all(
-      toUploadFilesList.map(async file => {
-        try {
-          const res = await S3Client.uploadFile(file, file.name)
-          if(res.status === 204 || res.status === 200) {
-            console.log('success', file.name)
-            successList.push(file.name)
-          } else {
+
+    // calculate amount of contributions user has made and will make
+    const userContributions = userInfo.contributions
+    let userContributionsAmount = 0
+    userContributions.forEach(contribution => {
+      userContributionsAmount += contribution.amount
+    });
+    const toUploadFilesListAmount = toUploadFilesList.length
+    const totalAmountOfContributionsAttempt = toUploadFilesListAmount + userContributionsAmount
+
+    // only upload if maximum will not be reached in this attempt
+    if(totalAmountOfContributionsAttempt <= entryInfo.amount) {
+      const config = {
+        bucketName: awsConfig.bucketName,
+        dirName: `${projectInfo.title}/${entryInfo.title}/${userInfo.first_name}_${userInfo.last_name}`,
+        region: awsConfig.region,
+        accessKeyId: awsConfig.accessKeyId,
+        secretAccessKey: awsConfig.secretAccessKey
+      }
+      const S3Client = new S3(config)
+      const successList = []
+      const failedList = []
+      
+      await Promise.all(
+        toUploadFilesList.map(async file => {
+          try {
+            const res = await S3Client.uploadFile(file, file.name)
+            if(res.status === 204 || res.status === 200) {
+              console.log('success', file.name)
+              successList.push(file.name)
+            } else {
+              console.log('failed', file.name)
+              failedList.push(file.name)
+            }
+          } catch(err) {
             console.log('failed', file.name)
             failedList.push(file.name)
           }
-        } catch(err) {
-          console.log('failed', file.name)
-          failedList.push(file.name)
-        }
+        })
+      )
+      this.setState({
+        successList: [...this.state.successList, ...successList],
+        failedList: [...this.state.failedList, ...failedList]
       })
-    )
-    this.setState({
-      successList: [...this.state.successList, ...successList],
-      failedList: [...this.state.failedList, ...failedList]
-    })
+    } else {
+      alert('You have reached the maximum limit of contributions for this entry.')
+      this.props.history.push('/dashboard')
+      this.props.history.go()
+    }
   }
 
   renderFilesSuccessList() {
@@ -259,7 +278,7 @@ class Upload extends Component {
             {this.renderFilesFailedList()}
           </div>
           <hr />
-          <Form onSubmit={(event) => this.handleSubmit(event)}>
+          <Form onSubmit={(event) => this.handleUploadFiles(event)}>
             <Form.Group controlId="file">
               <Form.Label>Upload Files</Form.Label>
               <Form.Control 
