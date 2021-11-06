@@ -185,7 +185,7 @@ class Upload extends Component {
     const userContributions = userInfo.contributions
     let userContributionsAmount = 0
     userContributions.forEach(contribution => {
-      userContributionsAmount += contribution.amount
+      if(contribution.entry_id === entryInfo.id) userContributionsAmount += contribution.amount
     });
     const toUploadFilesListAmount = toUploadFilesList.length
     const totalAmountOfContributionsAttempt = toUploadFilesListAmount + userContributionsAmount
