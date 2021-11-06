@@ -225,7 +225,7 @@ class Upload extends Component {
         failedList: [...this.state.failedList, ...failedList]
       })
     } else {
-      alert('You have reached the maximum limit of contributions for this entry.')
+      alert(`You have reached or exceeded the maximum limit of ${entryInfo.amount} contributions for this entry.`)
       this.props.history.push('/dashboard')
       this.props.history.go()
     }
