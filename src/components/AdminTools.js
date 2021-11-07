@@ -953,19 +953,21 @@ class AdminTools extends Component {
       const usersMap = usersList.map(user => {
         const userToggleKey = `user${user.id}Toggle`
         const userEditKey = `user${user.id}Edit`
-        return(
-          <div className="px-3 py-1">
-            <div className="d-flex justify-content-between">
-              <Button variant="link" onClick={() => this.handleUserClick(userToggleKey, userEditKey)}>
-                {`${user.first_name} ${user.last_name} (${user.username}) ${user.email}`} {this.state[userToggleKey] ? "▼" : "▲"}
-              </Button>
-              <Button variant="link" disabled={!this.state[userToggleKey]} onClick={() => this.handleEditUserClick(userEditKey)}>
-                Edit
-              </Button>
+        if(user.active) {
+          return(
+            <div className="px-3 py-1">
+              <div className="d-flex justify-content-between">
+                <Button variant="link" onClick={() => this.handleUserClick(userToggleKey, userEditKey)}>
+                  {`${user.first_name} ${user.last_name} (${user.username}) ${user.email}`} {this.state[userToggleKey] ? "▼" : "▲"}
+                </Button>
+                <Button variant="link" disabled={!this.state[userToggleKey]} onClick={() => this.handleEditUserClick(userEditKey)}>
+                  Edit
+                </Button>
+              </div>
+              {this.renderUserToggleOrEdit(userToggleKey, userEditKey, user)}
             </div>
-            {this.renderUserToggleOrEdit(userToggleKey, userEditKey, user)}
-          </div>
-        )
+          )
+        }
       })
       return usersMap
     }
