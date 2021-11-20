@@ -76,7 +76,7 @@ class Root extends React.Component{
             <Redirect to="/login" />
           </Route>
           <Route path="/logout">
-            <Logout isLoading={() => this.setState({loadingAuth: true})} />
+            <Logout isLoading={() => this.setState({loadingAuth: true})} authenticate={this.authenticate} />
           </Route>
           <Route path="/library">
             <Library />

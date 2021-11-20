@@ -49,7 +49,7 @@ class Login extends Component {
         const token = res.data.token
         localStorage.setItem('token', "Bearer " + token)
         this.props.history.push('/account')
-        this.props.history.go()
+        this.props.authenticate()
       }
     } catch(err) {
       if(err.response && err.response.status === 400) {

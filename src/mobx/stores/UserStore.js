@@ -8,8 +8,8 @@ export default class UserStore {
   constructor() {
     this.userInfo = null
     this.usersList = null
-    this.userInfoLoading = true
-    this.usersListLoading = true
+    this.userInfoLoading = false
+    this.usersListLoading = false
 
     makeObservable(this, {
       userInfo: observable,
@@ -22,6 +22,7 @@ export default class UserStore {
   }
 
   async getUserInfo() {
+    this.userInfoLoading = true
     try {
       const res = await getUserAPICall()
       if(res.status === 200) {
@@ -37,6 +38,7 @@ export default class UserStore {
   }
 
   async getUsersList() {
+    this.usersListLoading = true
     try {
       const res = await getUsersAPICall()
       if(res.status === 200) {
