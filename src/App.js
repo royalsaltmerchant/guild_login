@@ -25,6 +25,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import {Container, Row, Col} from 'react-bootstrap'
 import {authenticate as authenticateAPICall} from './config/api'
 import ForgotPassword from './components/ForgotPassword';
+import ResetPassword from './components/ResetPassword';
 
 
 const mobxStores = {
@@ -111,6 +112,9 @@ class Root extends React.Component{
           </Route>
           <Route path="/forgot_password">
             <ForgotPassword />
+          </Route>
+          <Route path="/reset_password/:token">
+            <ResetPassword />
           </Route>
           <Route render={() => <NoMatch />}/>
         </Switch>
