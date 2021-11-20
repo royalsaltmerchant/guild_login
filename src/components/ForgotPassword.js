@@ -1,17 +1,18 @@
 import React, { Component } from 'react'
-import { Form } from 'react-bootstrap'
+import { Form, Button } from 'react-bootstrap'
 
 export default class ForgotPassword extends Component {
   constructor() {
     super()
     this.state = {
-      email: ''
+      
     }
   }
 
   handleSubmit(event) {
     event.preventDefault()
-    console.log(event)
+    const email = event.target.email.value.trim()
+    console.log(email)
   }
   render() {
     return (
@@ -26,6 +27,9 @@ export default class ForgotPassword extends Component {
               type="text"
               placeholder="Email" />
           </Form.Group>
+          <Button variant="outline-success" type="submit">
+            Submit
+          </Button>
         </Form>
       </div>
     )
