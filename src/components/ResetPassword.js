@@ -62,7 +62,7 @@ export default function ResetPassword() {
           <Form.Control 
             required
             size="md"
-            type="text"
+            type="password"
             placeholder="New Password" />
         </Form.Group>
         <Button variant="outline-success" type="submit">
