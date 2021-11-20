@@ -24,6 +24,7 @@ import NoMatch from './components/NoMatch';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import {Container, Row, Col} from 'react-bootstrap'
 import {authenticate as authenticateAPICall} from './config/api'
+import ForgotPassword from './components/ForgotPassword';
 
 
 const mobxStores = {
@@ -107,6 +108,9 @@ class Root extends React.Component{
           </Route>
           <Route path="/Upload/entry/:entryId">
             {authenticated ? <Upload /> : <AccessDenied />}
+          </Route>
+          <Route path="/forgot_password">
+            <ForgotPassword />
           </Route>
           <Route render={() => <NoMatch />}/>
         </Switch>

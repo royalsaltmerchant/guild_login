@@ -73,51 +73,53 @@ class Login extends Component {
     if(loadingAuth){
       return(
         <div>
-        {this.renderAlert()}
-        <h2 className="pb-3 text-center">Login</h2>
-        <div className="d-flex justify-content-center align-items-center" style={{width: '75vw', backgroundColor: '#fff'}}>
-          <Spinner animation="border" role="status">
-            <span className="sr-only">Loading...</span>
-          </Spinner>
-        </div>
+          {this.renderAlert()}
+          <h2 className="pb-3 text-center">Login</h2>
+          <div className="d-flex justify-content-center align-items-center" style={{width: '75vw', backgroundColor: '#fff'}}>
+            <Spinner animation="border" role="status">
+              <span className="sr-only">Loading...</span>
+            </Spinner>
+          </div>
         </div>
       )
     } else {
       if(!authenticated){
         return(
-        <div className="w-50">
-          {this.renderAlert()}
-          <h2 className="pb-3 text-center">Login</h2>
-          <div>
-            <Form onSubmit={(event) => this.handleSubmit(event)}>
-          <Form.Group controlId="username_or_email">
-            <Form.Label>Username or Email</Form.Label>
-            <Form.Control 
-              required
-              size="md"
-              type="text"
-              placeholder="Username or Email" />
-          </Form.Group>
+          <div className="w-50">
+            {this.renderAlert()}
+            <h2 className="pb-3 text-center">Login</h2>
+            <div>
+              <Form onSubmit={(event) => this.handleSubmit(event)}>
+                <Form.Group controlId="username_or_email">
+                  <Form.Label>Username or Email</Form.Label>
+                  <Form.Control 
+                    required
+                    size="md"
+                    type="text"
+                    placeholder="Username or Email" />
+                </Form.Group>
 
-          <Form.Group controlId="password">
-            <Form.Label>Password</Form.Label>
-            <Form.Control 
-              required
-              size="md" 
-              type="password" 
-              placeholder="Password" />
-          </Form.Group>
-            <Button variant="outline-success" type="submit">
-              Login
-            </Button>
-        </Form>
-        <br />
-        <div className="d-flex flex-column">
-          <small>Need an Account?</small>
-          <Link to="/register">Join Us!</Link>
-        </div>
+                <Form.Group controlId="password">
+                  <Form.Label>Password</Form.Label>
+                  <Form.Control 
+                    required
+                    size="md" 
+                    type="password" 
+                    placeholder="Password"
+                  />
+                  <Link to="/forgot_password"><small>Forgot Password?</small></Link>
+                </Form.Group>
+                <Button variant="outline-success" type="submit">
+                  Login
+                </Button>
+              </Form>
+              <br />
+              <div className="d-flex flex-column">
+                <small>Need an Account?</small>
+                <Link to="/register">Join Us!</Link>
+              </div>
+            </div>
           </div>
-        </div>
         )
       }
       else {
