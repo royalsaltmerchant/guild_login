@@ -448,6 +448,38 @@ const deleteAssetType = async (assetTypeId) => {
   }
 }
 
+const requestResetEmail = async (email) => {
+  try {
+    const res = await axios({
+      method: 'post',
+      url: `${config.apiURL}/api/request_reset_email`,
+      data: {
+        email: email
+      }
+    })
+    return res
+  } catch(err) {
+    throw(err)
+  }
+}
+
+const resetPassword = async (password, token) => {
+  try {
+    const res = await axios({
+      method: 'post',
+      url: `${config.apiURL}/api/reset_password`,
+      data: {
+        password: password,
+        token: token
+      },
+      validateStatus: (status) => status === 400
+    })
+    return res
+  } catch(err) {
+    throw(err)
+  }
+}
+
 export {
   login,
   authenticate,
@@ -476,5 +508,7 @@ export {
   deletePack,
   createAssetType,
   editAssetType,
-  deleteAssetType
+  deleteAssetType,
+  requestResetEmail,
+  resetPassword
 }
