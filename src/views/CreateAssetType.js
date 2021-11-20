@@ -22,7 +22,7 @@ export default class CreateAssetType extends Component {
     try {
       const res = await createAssetTypeAPICall(params)
       if(res.status === 201) {
-        this.props.getAndUpdatePacks()
+        this.props.packsStore.getPacks()
         this.props.createAssetTypeBoolean(false)
       }
     } catch(err) {

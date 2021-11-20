@@ -1,14 +1,11 @@
 import { observable, makeObservable, action, toJS } from 'mobx';
-import React, { Component } from 'react'
 import {
   getProjects as getProjectsAPICall,
   getProject as getProjectAPICall
 } from '../../config/api'
 
-export default class ProjectsStore extends Component {
+export default class ProjectsStore {
   constructor() {
-    super()
-
     this.projects = null
     this.projectInfo = null
 

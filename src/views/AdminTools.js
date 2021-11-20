@@ -39,32 +39,7 @@ class AdminTools extends Component {
   
   componentDidMount() {
     this.getAndUpdateUsersList()
-    this.getAndUpdatePacks()
-  }
-
-  async getAndUpdatePacks() {
-    this.setState({loadingPacks: true}, async () => {
-      try {
-        const res = await this.props.packsStore.getPacks()
-        if(res.status === 200) {
-          this.setState({
-            hasPacks: true,
-            loadingPacks: false
-          })
-        } else {
-          this.setState({
-            hasPacks: false,
-            loadingPacks: false
-          })
-        }
-      } catch(err) {
-        console.log(err)
-        this.setState({
-          hasPacks: false,
-          loadingPacks: false
-        })
-      }
-    })
+    this.props.packsStore.getPacks()
   }
 
   async getAndUpdateUsersList() {
@@ -354,7 +329,7 @@ class AdminTools extends Component {
         const res = await editPackAPICall(params)
         if(res.status === 200) {
           this.setState({[packEditKey]: false})
-          this.getAndUpdatePacks()
+          this.props.packsStore.getPacks()
           if(imageFile) {
             this.uploadImageFile(imageFile, "pack_images")
           }
@@ -386,7 +361,7 @@ class AdminTools extends Component {
         const res = await editAssetTypeAPICall(params)
         if(res.status === 200) {
           this.setState({[assetTypeEditKey]: false})
-          this.getAndUpdatePacks()
+          this.props.packsStore.getPacks()
         } else throw new Error
       } catch(err) {
         console.log(err)
@@ -434,7 +409,7 @@ class AdminTools extends Component {
     try {
       const res = await deletePackAPICall(packId)
       if(res.status === 200) {
-        this.getAndUpdatePacks()
+        this.props.packsStore.getPacks()
       }
     } catch(err) {
       console.log(err)
@@ -445,7 +420,7 @@ class AdminTools extends Component {
     try {
       const res = await deleteAssetTypeAPICall(assetTypeId)
       if(res.status === 200) {
-        this.getAndUpdatePacks()
+        this.props.packsStore.getPacks()
       }
     } catch(err) {
       console.log(err)
@@ -794,7 +769,7 @@ class AdminTools extends Component {
           <Button className="px-3 py-3" variant="link" onClick={() => this.setState({createAssetTypeBoolean: !this.state.createAssetTypeBoolean})}>
             {this.state.createAssetTypeBoolean ? '- Create New Asset Type' : '+ Create New Asset Type'}
           </Button>
-          {this.state.createAssetTypeBoolean ? <CreateAssetType packId={pack.id} getAndUpdatePacks={() => this.getAndUpdatePacks()} createAssetTypeBoolean={value => this.setState({createAssetTypeBoolean: value})}/> : null}
+          {this.state.createAssetTypeBoolean ? <CreateAssetType packId={pack.id} getAndUpdatePacks={() => this.props.packsStore.getPacks()} createAssetTypeBoolean={value => this.setState({createAssetTypeBoolean: value})}/> : null}
         </div>
       )
     }
@@ -1012,7 +987,7 @@ class AdminTools extends Component {
           <Button className="px-3 py-1" variant="link" onClick={() => this.setState({createPackBoolean: !this.state.createPackBoolean})}>
             {this.state.createPackBoolean ? '- Create New Pack' : '+ Create New Pack'}
           </Button>
-          {this.state.createPackBoolean ? <CreatePack getAndUpdatePacks={() => this.getAndUpdatePacks()} createPackBoolean={value => this.setState({createPackBoolean: value})}/> : null}
+          {this.state.createPackBoolean ? <CreatePack createPackBoolean={value => this.setState({createPackBoolean: value})}/> : null}
         </div>
         <hr />
         <p style={{fontSize:"20px"}}>Projects:</p>

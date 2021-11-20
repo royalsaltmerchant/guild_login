@@ -151,7 +151,15 @@ class Account extends Component {
             </div>
           </div>
           <br />
-          {userInfo.admin ? <AdminTools hasProjects={this.state.hasProjects} loadingProjects={this.state.loadingProjects} getAndUpdateProjects={() => this.getAndUpdateProjects()}/> : null}
+          {
+            userInfo.admin ?
+            <AdminTools
+              hasProjects={this.state.hasProjects}
+              loadingProjects={this.state.loadingProjects}
+              getAndUpdateProjects={() => this.getAndUpdateProjects()}
+            /> 
+            : null
+          }
         </div>
       )
     }

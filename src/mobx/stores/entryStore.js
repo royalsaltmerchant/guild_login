@@ -1,13 +1,10 @@
 import { observable, makeObservable, action, toJS } from 'mobx';
-import React, { Component } from 'react'
 import {
   getEntry as getEntryAPICall,
 } from '../../config/api'
 
-export default class EntryStore extends Component {
+export default class EntryStore {
   constructor() {
-    super()
-
     this.entryInfo = null
 
     makeObservable(this, {

@@ -1,20 +1,21 @@
 import { observable, makeObservable, action, toJS } from 'mobx';
-import React, { Component } from 'react'
 import {
   getUser as getUserAPICall,
   getUsers as getUsersAPICall
 } from '../../config/api'
 
-export default class UserStore extends Component {
+export default class UserStore {
   constructor() {
-    super()
-
     this.userInfo = null
     this.usersList = null
+    this.userInfoLoading = true
+    this.usersListLoading = true
 
     makeObservable(this, {
       userInfo: observable,
       usersList: observable,
+      userInfoLoading: observable,
+      usersListLoading: observable,
       getUserInfo: action,
       getUsersList: action
     })
@@ -26,10 +27,12 @@ export default class UserStore extends Component {
       if(res.status === 200) {
         const data = toJS(res.data)
         this.userInfo = data
+        this.userInfoLoading = false
       }
       return res
     } catch(err) {
       console.log(err)
+      this.userInfoLoading = false
     }
   }
 
@@ -39,10 +42,12 @@ export default class UserStore extends Component {
       if(res.status === 200) {
         const data = toJS(res.data)
         this.usersList = data
+        this.usersListLoading = false
       }
       return res
     } catch(err) {
       console.log(err)
+      this.usersListLoading = false
     }
   }
 }

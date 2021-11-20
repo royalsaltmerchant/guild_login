@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import {Col, Media} from 'react-bootstrap'
+import {Media} from 'react-bootstrap'
 import sfag from '../assets/sfag.png'
 
 export default class Header extends Component {

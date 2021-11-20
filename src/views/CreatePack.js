@@ -56,7 +56,7 @@ export default class CreatePack extends Component {
       const res = await createPackAPICall(params)
       if(res.status === 201) {
         console.log(res)
-        this.props.getAndUpdatePacks()
+        this.props.packsStore.getPacks()
         this.props.createPackBoolean(false)
         this.uploadFile(imageFile, "pack_images", imageFile.name)
         this.uploadFile(audioFile, `packs/${editedPackTitle}`, editedPackTitle)

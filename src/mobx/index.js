@@ -1,6 +1,6 @@
 import UserStore from './stores/UserStore'
 import ProjectsStore from './stores/ProjectsStore'
-import EntryStore from './stores/entryStore'
+import EntryStore from './stores/EntryStore'
 import PacksStore from './stores/PacksStore'
 
 const userStore = new UserStore()
