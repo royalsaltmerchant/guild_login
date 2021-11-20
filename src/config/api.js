@@ -472,7 +472,7 @@ const resetPassword = async (password, token) => {
         password: password,
         token: token
       },
-      validateStatus: (status) => status === 400
+      validateStatus: (status) => status === 200 || status === 400
     })
     return res
   } catch(err) {
