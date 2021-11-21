@@ -347,7 +347,7 @@ class AdminTools extends Component {
     try {
       const res = await deleteProjectAPICall(projectId)
       if(res.status === 200) {
-        this.props.getAndUpdateProjects()
+        this.props.projectsStore.getProjects()
       }
     } catch(err) {
       console.log(err)
@@ -358,7 +358,7 @@ class AdminTools extends Component {
     try {
       const res = await deleteEntryAPICall(entryId)
       if(res.status === 200) {
-        this.props.getAndUpdateProjects()
+        this.props.projectsStore.getProjects()
       }
     } catch(err) {
       console.log(err)
@@ -369,7 +369,7 @@ class AdminTools extends Component {
     try {
       const res = await deleteContributionAPICall(contributionId)
       if(res.status === 200) {
-        this.props.getAndUpdateProjects()
+        this.props.projectsStore.getProjects()
       }
     } catch(err) {
       console.log(err)
@@ -578,7 +578,7 @@ class AdminTools extends Component {
           <Button className="px-3 py-3" variant="link" onClick={() => this.setState({createEntryBoolean: !this.state.createEntryBoolean})}>
             {this.state.createEntryBoolean ? '- Create New Entry' : '+ Create New Entry'}
           </Button>
-          {this.state.createEntryBoolean ? <CreateEntry projectId={project.id} getAndUpdateProjects={() => this.props.getAndUpdateProjects()} createEntryBoolean={value => this.setState({createEntryBoolean: value})}/> : null}
+          {this.state.createEntryBoolean ? <CreateEntry projectId={project.id} createEntryBoolean={value => this.setState({createEntryBoolean: value})}/> : null}
         </div>
       )
     }
@@ -737,7 +737,7 @@ class AdminTools extends Component {
           <Button className="px-3 py-3" variant="link" onClick={() => this.setState({createAssetTypeBoolean: !this.state.createAssetTypeBoolean})}>
             {this.state.createAssetTypeBoolean ? '- Create New Asset Type' : '+ Create New Asset Type'}
           </Button>
-          {this.state.createAssetTypeBoolean ? <CreateAssetType packId={pack.id} getAndUpdatePacks={() => this.props.packsStore.getPacks()} createAssetTypeBoolean={value => this.setState({createAssetTypeBoolean: value})}/> : null}
+          {this.state.createAssetTypeBoolean ? <CreateAssetType packId={pack.id} createAssetTypeBoolean={value => this.setState({createAssetTypeBoolean: value})}/> : null}
         </div>
       )
     }
@@ -946,7 +946,7 @@ class AdminTools extends Component {
           <Button className="px-3 py-1" variant="link" onClick={() => this.setState({createProjectBoolean: !this.state.createProjectBoolean})}>
             {this.state.createProjectBoolean ? '- Create New Project' : '+ Create New Project'}
           </Button>
-          {this.state.createProjectBoolean ? <CreateProject getAndUpdateProjects={() => this.props.getAndUpdateProjects()} createProjectBoolean={value => this.setState({createProjectBoolean: value})}/> : null}
+          {this.state.createProjectBoolean ? <CreateProject createProjectBoolean={value => this.setState({createProjectBoolean: value})}/> : null}
           <Button className="px-3 py-1" variant="link" onClick={() => this.setState({createPackBoolean: !this.state.createPackBoolean})}>
             {this.state.createPackBoolean ? '- Create New Pack' : '+ Create New Pack'}
           </Button>

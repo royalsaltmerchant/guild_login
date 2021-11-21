@@ -3,15 +3,9 @@ import {Spinner, Button, Form} from 'react-bootstrap'
 import {createProject as createProjectAPICall} from '../config/api'
 import S3 from 'react-aws-s3'
 import {awsConfig} from '../config/config'
+import { inject, observer } from 'mobx-react'
 
-export default class CreateProject extends Component {
-  constructor(props) {
-    super(props)
-
-    this.state = {
-
-    }
-  }
+class CreateProject extends Component {
 
   async uploadImageFile(imageFile) {
     const config = {
@@ -49,7 +43,7 @@ export default class CreateProject extends Component {
       const res = await createProjectAPICall(params)
       if(res.status === 201) {
         console.log(res)
-        this.props.getAndUpdateProjects()
+        this.props.projectsStore.getProjects()
         this.props.createProjectBoolean(false)
         this.uploadImageFile(imageFile)
       }
@@ -102,3 +96,5 @@ export default class CreateProject extends Component {
     )
   }
 }
+
+export default inject('projectsStore')(observer(CreateProject))

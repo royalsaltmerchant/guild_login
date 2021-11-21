@@ -1,129 +1,57 @@
-import React, { Component } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Form, Button, Spinner, Alert } from 'react-bootstrap'
 import {inject, observer} from 'mobx-react'
 import {awsConfig} from '../config/config'
 import S3 from 'react-aws-s3'
-import {withRouter, Prompt} from 'react-router-dom'
+import {useHistory, useParams, Prompt} from 'react-router-dom'
 import {
   createContribution as createContributionAPICall,
   createContributedAsset as createContributedAssetAPICall
 } from '../config/api'
 
-class Upload extends Component {
-  constructor(props) {
-    super(props)
-    this.state = {
-      successList: [],
-      failedList: [],
-      hasEntry: false,
-      hasProject: false,
-      hasUser: false,
-      loading: true,
-      alert: false,
-      alertType: 'warning',
-      alertText: 'Something went wrong, please try again.',
-      complete: false
-    }
-  }
+const Upload = inject('entryStore', 'userStore', 'projectsStore')(observer((props) => {
+  const [alert, setAlert] = useState(false)
+  const [alertType, setAlertType] = useState('warning')
+  const [alertText, setAlertText] = useState('Something went wrong, please try again.')
+  const [successList, setSuccessList] = useState([])
+  const [failedList, setFailedList] = useState([])
+  const [complete, setComplete] = useState(false)
+  const history = useHistory()
+  const entryParams = useParams()
 
-  componentDidMount() {
-    this.getAndUpdateEntry()
-    this.getAndUpdateUser()
-  }
+  useEffect(async () => {
+    await props.entryStore.getEntryInfo(entryParams.entryId)
+    props.projectsStore.getProjectInfo(props.entryStore.entryInfo.project_id)
+    props.userStore.getUserInfo()
+  },[])
 
-  componentDidUpdate(prevProps, prevState) {
-    if(this.state.successList.length !== 0 && !this.state.complete) {
+  useEffect(() => {
+    if(successList.length !== 0 && !complete) {
       window.onbeforeunload = () => true
     } else {
       window.onbeforeunload = undefined
     }
+  })
 
-    if(prevState.hasEntry !== this.state.hasEntry) {
-      this.getAndUpdateProject()
-    }
-    if(this.state.alert) {
-      setTimeout(() => {
-        this.setState({
-          alert: false
-        })
-      }, 10000)
-    }
-  }
+  useEffect(() => {
+    setTimeout(() => {
+      setAlert(false)
+    }, 10000)
+  },[alert])
 
-  renderAlert() {
-    if(this.state.alert) {
+  function renderAlert() {
+    if(alert) {
       return(
-        <Alert variant={this.state.alertType}>
-          {this.state.alertText}
+        <Alert variant={alertType}>
+          {alertText}
         </Alert>
       )
     }
   }
 
-  async getAndUpdateEntry() {
-    this.setState({hasEntry: false, loading: true}, async () => {
-      try {
-        const res = await this.props.entryStore.getEntryInfo(this.props.match.params.entryId)
-        if(res.status === 200) {
-          this.setState({
-            hasEntry: true,
-            loading: false
-          })
-        }
-      } catch(err) {
-        console.log(err)
-        this.setState({
-          hasEntry: false,
-          loading: false
-        })
-      }
-    })
-  }
-
-  async getAndUpdateProject() {
-    this.setState({hasProject: false, loading: true}, async () => {
-      try {
-        const res = await this.props.projectsStore.getProjectInfo(this.props.entryStore.entryInfo.project_id)
-        if(res.status === 200) {
-          this.setState({
-            hasProject: true,
-            loading: false
-          })
-        }
-      } catch(err) {
-        console.log(err)
-        this.setState({
-          hasEntry: false,
-          loading: false
-        })
-      }
-    })
-  }
-
-  async getAndUpdateUser() {
-    this.setState({hasUser: false, loading: true}, async () => {
-      try {
-        const res = await this.props.userStore.getUserInfo()
-        if(res.status === 200) {
-          this.setState({
-            hasUser: true,
-            loading: false
-          })
-        }
-      } catch(err) {
-        console.log(err)
-        this.setState({
-          hasEntry: false,
-          loading: false
-        })
-      }
-    })
-  }
-
-  async handleComplete() {
+  async function handleComplete() {
     
-    const {successList} = this.state
-    const contributionSuccess = await this.handleContributionCall()
+    const contributionSuccess = await handleContributionCall()
     if(contributionSuccess) {
       const contributionId = contributionSuccess.data.id
       await Promise.all(
@@ -133,22 +61,19 @@ class Upload extends Component {
               contribution_id: contributionId,
               name: asset
             }
-            const assetRes = await createContributedAssetAPICall(params)
+            await createContributedAssetAPICall(params)
           } catch(err) {
             console.log(err)
           }
         })
         )
-        this.setState({complete: true}, () => {
-          this.props.history.push('/dashboard')
-          this.props.history.go()
-        })
+        setComplete(true)
+        history.push('/dashboard')
     }
   }
   
-  async handleContributionCall() {
-    const {successList} = this.state
-    const {entryInfo} = this.props.entryStore
+  async function handleContributionCall() {
+    const {entryInfo} = props.entryStore
     const amount = successList.length
     const params = {
         entry_id: entryInfo.id,
@@ -164,20 +89,18 @@ class Upload extends Component {
         return false
       }
     } catch(err) {
-      this.setState({
-        alert: true,
-        alertText: "Something went wrong, please try again.",
-        alertType: "danger"
-      })
+      setAlertText('Something went wrong, please try again.')
+      setAlertType('danger')
+      setAlert(true)
       return false
     }
   }
 
-  async handleUploadFiles(event) {
+  async function handleUploadFiles(event) {
     event.preventDefault()
-    const {entryInfo} = this.props.entryStore
-    const {userInfo} = this.props.userStore
-    const {projectInfo} = this.props.projectsStore
+    const {entryInfo} = props.entryStore
+    const {userInfo} = props.userStore
+    const {projectInfo} = props.projectsStore
 
     const toUploadFilesList = Object.values(event.target.file.files)
 
@@ -200,8 +123,8 @@ class Upload extends Component {
         secretAccessKey: awsConfig.secretAccessKey
       }
       const S3Client = new S3(config)
-      const successList = []
-      const failedList = []
+      const newSuccessList = []
+      const newFailedList = []
       
       await Promise.all(
         toUploadFilesList.map(async file => {
@@ -220,19 +143,15 @@ class Upload extends Component {
           }
         })
       )
-      this.setState({
-        successList: [...this.state.successList, ...successList],
-        failedList: [...this.state.failedList, ...failedList]
-      })
+      setSuccessList([...successList, ...newSuccessList])
+      setFailedList([...failedList, ...newFailedList])
     } else {
-      alert(`You have reached or exceeded the maximum limit of ${entryInfo.amount} contributions for this entry.`)
-      this.props.history.push('/dashboard')
-      this.props.history.go()
+      window.alert(`You have reached or exceeded the maximum limit of ${entryInfo.amount} contributions for this entry.`)
+      history.push('/dashboard')
     }
   }
 
-  renderFilesSuccessList() {
-    const {successList} = this.state
+  function renderFilesSuccessList() {
     if(successList.length !== 0) {
       const mapList = successList.map(item => (
         <div key={item} className="d-flex justify-content-between">
@@ -244,8 +163,7 @@ class Upload extends Component {
     }
   }
 
-  renderFilesFailedList() {
-    const {failedList} = this.state
+  function renderFilesFailedList() {
     if(failedList.length !== 0) {
       const mapList = failedList.map(item => (
         <div key={item} className="d-flex justify-content-between">
@@ -257,68 +175,63 @@ class Upload extends Component {
       return mapList
     }
   }
+  
+  function renderUploaderOrLoading() {
 
-  renderUploaderOrLoading() {
-    const {hasEntry, hasProject, hasUser, loading, successList, complete} = this.state
-    const {entryInfo} = this.props.entryStore
+    if(props.entryStore.entryInfoLoading) {
+      return <Spinner animation="border" role="status" />
+    }
 
-    if(hasEntry && hasProject && hasUser && !loading) {
-      return(
-        <div>
-          <Prompt
-            when={successList.length != 0 && !complete}
-            message="If you leave without pressing Complete your contribution will be lost! Are you sure you want to navigate away?"
-          />
-          <h2 className="text-center">{entryInfo.title}</h2>
-          <p className="text-center">{entryInfo.description}</p>
-          {this.renderAlert()}
-          <p>Uploaded Files:</p>
-          <div className="p-1 rounded border border-dark" style={{width: '60vw', height: '25vh', backgroundColor: '#fff', overflowY: 'auto'}}>
-            {this.renderFilesSuccessList()}
-            {this.renderFilesFailedList()}
-          </div>
-          <hr />
-          <Form onSubmit={(event) => this.handleUploadFiles(event)}>
-            <Form.Group controlId="file">
-              <Form.Label>Upload Files</Form.Label>
-              <Form.Control 
-                required
-                size="md" 
-                type="file" 
-                multiple
-                accept="audio/*"
-              />
-            </Form.Group>
-              <Button variant="outline-success" type="submit">
-                Upload Files
-              </Button>
-          </Form>
-          <br />
-          <small style={{color: 'red'}}>* Do not navigate away without clicking complete, or your contribution will not register!</small>
-          <Button variant="info" className="w-100" disabled={this.state.successList.length === 0} onClick={() => this.handleComplete()}>
-            Complete
-          </Button>    
-        </div>
-      )
+    if(!props.entryStore.entryInfo) {
+      return <p>Can't Load Info</p>
     }
-    if(!hasEntry || !hasProject || !hasUser && !loading) {
-      return <div>
-      <p>Can't Load Info, Try Again</p>
-      <Button onClick={() => this.getAndUpdateEntry()}>Try Again</Button>
-    </div>
-    }
-    if(loading) {
-      return <Spinner />
-    }
-  }
 
-  render() {
-    return (
+    const {entryInfo} = props.entryStore
+    return(
       <div>
-        {this.renderUploaderOrLoading()}
+        <Prompt
+          when={successList.length != 0 && !complete}
+          message="If you leave without pressing Complete your contribution will be lost! Are you sure you want to navigate away?"
+        />
+        <h2 className="text-center">{entryInfo.title}</h2>
+        <p className="text-center">{entryInfo.description}</p>
+        {renderAlert()}
+        <p>Uploaded Files:</p>
+        <div className="p-1 rounded border border-dark" style={{width: '60vw', height: '25vh', backgroundColor: '#fff', overflowY: 'auto'}}>
+          {renderFilesSuccessList()}
+          {renderFilesFailedList()}
+        </div>
+        <hr />
+        <Form onSubmit={(event) => handleUploadFiles(event)}>
+          <Form.Group controlId="file">
+            <Form.Label>Upload Files</Form.Label>
+            <Form.Control 
+              required
+              size="md" 
+              type="file" 
+              multiple
+              accept="audio/*"
+            />
+          </Form.Group>
+            <Button variant="outline-success" type="submit">
+              Upload Files
+            </Button>
+        </Form>
+        <br />
+        <small style={{color: 'red'}}>* Do not navigate away without clicking complete, or your contribution will not register!</small>
+        <Button variant="info" className="w-100" disabled={successList.length === 0} onClick={() => handleComplete()}>
+          Complete
+        </Button>    
       </div>
     )
   }
-}
 
-export default inject('entryStore', 'projectsStore', 'userStore')(observer(withRouter(Upload)))
+  return (
+    <div>
+      {renderUploaderOrLoading()}
+    </div>
+  )
+}))
+
+export default Upload
+

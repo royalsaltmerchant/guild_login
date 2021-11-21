@@ -3,15 +3,9 @@ import {Spinner, Button, Form} from 'react-bootstrap'
 import {createPack as createPackAPICall} from '../config/api'
 import S3 from 'react-aws-s3'
 import {awsConfig} from '../config/config'
+import { inject, observer } from 'mobx-react'
 
-export default class CreatePack extends Component {
-  constructor(props) {
-    super(props)
-
-    this.state = {
-
-    }
-  }
+class CreatePack extends Component {
 
   async uploadFile(file, fileDir, fileName) {
     const config = {
@@ -143,3 +137,5 @@ export default class CreatePack extends Component {
     )
   }
 }
+
+export default inject('packsStore')(observer(CreatePack))

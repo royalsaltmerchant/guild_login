@@ -1,15 +1,9 @@
+import { inject, observer } from 'mobx-react'
 import React, { Component } from 'react'
 import {Spinner, Button, Form} from 'react-bootstrap'
 import {createAssetType as createAssetTypeAPICall} from '../config/api'
 
-export default class CreateAssetType extends Component {
-  constructor(props) {
-    super(props)
-
-    this.state = {
-
-    }
-  }
+class CreateAssetType extends Component {
 
   async handleSubmitAssetType(event) {
     event.preventDefault()
@@ -53,3 +47,5 @@ export default class CreateAssetType extends Component {
     )
   }
 }
+
+export default inject('packsStore')(observer(CreateAssetType))

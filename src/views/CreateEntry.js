@@ -1,15 +1,9 @@
+import { inject, observer } from 'mobx-react'
 import React, { Component } from 'react'
 import {Spinner, Button, Form} from 'react-bootstrap'
 import {createEntry as createEntryAPICall} from '../config/api'
 
-export default class CreateEntry extends Component {
-  constructor(props) {
-    super(props)
-
-    this.state = {
-
-    }
-  }
+class CreateEntry extends Component {
 
   async handleSubmitEntry(event) {
     event.preventDefault()
@@ -26,7 +20,7 @@ export default class CreateEntry extends Component {
     try {
       const res = await createEntryAPICall(params)
       if(res.status === 201) {
-        this.props.getAndUpdateProjects()
+        this.props.projectsStore.getProjects()
         this.props.createEntryBoolean(false)
       }
     } catch(err) {
@@ -78,3 +72,5 @@ export default class CreateEntry extends Component {
     )
   }
 }
+
+export default inject('projectsStore')(observer(CreateEntry))
