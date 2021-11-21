@@ -17,10 +17,6 @@ class Account extends Component {
     this.props.projectsStore.getProjects()
   }
 
-  handleContributionsClick() {
-    this.setState({contributionsToggle: !this.state.contributionsToggle})
-  }
-
   handleContributedAssetsClick(contributedAssetsToggleKey) {
     this.setState({[contributedAssetsToggleKey]: !this.state[contributedAssetsToggleKey]})
   }
@@ -65,10 +61,12 @@ class Account extends Component {
             </div>
           )
         } else {
-          <p>Can't get contribution info...</p>
+          <div className="p-3 m-1 border rounded justify-content-center align-items-center" style={{height: '10vh'}}><p>Project entry removed... </p></div>
         }
       } else {
-        return <p>Can't get contribution info...</p>
+        return(
+          <div className="p-3 m-1 border rounded justify-content-center align-items-center" style={{height: '10vh'}}><p>Project removed... </p></div>
+        )
       }
     })
     return contributionsMap
@@ -93,19 +91,31 @@ class Account extends Component {
 
     const {userInfo} = this.props.userStore
     return(
-      <div className="d-flex flex-column justify-content-start align-items-start p-3 rounded" style={{width: '75vw', backgroundColor: '#fff'}}>
-        <p style={{fontSize:"25px"}}>{userInfo.username}</p>
+      <div className="d-flex flex-column justify-content-center align-items-center p-3 rounded" style={{width: '75vw', backgroundColor: '#fff'}}>
         <div className="px-3">
-          <p>First Name: {userInfo.first_name}</p>
-          <p>Last Name: {userInfo.last_name}</p>
-          <p>Email: {userInfo.email}</p>
-          <p>Approved asset count: {userInfo.approved_asset_count}</p>
-          <p>Coins: {userInfo.coins}</p>
-          <Button variant="link" onClick={() => this.handleContributionsClick()}>
-            Contributions: {this.state.contributionsToggle ? "▼" : "▲"}
-          </Button>
-          <div className="d-flex flex-row flex-wrap">
-            {this.state.contributionsToggle ? this.renderContributions(userInfo.contributions) : null}
+          <div className="d-flex flex-row justify-content-between border rounded p-3">
+            <div className="d-flex flex-column">
+              <h4>{userInfo.username}</h4>
+              <p>{userInfo.first_name} {userInfo.last_name}</p>
+              <p>{userInfo.email}</p>
+            </div>
+            <div className="d-flex flex-column">
+              <p><u>Approved asset count</u></p>
+              <p><b>{userInfo.approved_asset_count}</b></p>
+            </div>
+            <div className="d-flex flex-column">
+              <p><u>Coins</u></p>
+              <p><b>{userInfo.coins}</b></p>
+            </div>
+          </div>
+          <br />
+          <br />
+          <div className="text-center">
+            <h4>Contributions</h4>
+            <hr />
+            <div className="d-flex flex-row flex-wrap justify-content-center">
+              {this.renderContributions(userInfo.contributions)}
+            </div>
           </div>
         </div>
         <br />
@@ -117,7 +127,7 @@ class Account extends Component {
   render() {
     return (
       <div>
-        <h2 className="pb-3 text-center">Account</h2>
+        <h2 className="pb-3 text-center">Account Info</h2>
         {this.renderLoadingOrAccount()}
       </div>
     )
