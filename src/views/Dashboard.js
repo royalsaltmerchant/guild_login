@@ -50,7 +50,7 @@ const Dashboard = inject('userStore', 'projectsStore')(observer((props) => {
           </Button>}
         </div>
         <p className="px-3">"{entry.description}"</p>
-        <p className="px-3"><u>Contributions:</u></p>
+        <p className="px-3"><u>Contributions</u></p>
         {renderEntryContributions(entry.contributions)}
         </div>
       </div>
@@ -80,7 +80,7 @@ const Dashboard = inject('userStore', 'projectsStore')(observer((props) => {
             </div>
             <hr style={{marginTop: "-15px"}} />
             <div className="py-3">
-              <p className="px-3"><u>About:</u></p>
+              <p className="px-3"><u>About</u></p>
               <h4 className="px-3"> {project.description}</h4>
             </div>
             {renderProjectEntries(project.entries)}
