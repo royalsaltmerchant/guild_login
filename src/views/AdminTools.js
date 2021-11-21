@@ -38,76 +38,19 @@ class AdminTools extends Component {
     this.props.packsStore.getPacks()
   }
 
-  handleProjectClick(projectToggleKey, projectEditKey) {
+  handleToggleClick(toggleKey, editKey) {
     this.setState({
-      [projectToggleKey]: !this.state[projectToggleKey],
-      [projectEditKey]: false
+      [toggleKey]: !this.state[toggleKey],
+      [editKey]: false
     })
   }
 
-  handleEntryClick(entryToggleKey, entryEditKey) {
+  handleEditClick(editKey) {
     this.setState({
-      [entryToggleKey]: !this.state[entryToggleKey],
-      [entryEditKey]: false
+      [editKey]: !this.state[editKey]
     })
   }
 
-  handleContributionClick(contributionToggleKey, contributionEditKey) {
-    this.setState({
-      [contributionToggleKey]: !this.state[contributionToggleKey],
-      [contributionEditKey]: false
-    })
-  }
-
-  handleUserClick(userToggleKey, userEditKey) {
-    this.setState({
-      [userToggleKey]: !this.state[userToggleKey],
-      [userEditKey]: false
-    })
-  }
-
-  handlePackClick(packToggleKey, packEditKey) {
-    this.setState({
-      [packToggleKey]: !this.state[packToggleKey],
-      [packEditKey]: false
-    })
-  }
-
-  handleEditProjectClick(projectEditKey) {
-    this.setState({
-      [projectEditKey]: !this.state[projectEditKey]
-    })
-  }
-
-  handleEditEntryClick(entryEditKey) {
-    this.setState({
-      [entryEditKey]: !this.state[entryEditKey]
-    })
-  }
-
-  handleEditContributionClick(contributionEditKey) {
-    this.setState({
-      [contributionEditKey]: !this.state[contributionEditKey]
-    })
-  }
-
-  handleEditUserClick(userEditKey) {
-    this.setState({
-      [userEditKey]: !this.state[userEditKey]
-    })
-  }
-
-  handleEditPackClick(packEditKey) {
-    this.setState({
-      [packEditKey]: !this.state[packEditKey]
-    })
-  }
-
-  handleEditAssetTypeClick(assetTypeEditKey) {
-    this.setState({
-      [assetTypeEditKey]: !this.state[assetTypeEditKey]
-    })
-  }
 
   async handleEditProjectSave(event, project, projectEditKey) {
     event.preventDefault()
@@ -458,10 +401,10 @@ class AdminTools extends Component {
           const contributionEditKey = `contribution${contribution.id}Edit`
           return(
             <div key={contribution.id} className="px-3">
-              <Button variant="link" onClick={() => this.handleContributionClick(contributionToggleKey, contributionEditKey)}>
+              <Button variant="link" onClick={() => this.handleToggleClick(contributionToggleKey, contributionEditKey)}>
                 {`${firstUser.first_name} ${firstUser.last_name} (${firstUser.username})`} {this.state[contributionToggleKey] ? "▼" : "▲"}
               </Button>
-              <Button variant="link" disabled={!this.state[contributionToggleKey]} onClick={() => this.handleEditContributionClick(contributionEditKey)}>
+              <Button variant="link" disabled={!this.state[contributionToggleKey]} onClick={() => this.handleEditClick(contributionEditKey)}>
                   Edit
               </Button>
               {this.renderContributionsToggleOrEdit(contributionToggleKey, contributionEditKey, contribution)}
@@ -551,10 +494,10 @@ class AdminTools extends Component {
       return(
         <div key={entry.id} className="px-3">
           <div className="d-flex justify-content-between">
-            <Button variant="link" onClick={() => this.handleEntryClick(entryToggleKey, entryEditKey)}>
+            <Button variant="link" onClick={() => this.handleToggleClick(entryToggleKey, entryEditKey)}>
               {entry.title} {this.state[entryToggleKey] ? "▼" : "▲"}
             </Button>
-            <Button variant="link" disabled={!this.state[entryToggleKey]} onClick={() => this.handleEditEntryClick(entryEditKey)}>
+            <Button variant="link" disabled={!this.state[entryToggleKey]} onClick={() => this.handleEditClick(entryEditKey)}>
                 Edit
             </Button>
           </div>
@@ -658,10 +601,10 @@ class AdminTools extends Component {
       return(
         <div key={project.id} className="px-3 py-1">
           <div className="d-flex justify-content-between">
-            <Button variant="link" onClick={() => this.handleProjectClick(projectToggleKey, projectEditKey)}>
+            <Button variant="link" onClick={() => this.handleToggleClick(projectToggleKey, projectEditKey)}>
               {project.title} {this.state[projectToggleKey] ? "▼" : "▲"}
             </Button>
-            <Button variant="link" disabled={!this.state[projectToggleKey]} onClick={() => this.handleEditProjectClick(projectEditKey)}>
+            <Button variant="link" disabled={!this.state[projectToggleKey]} onClick={() => this.handleEditClick(projectEditKey)}>
               Edit
             </Button>
           </div>
@@ -709,7 +652,7 @@ class AdminTools extends Component {
         <div key={assetType.id} className="px-3">
           <div className="d-flex justify-content-between">
             <p>{assetType.description}</p>
-            <Button variant="link" onClick={() => this.handleEditAssetTypeClick(assetTypeEditKey)}>
+            <Button variant="link" onClick={() => this.handleEditClick(assetTypeEditKey)}>
                 Edit
             </Button>
           </div>
@@ -829,10 +772,10 @@ class AdminTools extends Component {
       return(
         <div key={pack.id} className="px-3 py-1">
           <div className="d-flex justify-content-between">
-            <Button variant="link" onClick={() => this.handlePackClick(packToggleKey, packEditKey)}>
+            <Button variant="link" onClick={() => this.handleToggleClick(packToggleKey, packEditKey)}>
               {pack.title} {this.state[packToggleKey] ? "▼" : "▲"}
             </Button>
-            <Button variant="link" disabled={!this.state[packToggleKey]} onClick={() => this.handleEditPackClick(packEditKey)}>
+            <Button variant="link" disabled={!this.state[packToggleKey]} onClick={() => this.handleEditClick(packEditKey)}>
               Edit
             </Button>
           </div>
@@ -903,10 +846,10 @@ class AdminTools extends Component {
         return(
           <div className="px-3 py-1">
             <div className="d-flex justify-content-between">
-              <Button variant="link" onClick={() => this.handleUserClick(userToggleKey, userEditKey)}>
+              <Button variant="link" onClick={() => this.handleToggleClick(userToggleKey, userEditKey)}>
                 {`${user.first_name} ${user.last_name} (${user.username}) ${user.email}`} {this.state[userToggleKey] ? "▼" : "▲"}
               </Button>
-              <Button variant="link" disabled={!this.state[userToggleKey]} onClick={() => this.handleEditUserClick(userEditKey)}>
+              <Button variant="link" disabled={!this.state[userToggleKey]} onClick={() => this.handleEditClick(userEditKey)}>
                 Edit
               </Button>
             </div>
