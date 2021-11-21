@@ -101,6 +101,7 @@ class Account extends Component {
     const {userInfo} = this.props.userStore
     return(
       <div className="d-flex flex-column justify-content-center align-items-center p-3 rounded" style={{width: '75vw', backgroundColor: '#fff'}}>
+        <h2 className="pb-3 text-center">Account Info</h2>
         <div className="px-3">
           <div className="d-flex flex-row justify-content-between border rounded p-3">
             <div className="d-flex flex-column">
@@ -136,7 +137,6 @@ class Account extends Component {
   render() {
     return (
       <div>
-        <h2 className="pb-3 text-center">Account Info</h2>
         {this.renderLoadingOrAccount()}
       </div>
     )
