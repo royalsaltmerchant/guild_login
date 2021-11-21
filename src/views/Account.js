@@ -12,15 +12,9 @@ class Account extends Component {
     }
   }
 
-  componentDidMount() {
+  async componentDidMount() {
+    await this.props.userStore.getUserInfo()
     this.props.projectsStore.getProjects()
-  }
-
-  async componentDidUpdate(prevProps) {
-    const {authenticated} = this.props
-    if(prevProps.authenticated !== authenticated && authenticated) {
-      await this.props.userStore.getUserInfo()
-    }
   }
 
   handleContributionsClick() {
@@ -81,18 +75,15 @@ class Account extends Component {
   }
 
   renderLoadingOrAccount() {
-    const {authenticated, loadingAuth} = this.props
 
-    if(loadingAuth || this.props.userStore.userInfoLoading) {
+    if(this.props.userStore.userInfoLoading) {
       return(
         <div className="d-flex justify-content-center align-items-center" style={{width: '75vw', backgroundColor: '#fff'}}>
-          <Spinner animation="border" role="status">
-            <span className="sr-only">Loading...</span>
-          </Spinner>
+          <Spinner animation="border" role="status" />
         </div>
       )
     }
-    if(!authenticated || !this.props.userStore.userInfo) {
+    if(!this.props.userStore.userInfo) {
       return(
         <div className="d-flex justify-content-center align-items-center" style={{width: '75vw', backgroundColor: '#fff'}}>
           <p>Can't find user data...</p>

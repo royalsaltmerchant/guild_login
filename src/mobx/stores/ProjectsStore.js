@@ -1,4 +1,4 @@
-import { observable, makeObservable, action, toJS } from 'mobx';
+import { observable, runInAction, makeObservable, action, toJS } from 'mobx';
 import {
   getProjects as getProjectsAPICall,
   getProject as getProjectAPICall
@@ -27,8 +27,10 @@ export default class ProjectsStore {
       const res = await getProjectsAPICall()
       if(res.status === 200) {
         const data = toJS(res.data)
-        this.projects = data
-        this.projectsLoading = false
+        runInAction(() => {
+          this.projects = data
+          this.projectsLoading = false
+        })
       }
       return res
     } catch(err) {
@@ -43,8 +45,10 @@ export default class ProjectsStore {
       const res = await getProjectAPICall(projectId)
       if(res.status === 200) {
         const data = toJS(res.data)
-        this.projectInfo = data
-        this.projectInfoLoading = false
+        runInAction(() => {
+          this.projectInfo = data
+          this.projectInfoLoading = false
+        })
       }
       return res
     } catch(err) {

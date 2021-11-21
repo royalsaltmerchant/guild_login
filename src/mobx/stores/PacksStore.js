@@ -1,4 +1,4 @@
-import { observable, makeObservable, action, toJS } from 'mobx';
+import { observable, runInAction, makeObservable, action, toJS } from 'mobx';
 import {
   getPacks as getPacksAPICall,
   getPack as getPackAPICall
@@ -27,8 +27,10 @@ export default class PacksStore {
       const res = await getPacksAPICall()
       if(res.status === 200) {
         const data = toJS(res.data)
-        this.packs = data
-        this.packsLoading = false
+        runInAction(() => {
+          this.packs = data
+          this.packsLoading = false
+        })
         return res
       } else throw new Error
     } catch(err) {
@@ -43,8 +45,10 @@ export default class PacksStore {
       const res = await getPackAPICall(packTitle)
       if(res.status === 200) {
         const data = toJS(res.data)
-        this.packInfo = data
-        this.packInfoLoading = false
+        runInAction(() => {
+          this.packInfo = data
+          this.packInfoLoading = false
+        })
         return res
       } else throw new Error
     } catch(err) {

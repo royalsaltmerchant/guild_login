@@ -1,4 +1,4 @@
-import { observable, makeObservable, action, toJS } from 'mobx';
+import { observable, makeObservable, action, toJS, runInAction } from 'mobx';
 import {
   getUser as getUserAPICall,
   getUsers as getUsersAPICall
@@ -27,8 +27,10 @@ export default class UserStore {
       const res = await getUserAPICall()
       if(res.status === 200) {
         const data = toJS(res.data)
-        this.userInfo = data
-        this.userInfoLoading = false
+        runInAction(() => {
+          this.userInfo = data
+          this.userInfoLoading = false
+        })
       }
       return res
     } catch(err) {
@@ -43,8 +45,10 @@ export default class UserStore {
       const res = await getUsersAPICall()
       if(res.status === 200) {
         const data = toJS(res.data)
-        this.usersList = data
-        this.usersListLoading = false
+        runInAction(() => {
+          this.usersList = data
+          this.usersListLoading = false
+        })
       }
       return res
     } catch(err) {

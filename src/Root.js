@@ -91,7 +91,7 @@ class Root extends React.Component{
             <Login isLoading={() => this.setState({loadingAuth: true})} authenticate={this.authenticate} authenticated={authenticated} loadingAuth={loadingAuth} />
           </Route>
           <Route path="/account">
-            <Account authenticate={this.authenticate} authenticated={authenticated} loadingAuth={loadingAuth} />
+            <Account/>
           </Route>
           <Route path="/Dashboard">
             {authenticated ? <Dashboard /> : <AccessDenied />}
