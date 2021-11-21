@@ -30,41 +30,12 @@ class AdminTools extends Component {
       createEntryBoolean: false,
       createPackBoolean: false,
       createAssetTypeBoolean: false,
-      loadingUsers: true,
-      loadingPacks: true,
-      hasUsersList: false,
-      hasPacks: false,
     }
   }
   
   componentDidMount() {
-    this.getAndUpdateUsersList()
+    this.props.userStore.getUsersList()
     this.props.packsStore.getPacks()
-  }
-
-  async getAndUpdateUsersList() {
-    this.setState({loadingUsers: true}, async () => {
-      try {
-        const res = await this.props.userStore.getUsersList()
-        if(res.status === 200) {
-          this.setState({
-            hasUsersList: true,
-            loadingUsers: false
-          })
-        } else {
-          this.setState({
-            hasUsersList: false,
-            loadingUsers: false
-          })
-        }
-      } catch(err) {
-        console.log(err)
-        this.setState({
-          hasUsersList: false,
-          loadingUsers: false
-        })
-      }
-    })
   }
 
   handleProjectClick(projectToggleKey, projectEditKey) {
@@ -174,7 +145,7 @@ class AdminTools extends Component {
         const res = await editProjectAPICall(params)
         if(res.status === 200) {
           this.setState({[projectEditKey]: false})
-          this.props.getAndUpdateProjects()
+          this.props.projectsStore.getProjects()
           if(imageFile) {
             this.uploadImageFile(imageFile, "project_images")
           }
@@ -214,7 +185,7 @@ class AdminTools extends Component {
         const res = await editEntryAPICall(params)
         if(res.status === 200) {
           this.setState({[entryEditKey]: false})
-          this.props.getAndUpdateProjects()
+          this.props.projectsStore.getProjects()
         } else throw new Error
       } catch(err) {
         console.log(err)
@@ -247,7 +218,7 @@ class AdminTools extends Component {
         const res = await editContributionAPICall(params)
         if(res.status === 200) {
           this.setState({[contributionEditKey]: false})
-          this.props.getAndUpdateProjects()
+          this.props.projectsStore.getProjects()
         } else throw new Error
       } catch(err) {
         console.log(err)
@@ -280,7 +251,7 @@ class AdminTools extends Component {
         const res = await editUserAPICall(params)
         if(res.status === 200) {
           this.setState({[userEditKey]: false})
-          this.getAndUpdateUsersList()
+          this.props.userStore.getUsersList()
         } else throw new Error
       } catch(err) {
         console.log(err)
@@ -674,34 +645,31 @@ class AdminTools extends Component {
   }
 
   renderProjects() {
-    const {projects} = this.props.projectsStore
-    const {hasProjects, loadingProjects} = this.props
-    if(hasProjects && !loadingProjects) {
-      const projectMap = projects.map(project => {
-        const projectToggleKey = `project${project.id}Toggle`
-        const projectEditKey = `project${project.id}Edit`
-        return(
-          <div key={project.id} className="px-3 py-1">
-            <div className="d-flex justify-content-between">
-              <Button variant="link" onClick={() => this.handleProjectClick(projectToggleKey, projectEditKey)}>
-                {project.title} {this.state[projectToggleKey] ? "▼" : "▲"}
-              </Button>
-              <Button variant="link" disabled={!this.state[projectToggleKey]} onClick={() => this.handleEditProjectClick(projectEditKey)}>
-                Edit
-              </Button>
-            </div>
-            {this.renderProjectsToggleOrEdit(projectToggleKey, projectEditKey, project)}
-          </div>
-        )
-      })
-      return projectMap
+    if(this.props.projectsStore.projectsLoading) {
+      return <Spinner animation="border" role="status" />
     }
-    if(!hasProjects && !loadingProjects) {
+    if(!this.props.projectsStore.projects) {
       return <p>Can't get projects!</p>
     }
-    if(loadingProjects) {
-      return <Spinner />
-    }
+    const {projects} = this.props.projectsStore
+    const projectMap = projects.map(project => {
+      const projectToggleKey = `project${project.id}Toggle`
+      const projectEditKey = `project${project.id}Edit`
+      return(
+        <div key={project.id} className="px-3 py-1">
+          <div className="d-flex justify-content-between">
+            <Button variant="link" onClick={() => this.handleProjectClick(projectToggleKey, projectEditKey)}>
+              {project.title} {this.state[projectToggleKey] ? "▼" : "▲"}
+            </Button>
+            <Button variant="link" disabled={!this.state[projectToggleKey]} onClick={() => this.handleEditProjectClick(projectEditKey)}>
+              Edit
+            </Button>
+          </div>
+          {this.renderProjectsToggleOrEdit(projectToggleKey, projectEditKey, project)}
+        </div>
+      )
+    })
+    return projectMap
   }
 
   renderAssetTypesEdit(assetTypeEditKey, assetType) {
@@ -846,34 +814,33 @@ class AdminTools extends Component {
   }
 
   renderPacks() {
-    const {packs} = this.props.packsStore
-    const {hasPacks, loadingPacks} = this.state
-    if(hasPacks && !loadingPacks) {
-      const packMap = packs.map(pack => {
-        const packToggleKey = `pack${pack.id}Toggle`
-        const packEditKey = `pack${pack.id}Edit`
-        return(
-          <div key={pack.id} className="px-3 py-1">
-            <div className="d-flex justify-content-between">
-              <Button variant="link" onClick={() => this.handlePackClick(packToggleKey, packEditKey)}>
-                {pack.title} {this.state[packToggleKey] ? "▼" : "▲"}
-              </Button>
-              <Button variant="link" disabled={!this.state[packToggleKey]} onClick={() => this.handleEditPackClick(packEditKey)}>
-                Edit
-              </Button>
-            </div>
-            {this.renderPacksToggleOrEdit(packToggleKey, packEditKey, pack)}
-          </div>
-        )
-      })
-      return packMap
+    if(this.props.packsStore.packsLoading) {
+      return <Spinner animation="border" role="status" />
     }
-    if(!hasPacks && !loadingPacks) {
+
+    if(!this.props.packsStore.packs) {
       return <p>Can't get packs!</p>
     }
-    if(loadingPacks) {
-      return <Spinner />
-    }
+    
+    const {packs} = this.props.packsStore
+    const packMap = packs.map(pack => {
+      const packToggleKey = `pack${pack.id}Toggle`
+      const packEditKey = `pack${pack.id}Edit`
+      return(
+        <div key={pack.id} className="px-3 py-1">
+          <div className="d-flex justify-content-between">
+            <Button variant="link" onClick={() => this.handlePackClick(packToggleKey, packEditKey)}>
+              {pack.title} {this.state[packToggleKey] ? "▼" : "▲"}
+            </Button>
+            <Button variant="link" disabled={!this.state[packToggleKey]} onClick={() => this.handleEditPackClick(packEditKey)}>
+              Edit
+            </Button>
+          </div>
+          {this.renderPacksToggleOrEdit(packToggleKey, packEditKey, pack)}
+        </div>
+      )
+    })
+    return packMap
   }
 
   renderUserToggleOrEdit(userToggleKey, userEditKey, user) {
@@ -922,36 +889,33 @@ class AdminTools extends Component {
   }
 
   renderUsersList() {
-    const {usersList} = this.props.userStore
-    const {hasUsersList, loadingUsers} = this.state
-    if(hasUsersList && !loadingUsers) {
-      const usersMap = usersList.map(user => {
-        const userToggleKey = `user${user.id}Toggle`
-        const userEditKey = `user${user.id}Edit`
-        if(user.active) {
-          return(
-            <div className="px-3 py-1">
-              <div className="d-flex justify-content-between">
-                <Button variant="link" onClick={() => this.handleUserClick(userToggleKey, userEditKey)}>
-                  {`${user.first_name} ${user.last_name} (${user.username}) ${user.email}`} {this.state[userToggleKey] ? "▼" : "▲"}
-                </Button>
-                <Button variant="link" disabled={!this.state[userToggleKey]} onClick={() => this.handleEditUserClick(userEditKey)}>
-                  Edit
-                </Button>
-              </div>
-              {this.renderUserToggleOrEdit(userToggleKey, userEditKey, user)}
-            </div>
-          )
-        }
-      })
-      return usersMap
+    if(this.props.userStore.usersListLoading) {
+      return <Spinner animation="border" role="status" />
     }
-    if(!hasUsersList && !loadingUsers) {
+    if(!this.props.userStore.usersList) {
       return <p>Can't get users list!</p>
     }
-    if(loadingUsers) {
-      return <Spinner />
-    }
+    const {usersList} = this.props.userStore
+    const usersMap = usersList.map(user => {
+      const userToggleKey = `user${user.id}Toggle`
+      const userEditKey = `user${user.id}Edit`
+      if(user.active) {
+        return(
+          <div className="px-3 py-1">
+            <div className="d-flex justify-content-between">
+              <Button variant="link" onClick={() => this.handleUserClick(userToggleKey, userEditKey)}>
+                {`${user.first_name} ${user.last_name} (${user.username}) ${user.email}`} {this.state[userToggleKey] ? "▼" : "▲"}
+              </Button>
+              <Button variant="link" disabled={!this.state[userToggleKey]} onClick={() => this.handleEditUserClick(userEditKey)}>
+                Edit
+              </Button>
+            </div>
+            {this.renderUserToggleOrEdit(userToggleKey, userEditKey, user)}
+          </div>
+        )
+      }
+    })
+    return usersMap
   }
 
   async uploadImageFile(imageFile, dirName) {
@@ -966,10 +930,9 @@ class AdminTools extends Component {
 
     try {
       const res = await S3Client.uploadFile(imageFile, imageFile.name)
-      console.log(res)
       if(res.status === 204) {
         console.log('succesful upload to aws')
-      }
+      } else throw new Error
     } catch(err) {
       console.log('failed to upload image to amazon',err)
     }

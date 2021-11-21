@@ -109,7 +109,7 @@ class Account extends Component {
           </div>
         </div>
         <br />
-        {/* {userInfo.admin ? <AdminTools /> : null} */}
+        {userInfo.admin ? <AdminTools /> : null}
       </div>
     )
   }
