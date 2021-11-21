@@ -33,6 +33,15 @@ class Account extends Component {
   }
 
   renderContributions(contributions) {
+
+    if(this.props.projectsStore.projectsLoading) {
+      return <Spinner animation="border" role="status" />
+    }
+
+    if(!this.props.projectsStore.projects) {
+      return <p>Can't get projects...</p>
+    }
+
     const {projects} = this.props.projectsStore
     const contributionsReverse = contributions.slice().reverse()
     const contributionsMap = contributionsReverse.map(contribution => {
