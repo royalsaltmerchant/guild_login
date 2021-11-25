@@ -4,6 +4,15 @@
   font-family: 'Roboto Slab', serif;
 }
 
+.nav-button :hover {
+  transition: all 0.2s ease-out;
+  text-decoration: none;
+  padding-right: 5px;
+  padding-left: 5px;
+  border-left: 1px solid #cccccc;
+  border-right: 1px solid #cccccc;
+}
+
 .card-style {
   /* transition: all 0.3s ease-out; */
   box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.2);

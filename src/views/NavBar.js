@@ -9,7 +9,7 @@ export default class NavBar extends Component {
     const {authenticated} = this.props
     return(
       <div className="d-flex flex-column align-items-center justify-content-center">
-        <div className="w-75 d-flex justify-content-around">
+        <div className="w-75 d-flex justify-content-around nav-button">
           {authenticated && <Link to="/account">Account</Link>}
           {authenticated && <Link to="/dashboard">Dashboard</Link>}
           <Link to="/library">Library</Link>
