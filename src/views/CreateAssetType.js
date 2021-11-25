@@ -26,7 +26,7 @@ class CreateAssetType extends Component {
 
   render() {
     return(
-      <div className="p-3">
+      <div className="p-3 card-style border rounded">
         <Form onSubmit={(event) => this.handleSubmitAssetType(event)}>
 
           <Form.Group controlId="assetTypeDescription">
