@@ -55,7 +55,7 @@ class Account extends Component {
           const contributedAssetsToggleKey = `contributedAsset${contribution.id}Toggle`
           return(
             <div>
-              <div className="p-3 m-1 border rounded">
+              <div className="p-3 m-1 border rounded card-style">
                 <p>Created: {date}</p>
                 <p>Project: {project.title}</p>
                 <p>Entry: {entry.title}</p>
@@ -70,11 +70,11 @@ class Account extends Component {
             </div>
           )
         } else {
-          <div className="p-3 m-1 border rounded justify-content-center align-items-center" style={{height: '10vh'}}><p>Project entry removed... </p></div>
+          <div className="p-3 m-1 border rounded justify-content-center align-items-center card-style" style={{height: '10vh'}}><p>Project entry removed... </p></div>
         }
       } else {
         return(
-          <div className="p-3 m-1 border rounded justify-content-center align-items-center" style={{height: '10vh'}}><p>Project removed... </p></div>
+          <div className="p-3 m-1 border rounded justify-content-center align-items-center card-style" style={{height: '10vh'}}><p>Project removed... </p></div>
         )
       }
     })
@@ -103,7 +103,7 @@ class Account extends Component {
       <div className="d-flex flex-column justify-content-center align-items-center p-3 rounded" style={{width: '75vw', backgroundColor: '#fff'}}>
         <h2 className="pb-3 text-center">Account Info</h2>
         <div className="px-3">
-          <div className="d-flex flex-row justify-content-between border rounded p-3">
+          <div className="d-flex flex-row justify-content-between border rounded p-3 card-style">
             <div className="d-flex flex-column">
               <h4>{userInfo.username}</h4>
               <p>{userInfo.first_name} {userInfo.last_name}</p>

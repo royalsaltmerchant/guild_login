@@ -352,7 +352,7 @@ class AdminTools extends Component {
     }
     if(this.state[contributionToggleKey] && this.state[contributionEditKey]) {
       return(
-        <Form className="px-3">
+        <Form className="p-3 card-style border rounded">
           <Form.Group controlId={`contribution${contribution.id}Amount`}>
             <Form.Label>Amount</Form.Label>
             <Form.Control 
@@ -424,7 +424,7 @@ class AdminTools extends Component {
   renderEntriesToggleOrEdit(entryToggleKey, entryEditKey, entry) {
     if(this.state[entryToggleKey] && !this.state[entryEditKey]) {
       return(
-        <div className="px-3">
+        <div className="px-5">
           <p>Amount: {entry.amount}</p>
           <p>Description: {entry.description}</p>
           <p>Complete: {entry.complete ? 'true' : 'false'}</p>
@@ -435,7 +435,7 @@ class AdminTools extends Component {
     }
     if(this.state[entryToggleKey] && this.state[entryEditKey]) {
       return(
-        <Form className="px-3">
+        <Form className="p-3 card-style border rounded">
           <Form.Group controlId={`entry${entry.id}Amount`}>
             <Form.Label>Amount</Form.Label>
             <Form.Control 
@@ -516,18 +516,20 @@ class AdminTools extends Component {
           <Image className="small-img" src={`${config.projectImageURL}${project.image_file}`} rounded />
           <p>Active: {project.active ? 'true' : 'false'}</p>
           <p>Complete: {project.complete ? 'true' : 'false'}</p>
-          <p>Entries:</p>
-          {this.renderProjectEntries(project.entries)}
-          <Button className="px-3 py-3" variant="link" onClick={() => this.setState({createEntryBoolean: !this.state.createEntryBoolean})}>
-            {this.state.createEntryBoolean ? '- Create New Entry' : '+ Create New Entry'}
-          </Button>
-          {this.state.createEntryBoolean ? <CreateEntry projectId={project.id} createEntryBoolean={value => this.setState({createEntryBoolean: value})}/> : null}
+          <div>
+            <p><b>Entries:</b></p>
+            {this.renderProjectEntries(project.entries)}
+            <Button className="px-3 py-3" variant="link" onClick={() => this.setState({createEntryBoolean: !this.state.createEntryBoolean})}>
+              {this.state.createEntryBoolean ? '- Create New Entry' : '+ Create New Entry'}
+            </Button>
+            {this.state.createEntryBoolean ? <CreateEntry projectId={project.id} createEntryBoolean={value => this.setState({createEntryBoolean: value})}/> : null}
+          </div>
         </div>
       )
     }
     if(this.state[projectToggleKey] && this.state[projectEditKey]) {
       return(
-        <Form className="px-3">
+        <Form className="p-3 card-style border rounded">
           <Form.Group controlId={`project${project.id}Title`}>
             <Form.Label>Title</Form.Label>
             <Form.Control 
@@ -599,7 +601,7 @@ class AdminTools extends Component {
       const projectToggleKey = `project${project.id}Toggle`
       const projectEditKey = `project${project.id}Edit`
       return(
-        <div key={project.id} className="px-3 py-1">
+        <div key={project.id} className="px-3 py-1 border rounded">
           <div className="d-flex justify-content-between">
             <Button variant="link" onClick={() => this.handleToggleClick(projectToggleKey, projectEditKey)}>
               {project.title} {this.state[projectToggleKey] ? "▼" : "▲"}
@@ -618,7 +620,7 @@ class AdminTools extends Component {
   renderAssetTypesEdit(assetTypeEditKey, assetType) {
     if(this.state[assetTypeEditKey]) {
       return(
-        <Form className="px-3">
+        <Form className="p-3 card-style border rounded">
           <Form.Group controlId={`assetType${assetType.id}Description`}>
             <Form.Label>Description</Form.Label>
             <Form.Control 
@@ -651,7 +653,7 @@ class AdminTools extends Component {
       return(
         <div key={assetType.id} className="px-3">
           <div className="d-flex justify-content-between">
-            <p>{assetType.description}</p>
+            <p>~ {assetType.description}</p>
             <Button variant="link" onClick={() => this.handleEditClick(assetTypeEditKey)}>
                 Edit
             </Button>
@@ -675,18 +677,20 @@ class AdminTools extends Component {
           <p>Coin Cost: {pack.coin_cost}</p>
           <p>Active: {pack.active ? 'true' : 'false'}</p>
           <p>Downloads: {pack.downloads}</p>
-          <p>Asset Types:</p>
-          {this.renderPackAssetTypes(pack.asset_types)}
-          <Button className="px-3 py-3" variant="link" onClick={() => this.setState({createAssetTypeBoolean: !this.state.createAssetTypeBoolean})}>
-            {this.state.createAssetTypeBoolean ? '- Create New Asset Type' : '+ Create New Asset Type'}
-          </Button>
-          {this.state.createAssetTypeBoolean ? <CreateAssetType packId={pack.id} createAssetTypeBoolean={value => this.setState({createAssetTypeBoolean: value})}/> : null}
+          <div>
+            <p><b>Asset Types:</b></p>
+            {this.renderPackAssetTypes(pack.asset_types)}
+            <Button className="px-3 py-3" variant="link" onClick={() => this.setState({createAssetTypeBoolean: !this.state.createAssetTypeBoolean})}>
+              {this.state.createAssetTypeBoolean ? '- Create New Asset Type' : '+ Create New Asset Type'}
+            </Button>
+            {this.state.createAssetTypeBoolean ? <CreateAssetType packId={pack.id} createAssetTypeBoolean={value => this.setState({createAssetTypeBoolean: value})}/> : null}
+          </div>
         </div>
       )
     }
     if(this.state[packToggleKey] && this.state[packEditKey]) {
       return(
-        <Form className="px-3">
+        <Form className="p-3 card-style border rounded">
           <Form.Group controlId={`pack${pack.id}Title`}>
             <Form.Label>Title</Form.Label>
             <Form.Control 
@@ -770,7 +774,7 @@ class AdminTools extends Component {
       const packToggleKey = `pack${pack.id}Toggle`
       const packEditKey = `pack${pack.id}Edit`
       return(
-        <div key={pack.id} className="px-3 py-1">
+        <div key={pack.id} className="px-3 py-1 rounded border">
           <div className="d-flex justify-content-between">
             <Button variant="link" onClick={() => this.handleToggleClick(packToggleKey, packEditKey)}>
               {pack.title} {this.state[packToggleKey] ? "▼" : "▲"}
@@ -799,7 +803,7 @@ class AdminTools extends Component {
     }
     if(this.state[userToggleKey] && this.state[userEditKey]) {
       return(
-        <Form className="px-3">
+        <Form className="p-3 card-style border rounded">
           <Form.Group controlId={`user${user.id}ApprovedAssetCount`}>
             <Form.Label>Approved Asset Count</Form.Label>
             <Form.Control 
@@ -844,7 +848,7 @@ class AdminTools extends Component {
       const userEditKey = `user${user.id}Edit`
       if(user.active) {
         return(
-          <div className="px-3 py-1">
+          <div className="px-3 py-1 rounded border">
             <div className="d-flex justify-content-between">
               <Button variant="link" onClick={() => this.handleToggleClick(userToggleKey, userEditKey)}>
                 {`${user.first_name} ${user.last_name} (${user.username}) ${user.email}`} {this.state[userToggleKey] ? "▼" : "▲"}
@@ -883,7 +887,7 @@ class AdminTools extends Component {
 
   render() {
     return (
-      <div className="border w-100 p-3 rounded">
+      <div className="border w-100 p-3 rounded card-style">
         <p style={{fontSize:"20px"}}>Admin Tools</p>
         <div className="d-flex flex-column justify-content-start align-items-start">
           <Button className="px-3 py-1" variant="link" onClick={() => this.setState({createProjectBoolean: !this.state.createProjectBoolean})}>

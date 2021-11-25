@@ -54,7 +54,7 @@ class CreateProject extends Component {
 
   render() {
     return (
-      <div className="px-3">
+      <div className="p-3 border rounded card-style">
         
         <Form onSubmit={(event) => this.handleSubmitProject(event)}>
           <Form.Group controlId="projectTitle">
