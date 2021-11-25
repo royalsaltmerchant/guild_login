@@ -117,7 +117,7 @@ const Upload = inject('entryStore', 'userStore', 'projectsStore')(observer((prop
     if(totalAmountOfContributionsAttempt <= entryInfo.amount) {
       const config = {
         bucketName: awsConfig.bucketName,
-        dirName: `${projectInfo.title}/${entryInfo.title}/${userInfo.first_name}_${userInfo.last_name}`,
+        dirName: `submissions/${projectInfo.title}/${entryInfo.title}/${userInfo.first_name}_${userInfo.last_name}`,
         region: awsConfig.region,
         accessKeyId: awsConfig.accessKeyId,
         secretAccessKey: awsConfig.secretAccessKey
