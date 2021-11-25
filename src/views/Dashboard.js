@@ -1,15 +1,31 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import { inject, observer } from 'mobx-react'
 import { Spinner, Button, Image } from 'react-bootstrap'
 import {finalConfig as config} from '../config/config'
 import { Link } from 'react-router-dom'
+import downloadFiles from '../utils/DownloadFIles'
 
 const Dashboard = inject('userStore', 'projectsStore')(observer((props) => {
+  const [uri, setUri] = useState(null)
+  const downloadButtonRef = useRef(null)
 
   useEffect(async () => {
     await props.projectsStore.getProjects()
     props.userStore.getUsersList()
+    props.userStore.getUserInfo()
   },[])
+
+  useEffect(() => {
+    if(uri) downloadButtonRef.current.click()
+  },[uri])
+
+  async function handleDownloadContributions(projectTitle, entryTitle) {
+    const objectName = `${projectTitle}/${entryTitle}`
+    const downloadLink = await downloadFiles(objectName)
+    if(downloadLink) {
+      setUri(downloadLink)
+    }
+  }
     
   function renderEntryContributions(contributions) {
     if(props.userStore.usersListLoading) {
@@ -27,9 +43,9 @@ const Dashboard = inject('userStore', 'projectsStore')(observer((props) => {
       if(singleContributionUser) {
         return(
           <div key={contribution.id} className="px-5 d-flex flex-row justify-content-between w-75">
-          <p style={{color: 'purple'}}>{singleContributionUser.username}: <b>{contribution.amount}</b></p>
-          <p style={{color: 'green'}}>{contribution.status}</p>
-        </div>
+            <p style={{color: 'purple'}}>{singleContributionUser.username}: <b>{contribution.amount}</b></p>
+            <p style={{color: 'green'}}>{contribution.status}</p>
+          </div>
         )
       } else {
         return <p>Can't find contributing user...</p>
@@ -38,7 +54,20 @@ const Dashboard = inject('userStore', 'projectsStore')(observer((props) => {
     return contributionsMap
   }
 
-  function renderProjectEntries(entries) {
+  function renderContributionsTitleOrDownloadLink(projectTitle, entryTitle) {
+    if(props.userStore.userInfo && props.userStore.userInfo.admin) {
+      return(
+        <div>
+          <Button variant="outline-secondary" onClick={() => handleDownloadContributions(projectTitle, entryTitle)}>Download Contributions</Button>
+          <a ref={downloadButtonRef} href={uri} />
+        </div>
+      )
+    } else {
+      return <p className="px-3"><u>Contributions</u></p>
+    }
+  }
+
+  function renderProjectEntries(projectTitle, entries) {
     const entriesMap = entries.map(entry => (
       <div key={entry.id} className="p-3 flex-row border rounded my-3" style={{backgroundColor: '#fff'}}>
         <div className="flex-column">
@@ -50,7 +79,7 @@ const Dashboard = inject('userStore', 'projectsStore')(observer((props) => {
           </Button>}
         </div>
         <p className="px-3">"{entry.description}"</p>
-        <p className="px-3"><u>Contributions</u></p>
+        {renderContributionsTitleOrDownloadLink(projectTitle, entry.title)}
         {renderEntryContributions(entry.contributions)}
         </div>
       </div>
@@ -83,7 +112,7 @@ const Dashboard = inject('userStore', 'projectsStore')(observer((props) => {
               <p className="px-3"><u>About</u></p>
               <h4 className="px-3"> {project.description}</h4>
             </div>
-            {renderProjectEntries(project.entries)}
+            {renderProjectEntries(project.title, project.entries)}
           </div>
         )
       }
