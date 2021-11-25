@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react'
 import {useParams} from 'react-router-dom'
 import { Image, Button, Spinner } from 'react-bootstrap'
 import {finalConfig as config, awsConfig} from '../config/config'
-import {getPresignedURL as getPresignedURLAPICall} from '../config/api'
+import downloadFiles from '../utils/DownloadFIles'
 import {inject, observer} from 'mobx-react'
 import {
   editUser as editUserAPICall,
@@ -59,21 +59,16 @@ const PackDetails = inject('packsStore', 'userStore')(observer((props) => {
 
   async function handleDownload() {
     const {packName} = packNameParams
-    const bucketName = awsConfig.bucketName
     const objectName = `packs/${packName}/${packName}.zip`
-    const params = {
-      bucket_name: bucketName,
-      object_name: objectName
-    }
+
     try {
-      const res = await getPresignedURLAPICall(params)
-      if(res.status === 200) {
-        const downloadLink = res.data
+      const downloadLink = await downloadFiles(objectName)
+      if(downloadLink) {
         setUri(downloadLink)
         return true
-      }
+      } else throw new Error('Could not get download link')
     } catch(err) {
-      alert('Something went wrong, please try again.')
+      console.log(err)
       return false
     }
   }
