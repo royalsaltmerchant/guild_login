@@ -30,7 +30,7 @@ class CreateEntry extends Component {
 
   render() {
     return(
-      <div className="p-3">
+      <div className="p-3 card-style border rounded">
         <Form onSubmit={(event) => this.handleSubmitEntry(event)}>
 
           <Form.Group controlId="entryAmount">
