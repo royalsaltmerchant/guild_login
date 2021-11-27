@@ -22,6 +22,7 @@ import {Container} from 'react-bootstrap'
 import {authenticate as authenticateAPICall} from './config/api'
 import ForgotPassword from './views/ForgotPassword';
 import ResetPassword from './views/ResetPassword';
+import ManageContribution from './views/ManageContribution';
 
 class Root extends React.Component{
 
@@ -104,6 +105,9 @@ class Root extends React.Component{
           </Route>
           <Route path="/reset_password/:token">
             <ResetPassword />
+          </Route>
+          <Route path="/Manage/:id">
+            <ManageContribution />
           </Route>
           <Route render={() => <NoMatch />}/>
         </Switch>
