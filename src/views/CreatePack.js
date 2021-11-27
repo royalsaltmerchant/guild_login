@@ -67,7 +67,7 @@ class CreatePack extends Component {
         <Form onSubmit={(event) => this.handleSubmitPack(event)}>
           <Form.Group controlId="packTitle">
             <Form.Label>Title</Form.Label>
-            <small class="ml-2" style={{color: 'red'}}>Pack will not load correctly if title is not Capitalized!</small>
+            <small class="ml-2" style={{color: 'green'}}>Title will auto-capitalize first letter of each word</small>
             <Form.Control 
               required
               size="md"

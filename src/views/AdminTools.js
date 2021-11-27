@@ -219,7 +219,7 @@ class AdminTools extends Component {
       pack_id: pack.id
     }
     if(title !== '' && title !== ' ') {
-      params.title = title
+      params.title = title.replaceAll(' ', '-').toLowerCase()
     }
     if(description !== '' && description !== ' ') {
       params.description = description
@@ -666,10 +666,16 @@ class AdminTools extends Component {
   }
 
   renderPacksToggleOrEdit(packToggleKey, packEditKey, pack) {
+    const packTitleSpaces = pack.title.replaceAll('-', ' ')
+    const packTitle = packTitleSpaces.toLowerCase()
+      .split(' ')
+      .map((s) => s.charAt(0).toUpperCase() + s.substring(1))
+      .join(' ')
+
     if(this.state[packToggleKey] && !this.state[packEditKey]) {
       return(
         <div className="px-3">
-          <p>Title: {pack.title}</p>
+          <p>Title: {packTitle}</p>
           <p>Description: {pack.description}</p>
           <Image className="small-img" src={`${config.packImageURL}${pack.image_file}`} rounded />
           <br />
@@ -693,10 +699,11 @@ class AdminTools extends Component {
         <Form className="p-3 card-style border rounded">
           <Form.Group controlId={`pack${pack.id}Title`}>
             <Form.Label>Title</Form.Label>
+            <small class="ml-2" style={{color: 'green'}}>Title will auto-capitalize first letter of each word</small>
             <Form.Control 
               size="md"
               type="text"
-              placeholder={pack.title} />
+              placeholder={packTitle} />
           </Form.Group>
           <Form.Group controlId={`pack${pack.id}Description`}>
             <Form.Label>Description</Form.Label>
@@ -773,11 +780,16 @@ class AdminTools extends Component {
     const packMap = packs.map(pack => {
       const packToggleKey = `pack${pack.id}Toggle`
       const packEditKey = `pack${pack.id}Edit`
+      const packTitleSpaces = pack.title.replaceAll('-', ' ')
+      const packTitle = packTitleSpaces.toLowerCase()
+        .split(' ')
+        .map((s) => s.charAt(0).toUpperCase() + s.substring(1))
+        .join(' ')
       return(
         <div key={pack.id} className="px-3 py-1 rounded border">
           <div className="d-flex justify-content-between">
             <Button variant="link" onClick={() => this.handleToggleClick(packToggleKey, packEditKey)}>
-              {pack.title} {this.state[packToggleKey] ? "▼" : "▲"}
+              {packTitle} {this.state[packToggleKey] ? "▼" : "▲"}
             </Button>
             <Button variant="link" disabled={!this.state[packToggleKey]} onClick={() => this.handleEditClick(packEditKey)}>
               Edit

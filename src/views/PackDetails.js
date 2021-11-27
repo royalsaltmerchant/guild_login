@@ -26,12 +26,7 @@ const PackDetails = inject('packsStore', 'userStore')(observer((props) => {
 
   async function getPackInfoByName() {
     const {packName} = packNameParams
-    const packTitleSpaces = packName.replaceAll('-', ' ')
-    const packTitle = packTitleSpaces.toLowerCase()
-      .split(' ')
-      .map((s) => s.charAt(0).toUpperCase() + s.substring(1))
-      .join(' ')
-    await props.packsStore.getPackInfo(packTitle)
+    await props.packsStore.getPackInfo(packName)
   }
 
   async function handleDownloadClick(packInfo) {
@@ -114,6 +109,11 @@ const PackDetails = inject('packsStore', 'userStore')(observer((props) => {
     }
     
     const {packInfo} = props.packsStore
+    const packTitleSpaces = packInfo.title.replaceAll('-', ' ')
+    const packTitle = packTitleSpaces.toLowerCase()
+      .split(' ')
+      .map((s) => s.charAt(0).toUpperCase() + s.substring(1))
+      .join(' ')
     return(
       <div className="d-flex flex-row">
         <div className="d-flex flex-column">
@@ -122,7 +122,7 @@ const PackDetails = inject('packsStore', 'userStore')(observer((props) => {
           <iframe className="video" src={packInfo.video_file} frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen></iframe>
         </div>
         <div className="w-50">
-          <h1>{packInfo.title}</h1>
+          <h1>{packTitle}</h1>
           <div className="px-3">
             <p>"{packInfo.description}"</p>
             <p>Asset Types:</p>
