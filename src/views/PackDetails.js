@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect } from 'react'
 import {useParams} from 'react-router-dom'
 import { Image, Button, Spinner } from 'react-bootstrap'
 import {finalConfig as config, awsConfig} from '../config/config'
@@ -12,17 +12,13 @@ import {
 const PackDetails = inject('packsStore', 'userStore')(observer((props) => {
   const packNameParams = useParams()
   const [uri, setUri] = useState(null)
-  const downloadButtonRef = useRef(null)
 
   useEffect(async () => {
     await getPackInfoByName()
-    props.userStore.getUserInfo()
+    await props.userStore.getUserInfo()
+    getPresignedURLForDownload()
 
   },[])
-
-  useEffect(() => {
-    if(uri) downloadButtonRef.current.click()
-  },[uri])
 
   async function getPackInfoByName() {
     const {packName} = packNameParams
@@ -31,7 +27,6 @@ const PackDetails = inject('packsStore', 'userStore')(observer((props) => {
 
   async function handleDownloadClick(packInfo) {
     const {userInfo} = props.userStore
-    const downloadSuccess = await handleDownload()
     const newCoinsAmount = userInfo.coins - packInfo.coin_cost
     const newDownloadsAmount = packInfo.downloads + 1
     const editUserParams = {
@@ -42,17 +37,16 @@ const PackDetails = inject('packsStore', 'userStore')(observer((props) => {
       pack_id: packInfo.id,
       downloads: newDownloadsAmount
     }
-    if(downloadSuccess) {
-      try {
-        await editUserAPICall(editUserParams)
-        await editPackAPICall(editPackParams)
-      } catch(err) {
-        console.log(err)
-      }
+
+    try {
+      await editUserAPICall(editUserParams)
+      await editPackAPICall(editPackParams)
+    } catch(err) {
+      console.log(err)
     }
   }
 
-  async function handleDownload() {
+  async function getPresignedURLForDownload() {
     const {packName} = packNameParams
     const objectName = `packs/${packName}/${packName}.zip`
 
@@ -81,10 +75,9 @@ const PackDetails = inject('packsStore', 'userStore')(observer((props) => {
         <h3>Cost:</h3>
         <h4>{packInfo.coin_cost} Coins</h4>
         <br />
-        <Button disabled={props.userStore.userInfo.coins < packInfo.coin_cost} onClick={() => handleDownloadClick(packInfo)}>Download</Button>
+        <Button  onClick={() => handleDownloadClick(packInfo)} disabled={props.userStore.userInfo.coins < packInfo.coin_cost || !uri}><a style={{color: 'white', textDecoration: 'none'}} href={uri}>Download</a></Button>
         <br />
         <small style={{color: 'red'}}>*{packInfo.coin_cost} coins will be deducted from your account</small>
-        <a ref={downloadButtonRef} href={uri} />
       </div>
     )
   }
