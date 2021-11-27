@@ -178,7 +178,7 @@ const deleteEntry = async (entryId) => {
 
 const getContribution = async (contributionId) => {
   const res = await axios({
-    method: 'get',
+    method: 'post',
     url: `${config.apiURL}/api/get_contribution`,
     headers: {
       "x-access-token": localStorage.getItem("token")
