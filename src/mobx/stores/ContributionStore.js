@@ -24,8 +24,8 @@ export default class ContributionStore {
           this.contributionInfo = data
           this.contributionInfoLoading = false
         })
-      }
-      return res
+        return res
+      } else throw new Error
     } catch(err) {
       console.log(err)
       this.contributionInfoLoading = false

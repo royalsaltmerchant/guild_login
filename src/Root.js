@@ -107,7 +107,7 @@ class Root extends React.Component{
             <ResetPassword />
           </Route>
           <Route path="/Manage/:id">
-            <ManageContribution />
+          {authenticated ? <ManageContribution /> : <AccessDenied />}
           </Route>
           <Route render={() => <NoMatch />}/>
         </Switch>

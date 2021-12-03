@@ -27,7 +27,7 @@ const Dashboard = inject('userStore', 'projectsStore')(observer((props) => {
       const singleContributionUser = contributionUser[0]
       if(singleContributionUser) {
         return(
-          <div key={contribution.id} className="px-5 py-1 d-flex flex-row justify-content-between w-75">
+          <div key={contribution.id} className="px-5 d-flex flex-row justify-content-between align-items-baseline w-75">
             <p style={{color: 'purple'}}>{singleContributionUser.username}: <b>{contribution.amount}</b></p>
             <p style={{color: 'green'}}>{contribution.status}</p>
             {props.userStore.userInfo && props.userStore.userInfo.admin ? <Button as={Link} variant="outline-secondary" to={`/Manage/${contribution.id}`}>Manage</Button> : null}
@@ -44,14 +44,14 @@ const Dashboard = inject('userStore', 'projectsStore')(observer((props) => {
     const entriesMap = entries.map(entry => (
       <div key={entry.id} className="p-3 flex-row border rounded my-3" style={{backgroundColor: '#fff'}}>
         <div className="flex-column">
-        <div className="d-flex flex-row justify-content-between">
+        <div className="d-flex flex-row justify-content-between align-items-baseline">
           <p><b>{`${entry.title}`}</b></p>
           <p>Amount: <b>{entry.amount}</b></p>
           {entry.complete ? <p style={{color: 'green'}}>Complete</p> : <Button as={Link} variant="outline-success" to={`/Upload/entry/${entry.id}`}>
             Contribute
           </Button>}
         </div>
-        <p className="px-3">"{entry.description}"</p>
+        <p className="px-1">"{entry.description}"</p>
         <p className="px-3"><u>Contributions</u></p>
         {renderEntryContributions(entry.contributions)}
         </div>
