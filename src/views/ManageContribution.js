@@ -47,6 +47,14 @@ const ManageContribution = inject('contributionStore', 'projectsStore', 'entrySt
     audio.play()
   }
 
+  function handleDownload(assetName) {
+    const assetURL = assetURLs.filter(URL => URL.name === assetName)[0]
+    const link = document.createElement("a")
+    link.href = assetURL.url
+    link.download = assetURL.name
+    link.click()
+  }
+
   function renderContributedAssets() {
     
     if(props.contributionStore.contributionInfo) {
@@ -58,8 +66,9 @@ const ManageContribution = inject('contributionStore', 'projectsStore', 'entrySt
           <div className="pt-2 px-2 d-flex flex-row justify-content-between align-items-baseline border rounded">
             <Button variant="link" onClick={() => handlePlayAudio(asset.name)}>{asset.name}</Button>
             <div>
-            <Button className="mx-3" variant="outline-success">Approve</Button>
-            <Button variant="outline-danger">Reject</Button>
+            <Button className="mr-3" variant="outline-success">Approve</Button>
+            <Button className="mr-3" variant="outline-danger">Reject</Button>
+            <Button variant="outline-secondary" onClick={() => handleDownload(asset.name)}>Download</Button>
             </div>
           </div>
         )
