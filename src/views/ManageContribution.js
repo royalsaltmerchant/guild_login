@@ -4,6 +4,7 @@ import { useParams } from 'react-router-dom'
 import { Button, Spinner } from 'react-bootstrap'
 import downloadFiles from '../utils/DownloadFIles'
 import { toJS } from 'mobx'
+import { editContributedAsset } from '../config/api'
 
 const ManageContribution = inject('contributionStore', 'projectsStore', 'entryStore', 'userStore')(observer((props) => {
   const params = useParams()
@@ -25,7 +26,6 @@ const ManageContribution = inject('contributionStore', 'projectsStore', 'entrySt
     const entryTitle = entryInfoRes.data.title
     // get user username
     const userInfoRes = await props.userStore.getUserInfo(contributionInfoRes.data.user_id)
-    console.log(userInfoRes)
     const userName = `${userInfoRes.data.first_name}_${userInfoRes.data.last_name}`
     // get urls for contributed assets
     const contributedAssetsURLs = []
@@ -47,6 +47,19 @@ const ManageContribution = inject('contributionStore', 'projectsStore', 'entrySt
     audio.play()
   }
 
+  async function handleApproveOrReject(assetId, status) {
+    const params = {
+      contributed_asset_id: assetId,
+      status: status
+    }
+    try {
+      const res = await editContributedAsset(params)
+      console.log(res)
+    } catch(err) {
+      console.log(err)
+    }
+  }
+
   function handleDownload(assetName) {
     const assetURL = assetURLs.filter(URL => URL.name === assetName)[0]
     const link = document.createElement("a")
@@ -58,7 +71,6 @@ const ManageContribution = inject('contributionStore', 'projectsStore', 'entrySt
   function renderContributedAssets() {
     
     if(props.contributionStore.contributionInfo) {
-      console.log(assetURLs)
       const {contributionInfo} = props.contributionStore
       const contributedAssets = contributionInfo.contributed_assets
       const contributedAssetsMap = contributedAssets.map(asset => {
@@ -66,9 +78,9 @@ const ManageContribution = inject('contributionStore', 'projectsStore', 'entrySt
           <div className="pt-2 px-2 d-flex flex-row justify-content-between align-items-baseline border rounded">
             <Button variant="link" onClick={() => handlePlayAudio(asset.name)}>{asset.name}</Button>
             <div>
-            <Button className="mr-3" variant="outline-success">Approve</Button>
-            <Button className="mr-3" variant="outline-danger">Reject</Button>
-            <Button variant="outline-secondary" onClick={() => handleDownload(asset.name)}>Download</Button>
+              {asset.status === "pending" || !asset.status ? <Button className="mr-3" variant="outline-success" onClick={() => handleApproveOrReject(asset.id, 'approved')}>Approve</Button> : null}
+              {asset.status === "pending" || !asset.status ? <Button className="mr-3" variant="outline-danger" onClick={() => handleApproveOrReject(asset.id, 'rejected')}>Reject</Button> : null}
+              <Button variant="outline-secondary" onClick={() => handleDownload(asset.name)}>Download</Button>
             </div>
           </div>
         )

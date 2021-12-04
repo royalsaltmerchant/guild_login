@@ -240,6 +240,18 @@ const createContributedAsset = async (params) => {
   return res
 }
 
+const editContributedAsset = async (params) => {
+  const res = await axios({
+    method: 'post',
+    url: `${config.apiURL}/api/edit_contributed_asset`,
+    headers: {
+      "x-access-token": localStorage.getItem("token")
+    },
+    data: params
+  })
+  return res
+}
+
 const getPresignedURL = async (params) => {
   const res = await axios({
     method: 'post',
@@ -395,6 +407,7 @@ export {
   editContribution,
   deleteContribution,
   createContributedAsset,
+  editContributedAsset,
   getPresignedURL,
   getPacks,
   getPack,
