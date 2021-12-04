@@ -27,7 +27,7 @@ const PackDetails = inject('packsStore', 'userStore')(observer((props) => {
 
   async function handleDownloadClick(packInfo) {
     const {userInfo} = props.userStore
-    const newCoinsAmount = userInfo.coins - packInfo.coin_cost
+    const newCoinsAmount = -Math.abs(packInfo.coin_cost)
     const newDownloadsAmount = packInfo.downloads + 1
     const editUserParams = {
       user_id: userInfo.id,
