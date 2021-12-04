@@ -1,14 +1,18 @@
 import { inject, observer } from 'mobx-react'
 import React, {useEffect, useState} from 'react'
-import { useParams } from 'react-router-dom'
+import { useParams, useHistory } from 'react-router-dom'
 import { Button, Spinner } from 'react-bootstrap'
 import downloadFiles from '../utils/DownloadFIles'
 import { toJS } from 'mobx'
-import { editContributedAsset } from '../config/api'
+import { editContributedAsset as editContributedAssetAPICall, editUser as editUserAPICall } from '../config/api'
+import {BsDownload} from 'react-icons/bs'
+import {AiOutlineSound} from 'react-icons/ai'
 
 const ManageContribution = inject('contributionStore', 'projectsStore', 'entryStore', 'userStore')(observer((props) => {
   const params = useParams()
+  const history = useHistory()
   const [assetURLs, setAssetURLs] = useState([])
+  const [coinsToGive, setCoinsToGive] = useState(0)
   
   useEffect(() => {
     getData()
@@ -41,6 +45,23 @@ const ManageContribution = inject('contributionStore', 'projectsStore', 'entrySt
     setAssetURLs(contributedAssetsURLs)
   }
 
+  async function handleSendCoins() {
+    const {contributionInfo} = props.contributionStore
+    const params = {
+      user_id: contributionInfo.user_id,
+      coins: coinsToGive
+    }
+    try {
+      const res = await editUserAPICall(params)
+      if(res.status === 200) {
+        history.push('/dashboard')
+      }
+    } catch(err) {
+      console.log(err)
+      alert('Failed to send coins')
+    }
+  }
+
   function handlePlayAudio(assetName) {
     const assetURL = assetURLs.filter(URL => URL.name === assetName)[0].url
     const audio = new Audio(assetURL)
@@ -53,8 +74,13 @@ const ManageContribution = inject('contributionStore', 'projectsStore', 'entrySt
       status: status
     }
     try {
-      const res = await editContributedAsset(params)
-      console.log(res)
+      const res = await editContributedAssetAPICall(params)
+      if(res.status === 200) {
+        getData()
+        if(status === 'approved') {
+          setCoinsToGive(coinsToGive + 10)
+        }
+      } else throw new Error
     } catch(err) {
       console.log(err)
     }
@@ -68,19 +94,33 @@ const ManageContribution = inject('contributionStore', 'projectsStore', 'entrySt
     link.click()
   }
 
+  function renderManageButtonsByStatus(asset) {
+    const {status} = asset
+    
+    if(!status || status === 'pending') {
+      return(
+        <div>
+          <Button className="mr-3" variant="outline-success" onClick={() => handleApproveOrReject(asset.id, 'approved')}>Approve</Button>
+          <Button className="mr-3" variant="outline-danger" onClick={() => handleApproveOrReject(asset.id, 'rejected')}>Reject</Button>
+        </div>
+      )
+    }
+    else if(status === 'approved') return <p className="mr-3" style={{color: 'green', margin: 0}}>approved</p>
+    else return <p className="mr-3" style={{color: 'gray', margin: 0}}>{status}</p>
+  }
+
   function renderContributedAssets() {
     
     if(props.contributionStore.contributionInfo) {
       const {contributionInfo} = props.contributionStore
-      const contributedAssets = contributionInfo.contributed_assets
+      const contributedAssets = contributionInfo.contributed_assets.slice().sort((a, b) => a.name.localeCompare(b.name))
       const contributedAssetsMap = contributedAssets.map(asset => {
         return(
-          <div className="pt-2 px-2 d-flex flex-row justify-content-between align-items-baseline border rounded">
-            <Button variant="link" onClick={() => handlePlayAudio(asset.name)}>{asset.name}</Button>
-            <div>
-              {asset.status === "pending" || !asset.status ? <Button className="mr-3" variant="outline-success" onClick={() => handleApproveOrReject(asset.id, 'approved')}>Approve</Button> : null}
-              {asset.status === "pending" || !asset.status ? <Button className="mr-3" variant="outline-danger" onClick={() => handleApproveOrReject(asset.id, 'rejected')}>Reject</Button> : null}
-              <Button variant="outline-secondary" onClick={() => handleDownload(asset.name)}>Download</Button>
+          <div className="py-2 px-2 d-flex flex-row justify-content-between align-items-baseline border rounded">
+            <Button variant="link" onClick={() => handlePlayAudio(asset.name)}>{asset.name} <AiOutlineSound /></Button>
+            <div className="d-flex flex-row align-items-baseline">
+              {renderManageButtonsByStatus(asset)}
+              <Button variant="link-secondary" style={{fontSize: '20px'}} onClick={() => handleDownload(asset.name)}><BsDownload /></Button>
             </div>
           </div>
         )
@@ -95,12 +135,10 @@ const ManageContribution = inject('contributionStore', 'projectsStore', 'entrySt
   
   return (
     <div className="d-flex flex-column flex-wrap justify-content-center w-75 p-3 border border-light rounded" style={{backgroundColor: '#fff'}}>
+      <h3 className="text-center">Asset Management</h3>
       {renderContributedAssets()}
       <br />
-      <div className="d-flex justify-content-center ">
-        <Button className="mx-3" variant="outline-success">Approve All</Button>
-        <Button variant="outline-danger">Reject All</Button>
-      </div>
+      <Button variant="outline-info" disabled={coinsToGive === 0} onClick={() => handleSendCoins()}>Send {coinsToGive} Coins</Button>
     </div>
   )
 }))
