@@ -141,8 +141,7 @@ class AdminTools extends Component {
     event.preventDefault()
 
     const approvedAssetCount = event.target.form[`user${userId}ApprovedAssetCount`].value
-    const coins = event.target.form[`user${userId}Coins`].value
-
+    const coins = Number(event.target.form[`user${userId}Coins`].value)
     const params = {
       user_id: userId
     }
