@@ -176,6 +176,20 @@ const deleteEntry = async (entryId) => {
   return res
 }
 
+const getContribution = async (contributionId) => {
+  const res = await axios({
+    method: 'post',
+    url: `${config.apiURL}/api/get_contribution`,
+    headers: {
+      "x-access-token": localStorage.getItem("token")
+    },
+    data: {
+      contribution_id: contributionId
+    }
+  })
+  return res
+}
+
 const createContribution = async (params) => {
   const res = await axios({
     method: 'post',
@@ -218,6 +232,18 @@ const createContributedAsset = async (params) => {
   const res = await axios({
     method: 'post',
     url: `${config.apiURL}/api/add_contributed_asset`,
+    headers: {
+      "x-access-token": localStorage.getItem("token")
+    },
+    data: params
+  })
+  return res
+}
+
+const editContributedAsset = async (params) => {
+  const res = await axios({
+    method: 'post',
+    url: `${config.apiURL}/api/edit_contributed_asset`,
     headers: {
       "x-access-token": localStorage.getItem("token")
     },
@@ -376,10 +402,12 @@ export {
   getEntry,
   editEntry,
   deleteEntry,
+  getContribution,
   createContribution,
   editContribution,
   deleteContribution,
   createContributedAsset,
+  editContributedAsset,
   getPresignedURL,
   getPacks,
   getPack,
