@@ -4,7 +4,7 @@ import { useParams, useHistory } from 'react-router-dom'
 import { Button, Spinner } from 'react-bootstrap'
 import downloadFiles from '../utils/DownloadFIles'
 import { toJS } from 'mobx'
-import { editContributedAsset as editContributedAssetAPICall, editUser as editUserAPICall } from '../config/api'
+import { editContributedAsset as editContributedAssetAPICall, editContribution as editContributionAPICall, editUser as editUserAPICall } from '../config/api'
 import {BsDownload} from 'react-icons/bs'
 import {AiOutlineSound} from 'react-icons/ai'
 
@@ -43,6 +43,25 @@ const ManageContribution = inject('contributionStore', 'projectsStore', 'entrySt
       })
     )
     setAssetURLs(contributedAssetsURLs)
+  }
+
+  function handleComplete() {
+    handleUpdateContributionStatus()
+    handleSendCoins()
+  }
+
+  function handleUpdateContributionStatus() {
+    const {contributionInfo} = props.contributionStore
+    const params = {
+      contribution_id: contributionInfo.id,
+      status: 'accepted'
+    }
+    try {
+      editContributionAPICall(params)
+    } catch(err) {
+      console.log(err)
+      alert('Failed to update entry status')
+    }
   }
 
   async function handleSendCoins() {
@@ -138,7 +157,7 @@ const ManageContribution = inject('contributionStore', 'projectsStore', 'entrySt
       <h3 className="text-center">Asset Management</h3>
       {renderContributedAssets()}
       <br />
-      <Button variant="outline-info" disabled={coinsToGive === 0} onClick={() => handleSendCoins()}>Send {coinsToGive} Coins</Button>
+      <Button variant="outline-info" disabled={coinsToGive === 0} onClick={() => handleComplete()}>Send {coinsToGive} Coins</Button>
     </div>
   )
 }))
