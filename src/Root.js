@@ -12,7 +12,7 @@ import Account from './views/Account'
 import Header from './components/Header'
 import NavBar from './components/NavBar'
 import Dashboard from './views/Dashboard';
-import Upload from './views/Upload'
+import Contribute from './views/Contribute'
 import Library from './views/Library';
 import PackDetails from './views/PackDetails';
 import AccessDenied from './views/AccessDenied';
@@ -102,8 +102,8 @@ class Root extends React.Component{
             <Route path="/Dashboard">
               {authenticated ? <Dashboard /> : <AccessDenied loadingAuth={loadingAuth}/>}
             </Route>
-            <Route path="/Upload/entry/:entryId">
-              {authenticated ? <Upload /> : <AccessDenied loadingAuth={loadingAuth}/>}
+            <Route path="/Contribute/entry/:entryId">
+              {authenticated ? <Contribute /> : <AccessDenied loadingAuth={loadingAuth}/>}
             </Route>
             <Route path="/forgot_password">
               <ForgotPassword />

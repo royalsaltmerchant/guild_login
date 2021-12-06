@@ -47,7 +47,7 @@ const Dashboard = inject('userStore', 'projectsStore')(observer((props) => {
         <div className="d-flex flex-row justify-content-between align-items-baseline">
           <p><b>{`${entry.title}`}</b></p>
           <p>Amount: <b>{entry.amount}</b></p>
-          {entry.complete ? <p style={{color: 'green'}}>Complete</p> : <Button as={Link} variant="outline-success" to={`/Upload/entry/${entry.id}`}>
+          {entry.complete ? <p style={{color: 'green'}}>Complete</p> : <Button as={Link} variant="outline-success" to={`/Contribute/entry/${entry.id}`}>
             Contribute
           </Button>}
         </div>
