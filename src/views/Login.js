@@ -48,7 +48,6 @@ class Login extends Component {
     try {
       const res = await loginAPICall(params)
       if(res.status === 200) {
-        this.props.isLoading()
         const token = res.data.token
         localStorage.setItem('token', "Bearer " + token)
         this.props.history.push('/account')

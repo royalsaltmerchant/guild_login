@@ -30,7 +30,7 @@ class Root extends React.Component{
     super(props)
     this.state = {
       authenticated: false,
-      loadingAuth: true
+      loadingAuth: false
     }
   }
   
@@ -39,80 +39,86 @@ class Root extends React.Component{
     this.authenticate()
   } 
 
-  authenticate = async () => {
-    const token = localStorage.getItem('token')
-    if(token) {
-      try {
-        const res = await authenticateAPICall()
-        if(res.status === 200) {
+  authenticate = () => {
+    this.setState({
+      loadingAuth: true
+    }, async () => {
+      const token = localStorage.getItem('token')
+      if(token) {
+        try {
+          const res = await authenticateAPICall()
+          if(res.status === 200) {
+            this.setState({
+              authenticated: true,
+              loadingAuth: false
+            })
+          } else throw new Error
+        } catch(err) {
           this.setState({
-            authenticated: true,
+            authenticated: false,
             loadingAuth: false
           })
-        } else throw new Error
-      } catch(err) {
+        }
+      }
+      else {
         this.setState({
           authenticated: false,
           loadingAuth: false
         })
-      }
-    }
-    else {
-      this.setState({
-        authenticated: false,
-        loadingAuth: false
-      })
-    } 
+      } 
+    })
   }
   
 
   render(){
     const {authenticated, loadingAuth} = this.state
-    return <Container fluid className="App">
-      <Header />
-      <NavBar authenticated={authenticated} />
-      <div className="d-flex justify-content-center p-3 rounded border border-light" style={{backgroundColor: '#f6f6f6'}}>
-        <Switch>
-          <Route exact path="/">
-            <Redirect to="/login" />
-          </Route>
-          <Route path="/logout">
-            <Logout isLoading={() => this.setState({loadingAuth: true})} authenticate={this.authenticate} />
-          </Route>
-          <Route path="/library">
-            <Library />
-          </Route>
-          <Route path="/pack/:packName">
-            <PackDetails />
-          </Route>
-          <Route path="/register">
-            <Register />
-          </Route>
-          <Route path="/login">
-            <Login isLoading={() => this.setState({loadingAuth: true})} authenticate={this.authenticate} authenticated={authenticated} loadingAuth={loadingAuth} />
-          </Route>
-          <Route path="/account">
-            <Account/>
-          </Route>
-          <Route path="/Dashboard">
-            {authenticated ? <Dashboard /> : <AccessDenied />}
-          </Route>
-          <Route path="/Upload/entry/:entryId">
-            {authenticated ? <Upload /> : <AccessDenied />}
-          </Route>
-          <Route path="/forgot_password">
-            <ForgotPassword />
-          </Route>
-          <Route path="/reset_password/:token">
-            <ResetPassword />
-          </Route>
-          <Route path="/Manage/:id">
-          {authenticated ? <ManageContribution /> : <AccessDenied />}
-          </Route>
-          <Route render={() => <NoMatch />}/>
-        </Switch>
-      </div>
-    </Container>
+    return(
+      <Container fluid className="App">
+        <Header />
+        <NavBar authenticated={authenticated} />
+        <div className="d-flex justify-content-center p-3 rounded border border-light" style={{backgroundColor: '#f6f6f6'}}>
+          <Switch>
+            <Route exact path="/">
+              <Redirect to="/login" />
+            </Route>
+            <Route path="/logout">
+              <Logout authenticate={this.authenticate} />
+            </Route>
+            <Route path="/library">
+              <Library />
+            </Route>
+            <Route path="/pack/:packName">
+              <PackDetails />
+            </Route>
+            <Route path="/register">
+              <Register />
+            </Route>
+            <Route path="/login">
+              <Login authenticate={this.authenticate} authenticated={authenticated} loadingAuth={loadingAuth} />
+            </Route>
+            <Route path="/account">
+              <Account/>
+            </Route>
+            <Route path="/Dashboard">
+              {authenticated ? <Dashboard /> : <AccessDenied loadingAuth={loadingAuth}/>}
+            </Route>
+            <Route path="/Upload/entry/:entryId">
+              {authenticated ? <Upload /> : <AccessDenied loadingAuth={loadingAuth}/>}
+            </Route>
+            <Route path="/forgot_password">
+              <ForgotPassword />
+            </Route>
+            <Route path="/reset_password/:token">
+              <ResetPassword />
+            </Route>
+            <Route path="/Manage/:id">
+            {authenticated ? <ManageContribution /> : <AccessDenied loadingAuth={loadingAuth}/>}
+            </Route>
+            <Route render={() => <NoMatch />}/>
+          </Switch>
+        </div>
+      </Container>
+    )
   }
 }
 
