@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import {inject, observer} from 'mobx-react'
 import {Spinner, Button} from 'react-bootstrap'
-import AdminTools from './AdminTools'
+import AdminTools from '../components/AdminTools'
 import moment from 'moment'
 
 class Account extends Component {

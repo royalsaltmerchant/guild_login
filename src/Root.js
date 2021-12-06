@@ -9,8 +9,8 @@ import Register from './views/Register'
 import Login from './views/Login'
 import Logout from './views/Logout'
 import Account from './views/Account'
-import Header from './views/Header'
-import NavBar from './views/NavBar'
+import Header from './components/Header'
+import NavBar from './components/NavBar'
 import Dashboard from './views/Dashboard';
 import Upload from './views/Upload'
 import Library from './views/Library';
