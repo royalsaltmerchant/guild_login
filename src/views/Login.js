@@ -22,6 +22,9 @@ class Login extends Component {
         })
       }, 10000)
     }
+    if(this.props.authenticated) {
+      this.props.history.push('/account')
+    }
   }
 
   renderAlert() {
@@ -73,7 +76,6 @@ class Login extends Component {
     if(loadingAuth){
       return(
         <div>
-          {this.renderAlert()}
           <h2 className="pb-3 text-center">Login</h2>
           <div className="d-flex justify-content-center align-items-center" style={{width: '75vw', backgroundColor: '#fff'}}>
             <Spinner animation="border" role="status">
@@ -125,7 +127,6 @@ class Login extends Component {
       else {
         return(
           <div>
-            {this.renderAlert()}
             <h2 className="pb-3 text-center">Login</h2>
             <p className="text-center"> already logged in</p>
           </div>
