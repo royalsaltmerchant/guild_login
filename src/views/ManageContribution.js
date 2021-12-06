@@ -13,6 +13,7 @@ const ManageContribution = inject('contributionStore', 'projectsStore', 'entrySt
   const history = useHistory()
   const [assetURLs, setAssetURLs] = useState([])
   const [coinsToGive, setCoinsToGive] = useState(0)
+  const [approvedAssetCount, setApprovedAssetCount] = useState(0)
   
   useEffect(() => {
     getData()
@@ -47,7 +48,7 @@ const ManageContribution = inject('contributionStore', 'projectsStore', 'entrySt
 
   function handleComplete() {
     handleUpdateContributionStatus()
-    handleSendCoins()
+    handleUpdateUserInfo()
   }
 
   function handleUpdateContributionStatus() {
@@ -64,11 +65,12 @@ const ManageContribution = inject('contributionStore', 'projectsStore', 'entrySt
     }
   }
 
-  async function handleSendCoins() {
+  async function handleUpdateUserInfo() {
     const {contributionInfo} = props.contributionStore
     const params = {
       user_id: contributionInfo.user_id,
-      coins: coinsToGive
+      coins: coinsToGive,
+      approved_asset_count: approvedAssetCount
     }
     try {
       const res = await editUserAPICall(params)
@@ -98,6 +100,7 @@ const ManageContribution = inject('contributionStore', 'projectsStore', 'entrySt
         getData()
         if(status === 'approved') {
           setCoinsToGive(coinsToGive + 10)
+          setApprovedAssetCount(approvedAssetCount + 1)
         }
       } else throw new Error
     } catch(err) {
