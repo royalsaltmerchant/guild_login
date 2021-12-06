@@ -140,7 +140,7 @@ class AdminTools extends Component {
   async handleEditUserSave(event, userId, userEditKey) {
     event.preventDefault()
 
-    const approvedAssetCount = event.target.form[`user${userId}ApprovedAssetCount`].value
+    const approvedAssetCount = Number(event.target.form[`user${userId}ApprovedAssetCount`].value)
     const coins = Number(event.target.form[`user${userId}Coins`].value)
     const params = {
       user_id: userId
