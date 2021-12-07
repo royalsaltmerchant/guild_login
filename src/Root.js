@@ -77,27 +77,32 @@ class Root extends React.Component{
     const {authenticated, loadingAuth} = this.state
     return(
       <div className="App d-flex flex-row">
-        {this.state.hideSideBar ?
-          <div className="d-flex flex-column sticky-top">
+        {
+          this.state.hideSideBar 
+          ?
+          <div 
+            className="d-flex flex-column sticky-top"
+            style={{height: '40px'}}
+          >
             <button className="hide-btn ml-2" onClick={() => this.setState({hideSideBar: false})}>
               <BiShow style={{fontSize: '40px'}} />
             </button>
           </div>
           :
           <div 
-          className="d-flex flex-column sticky-top border rounded card-style" 
-          style={{width: '170px', height: '100vh', backgroundColor: 'white'}}
+            className="d-flex flex-column sticky-top border rounded card-style" 
+            style={{width: '170px', height: '100vh', backgroundColor: 'white'}}
           >
-          <Header />
-          <NavBar authenticated={authenticated} />
-          <br />
-          <button 
-            className="hide-btn align-self-start ml-2"
-            onClick={() => this.setState({hideSideBar: true})}
-          >
-            <BiHide style={{fontSize: '40px'}}/>
-          </button>
-        </div>
+            <Header />
+            <NavBar authenticated={authenticated} />
+            <br />
+            <button 
+              className="hide-btn align-self-start ml-2"
+              onClick={() => this.setState({hideSideBar: true})}
+            >
+              <BiHide style={{fontSize: '40px'}}/>
+            </button>
+          </div>
         }
         <Container className="p-2 d-flex flex-column align-items-center">
           <Switch>
