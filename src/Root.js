@@ -24,6 +24,7 @@ import ForgotPassword from './views/ForgotPassword';
 import ResetPassword from './views/ResetPassword';
 import ManageContribution from './views/ManageContribution';
 import AdminTools from './views/AdminTools';
+import {BiHide, BiShow} from 'react-icons/bi';
 
 class Root extends React.Component{
 
@@ -31,7 +32,8 @@ class Root extends React.Component{
     super(props)
     this.state = {
       authenticated: false,
-      loadingAuth: false
+      loadingAuth: false,
+      hideSideBar: false
     }
   }
   
@@ -75,10 +77,28 @@ class Root extends React.Component{
     const {authenticated, loadingAuth} = this.state
     return(
       <div className="App d-flex flex-row">
-        <div className="d-flex flex-column sticky-top border rounded card-style" style={{width: '170px', height: '100vh', backgroundColor: 'white'}}>
+        {this.state.hideSideBar ?
+          <div className="d-flex flex-column sticky-top">
+            <button className="hide-btn ml-2" onClick={() => this.setState({hideSideBar: false})}>
+              <BiShow style={{fontSize: '40px'}} />
+            </button>
+          </div>
+          :
+          <div 
+          className="d-flex flex-column sticky-top border rounded card-style" 
+          style={{width: '170px', height: '100vh', backgroundColor: 'white'}}
+          >
           <Header />
           <NavBar authenticated={authenticated} />
+          <br />
+          <button 
+            className="hide-btn align-self-start ml-2"
+            onClick={() => this.setState({hideSideBar: true})}
+          >
+            <BiHide style={{fontSize: '40px'}}/>
+          </button>
         </div>
+        }
         <Container className="p-2 d-flex flex-column align-items-center">
           <Switch>
             <Route exact path="/">
