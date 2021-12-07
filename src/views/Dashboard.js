@@ -27,7 +27,7 @@ const Dashboard = inject('userStore', 'projectsStore')(observer((props) => {
       const singleContributionUser = contributionUser[0]
       if(singleContributionUser) {
         return(
-          <div key={contribution.id} className="px-5 d-flex flex-row justify-content-between align-items-baseline">
+          <div key={contribution.id} className="px-5 d-flex flex-row justify-content-between align-items-baseline flex-wrap">
             <p style={{color: 'purple'}}>{singleContributionUser.username}: <b>{contribution.amount}</b></p>
             <p style={{color: 'green'}}>{contribution.status}</p>
             {props.userStore.userInfo && props.userStore.userInfo.admin ? <Button as={Link} variant="outline-secondary" to={`/Manage/${contribution.id}`}>Manage</Button> : null}
@@ -44,7 +44,7 @@ const Dashboard = inject('userStore', 'projectsStore')(observer((props) => {
     const entriesMap = entries.map(entry => (
       <div key={entry.id} className="p-3 flex-row border rounded my-3">
         <div className="flex-column">
-        <div className="d-flex flex-row justify-content-between align-items-baseline">
+        <div className="d-flex flex-row justify-content-between align-items-baseline flex-wrap">
           <p><b>{`${entry.title}`}</b></p>
           <p>Amount: <b>{entry.amount}</b></p>
           {entry.complete ? <p style={{color: 'green'}}>Complete</p> : <Button as={Link} variant="outline-success" to={`/Contribute/entry/${entry.id}`}>
@@ -75,7 +75,7 @@ const Dashboard = inject('userStore', 'projectsStore')(observer((props) => {
       if(project.active && !project.complete) {
         return(
           <div key={project.id} className="p-3 mb-5 card-style border rounded" style={{backgroundColor: 'white', fontFamily: 'Noto Sans'}}>
-            <div className="d-flex flex-row align-items-baseline">
+            <div className="d-flex flex-row align-items-baseline flex-wrap">
               <Image className="small-img pr-3" src={`${config.projectImageURL}${project.image_file}`} rounded />
               <h5><b>{project.title}</b></h5>
               <p className="pl-3" style={{color: 'purple'}}>{project.complete ? 'Completed' : 'In-Progress'}</p>

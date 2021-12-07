@@ -474,7 +474,7 @@ class AdminTools extends Component {
       const projectEditKey = `project${project.id}Edit`
       return(
         <div key={project.id} className="px-3 py-1 border rounded admin-tools-item">
-          <div className="d-flex justify-content-between">
+          <div className="d-flex justify-content-between flex-wrap">
             <Button variant="link" onClick={() => this.handleToggleClick(projectToggleKey, projectEditKey)}>
               {project.title} {this.state[projectToggleKey] ? "▼" : "▲"}
             </Button>
@@ -659,7 +659,7 @@ class AdminTools extends Component {
         .join(' ')
       return(
         <div key={pack.id} className="px-3 py-1 rounded border admin-tools-item">
-          <div className="d-flex justify-content-between">
+          <div className="d-flex justify-content-between flex-wrap">
             <Button variant="link" onClick={() => this.handleToggleClick(packToggleKey, packEditKey)}>
               {packTitle} {this.state[packToggleKey] ? "▼" : "▲"}
             </Button>
@@ -733,7 +733,7 @@ class AdminTools extends Component {
       if(user.active) {
         return(
           <div className="px-3 py-1 rounded border admin-tools-item">
-            <div className="d-flex justify-content-between">
+            <div className="d-flex justify-content-between flex-wrap">
               <Button variant="link" onClick={() => this.handleToggleClick(userToggleKey, userEditKey)}>
                 {`${user.first_name} ${user.last_name} (${user.username}) ${user.email}`} {this.state[userToggleKey] ? "▼" : "▲"}
               </Button>
