@@ -27,7 +27,7 @@ const Dashboard = inject('userStore', 'projectsStore')(observer((props) => {
       const singleContributionUser = contributionUser[0]
       if(singleContributionUser) {
         return(
-          <div key={contribution.id} className="px-5 d-flex flex-row justify-content-between align-items-baseline w-75">
+          <div key={contribution.id} className="px-5 d-flex flex-row justify-content-between align-items-baseline">
             <p style={{color: 'purple'}}>{singleContributionUser.username}: <b>{contribution.amount}</b></p>
             <p style={{color: 'green'}}>{contribution.status}</p>
             {props.userStore.userInfo && props.userStore.userInfo.admin ? <Button as={Link} variant="outline-secondary" to={`/Manage/${contribution.id}`}>Manage</Button> : null}
@@ -77,13 +77,13 @@ const Dashboard = inject('userStore', 'projectsStore')(observer((props) => {
           <div key={project.id} className="p-3 mb-5 card-style border rounded" style={{backgroundColor: 'white', fontFamily: 'Noto Sans'}}>
             <div className="d-flex flex-row align-items-baseline">
               <Image className="small-img pr-3" src={`${config.projectImageURL}${project.image_file}`} rounded />
-              <h2><b>{project.title}</b></h2>
+              <h5><b>{project.title}</b></h5>
               <p className="pl-3" style={{color: 'purple'}}>{project.complete ? 'Completed' : 'In-Progress'}</p>
             </div>
             <hr style={{marginTop: "-15px"}} />
             <div className="py-3">
               <p className="px-3"><u>About</u></p>
-              <h4 className="px-3"> {project.description}</h4>
+              <p className="px-3"> {project.description}</p>
             </div>
             {renderProjectEntries(project.entries)}
           </div>

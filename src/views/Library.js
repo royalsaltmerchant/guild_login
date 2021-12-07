@@ -45,7 +45,7 @@ const Library = inject('packsStore')(observer((props) => {
 
   return (
     <div className="d-flex flex-column justify-content-center align-items-center">
-      <h3 className="p-3 text-center">Available SFX Packs:</h3>
+      <h4 className="p-3 text-center">Available SFX Packs</h4>
       <div className="d-flex flex-row flex-wrap">
         {renderSFXPacks()}
       </div>
