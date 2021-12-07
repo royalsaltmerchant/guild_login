@@ -108,7 +108,7 @@ const PackDetails = inject('packsStore', 'userStore')(observer((props) => {
       .map((s) => s.charAt(0).toUpperCase() + s.substring(1))
       .join(' ')
     return(
-      <div className="d-flex flex-row">
+      <div className="d-flex flex-row align-items-center justify-content-center">
         <div className="d-flex flex-column">
           <Image className="pack-img mr-3 mb-5" src={`${config.packImageURL}${packInfo.image_file}`} />
           <h3 className="text-center">Audio Demo</h3>
@@ -131,7 +131,7 @@ const PackDetails = inject('packsStore', 'userStore')(observer((props) => {
   }
 
   return (
-    <div className="d-flex flex-row flex-wrap justify-content-center w-75 p-3 border border-light rounded" style={{backgroundColor: '#fff'}}>
+    <div>
       {renderPackDetails()}
     </div>
   )

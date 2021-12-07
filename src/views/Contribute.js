@@ -114,7 +114,7 @@ const Upload = inject('entryStore', 'userStore', 'projectsStore')(observer((prop
   }
 
   return (
-    <div>
+    <div className="w-50 d-flex flex-column justify-content-center">
       {renderUploaderOrLoading()}
     </div>
   )

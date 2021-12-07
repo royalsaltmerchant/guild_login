@@ -55,7 +55,7 @@ class Account extends Component {
           const contributedAssetsToggleKey = `contributedAsset${contribution.id}Toggle`
           return(
             <div>
-              <div className="p-3 m-1 border rounded card-style">
+              <div className="p-3 m-1 border rounded card-style" style={{backgroundColor: 'white'}}>
                 <p>Created: {date}</p>
                 <p>Project: {project.title}</p>
                 <p>Entry: {entry.title}</p>
@@ -85,14 +85,14 @@ class Account extends Component {
 
     if(this.props.userStore.userInfoLoading) {
       return(
-        <div className="d-flex justify-content-center align-items-center" style={{width: '75vw', backgroundColor: '#fff'}}>
+        <div>
           <Spinner animation="border" role="status" />
         </div>
       )
     }
     if(!this.props.userStore.userInfo) {
       return(
-        <div className="d-flex justify-content-center align-items-center" style={{width: '75vw', backgroundColor: '#fff'}}>
+        <div>
           <p>Can't find user data...</p>
         </div>
       )
@@ -100,33 +100,23 @@ class Account extends Component {
 
     const {userInfo} = this.props.userStore
     return(
-      <div className="d-flex flex-column justify-content-center align-items-center p-3 rounded" style={{width: '75vw', backgroundColor: '#fff'}}>
-        <h2 className="pb-3 text-center">Account Info</h2>
-        <div className="px-3">
-          <div className="d-flex flex-row justify-content-between border rounded p-3 card-style">
-            <div className="d-flex flex-column">
-              <h4>{userInfo.username}</h4>
-              <p>{userInfo.first_name} {userInfo.last_name}</p>
-              <p>{userInfo.email}</p>
-            </div>
-            <div className="d-flex flex-column">
-              <p><u>Approved asset count</u></p>
-              <p><b>{userInfo.approved_asset_count}</b></p>
-            </div>
-            <div className="d-flex flex-column">
-              <p><u>Coins</u></p>
-              <p><b>{userInfo.coins}</b></p>
-            </div>
-          </div>
-          <br />
-          <br />
-          <div className="text-center">
-            <h4>Contributions</h4>
-            <hr />
-            <div className="d-flex flex-row flex-wrap justify-content-center">
-              {this.renderContributions(userInfo.contributions)}
-            </div>
-          </div>
+      <div>
+        <h4>Account Info</h4>
+        <hr />
+        <div className="px-3 d-flex flex-column">
+          <h4>{userInfo.username}</h4>
+          <p>{userInfo.first_name} {userInfo.last_name}</p>
+          <p>{userInfo.email}</p>
+          <p><u>Approved asset count</u></p>
+          <p><b>{userInfo.approved_asset_count}</b></p>
+          <p><u>Coins</u></p>
+          <p><b>{userInfo.coins}</b></p>
+        </div>
+        <br />
+        <h4>Contributions</h4>
+        <hr />
+        <div className="d-flex flex-row flex-wrap">
+          {this.renderContributions(userInfo.contributions)}
         </div>
         <br />
         {userInfo.admin ? <AdminTools /> : null}

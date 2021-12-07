@@ -42,7 +42,7 @@ const Dashboard = inject('userStore', 'projectsStore')(observer((props) => {
 
   function renderProjectEntries(entries) {
     const entriesMap = entries.map(entry => (
-      <div key={entry.id} className="p-3 flex-row border rounded my-3" style={{backgroundColor: '#fff'}}>
+      <div key={entry.id} className="p-3 flex-row border rounded my-3">
         <div className="flex-column">
         <div className="d-flex flex-row justify-content-between align-items-baseline">
           <p><b>{`${entry.title}`}</b></p>
@@ -74,7 +74,7 @@ const Dashboard = inject('userStore', 'projectsStore')(observer((props) => {
     const projectsMap = projects.map(project => {
       if(project.active && !project.complete) {
         return(
-          <div key={project.id} className="card-style border rounded p-3 m-3 w-75" style={{backgroundColor: '#F8F8F8', fontFamily: 'Noto Sans'}}>
+          <div key={project.id} className="p-3 mb-5 card-style border rounded" style={{backgroundColor: 'white', fontFamily: 'Noto Sans'}}>
             <div className="d-flex flex-row align-items-baseline">
               <Image className="small-img pr-3" src={`${config.projectImageURL}${project.image_file}`} rounded />
               <h2><b>{project.title}</b></h2>
@@ -94,8 +94,8 @@ const Dashboard = inject('userStore', 'projectsStore')(observer((props) => {
   }
 
   return (
-    <div className="d-flex flex-column justify-content-center align-items-center p-3 rounded" style={{width: '75vw', backgroundColor: '#fff'}}>
-      <h3 className="p-3 text-center">Available Projects</h3>
+    <div className="d-flex flex-column">
+      <h3>Available Projects</h3>
       {renderProjects()}
     </div>
   )

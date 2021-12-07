@@ -86,7 +86,7 @@ class Login extends Component {
     } else {
       if(!authenticated){
         return(
-          <div className="w-50">
+          <div className="w-50 d-flex flex-column justify-content-center">
             {this.renderAlert()}
             <h2 className="pb-3 text-center">Login</h2>
             <div>

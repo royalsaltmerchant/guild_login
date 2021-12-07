@@ -73,10 +73,12 @@ class Root extends React.Component{
   render(){
     const {authenticated, loadingAuth} = this.state
     return(
-      <Container fluid className="App">
-        <Header />
-        <NavBar authenticated={authenticated} />
-        <div className="d-flex justify-content-center p-3 rounded border border-light" style={{backgroundColor: '#f6f6f6'}}>
+      <div className="App d-flex flex-row">
+        <div className="d-flex flex-column sticky-top border rounded card-style" style={{width: '170px', height: '100vh', backgroundColor: 'white'}}>
+          <Header />
+          <NavBar authenticated={authenticated} />
+        </div>
+        <Container className="p-2 d-flex flex-column align-items-center">
           <Switch>
             <Route exact path="/">
               <Redirect to="/login" />
@@ -116,8 +118,8 @@ class Root extends React.Component{
             </Route>
             <Route render={() => <NoMatch />}/>
           </Switch>
-        </div>
-      </Container>
+        </Container>
+      </div>
     )
   }
 }

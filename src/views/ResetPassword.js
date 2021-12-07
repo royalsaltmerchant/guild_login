@@ -53,7 +53,7 @@ export default function ResetPassword() {
   }
 
   return (
-    <div className="w-50">
+    <div>
       {renderAlert()}
       <h2 className="pb-3 text-center">Reset Password</h2>
       <Form onSubmit={(event) => handleSubmit(event)}>

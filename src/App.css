@@ -1,21 +1,27 @@
 .App {
-  color: darkslateblue;
+  color: rgb(71, 64, 119);
   font-family: 'Noto Sans', sans-serif;
   font-family: 'Roboto Slab', serif;
+  background-color: #f6f6f6;
+}
+
+.nav-link {
+  font-size: large;
+  height: 50px;
+  color: rgb(71, 64, 119);
 }
 
 .nav-button :hover {
+  color: rgb(50, 111, 255);
   transition: all 0.2s ease-out;
   text-decoration: none;
-  padding-right: 5px;
-  padding-left: 5px;
-  border-left: 1px solid #cccccc;
   border-right: 1px solid #cccccc;
+
 }
 
 .card-style {
   /* transition: all 0.3s ease-out; */
-  box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.2);
+  box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.2);
   border: 1px solid #cccccc;
 }
 

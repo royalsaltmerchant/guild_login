@@ -138,7 +138,7 @@ const ManageContribution = inject('contributionStore', 'projectsStore', 'entrySt
       const contributedAssets = contributionInfo.contributed_assets.slice().sort((a, b) => a.name.localeCompare(b.name))
       const contributedAssetsMap = contributedAssets.map(asset => {
         return(
-          <div className="py-2 px-2 d-flex flex-row justify-content-between align-items-baseline border rounded">
+          <div className="py-2 px-2 d-flex flex-row justify-content-between align-items-baseline border rounded" style={{backgroundColor: 'white'}}>
             <Button variant="link" onClick={() => handlePlayAudio(asset.name)}>{asset.name} <AiOutlineSound /></Button>
             <div className="d-flex flex-row align-items-baseline">
               {renderManageButtonsByStatus(asset)}
@@ -156,7 +156,7 @@ const ManageContribution = inject('contributionStore', 'projectsStore', 'entrySt
   }
   
   return (
-    <div className="d-flex flex-column flex-wrap justify-content-center w-75 p-3 border border-light rounded" style={{backgroundColor: '#fff'}}>
+    <div className="w-50 d-flex flex-column justify-content-center p-3">
       <h3 className="text-center">Asset Management</h3>
       {renderContributedAssets()}
       <br />

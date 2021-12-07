@@ -116,7 +116,7 @@ export default function Register(props) {
   }
 
   return (
-    <div className="w-50">
+    <div className="w-50 d-flex flex-column justify-content-center">
       {renderAlert()}
         <Form onSubmit={(event) => handleSubmit(event)}>
           <Form.Group controlId="username">

@@ -62,7 +62,7 @@ export default class ForgotPassword extends Component {
   }
   render() {
     return (
-      <div className="w-50">
+      <div className="w-50 d-flex flex-column justify-content-center">
         {this.renderAlert()}
         <h2 className="pb-3 text-center">Forgot Password</h2>
         <Form onSubmit={(event) => this.handleSubmit(event)}>

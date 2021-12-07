@@ -62,7 +62,7 @@ export default function Uploader(props) {
         message="If you leave without pressing Complete your uploads will be lost! Are you sure you want to navigate away?"
       />
       <p>Uploaded Files:</p>
-      <div className="p-1 rounded border border-dark" style={{width: '60vw', height: '25vh', backgroundColor: '#fff', overflowY: 'auto'}}>
+      <div className="p-1 rounded border border-dark" style={{height: '25vh', backgroundColor: '#fff', overflowY: 'auto'}}>
         {renderFilesSuccessList()}
         {renderFilesFailedList()}
       </div>

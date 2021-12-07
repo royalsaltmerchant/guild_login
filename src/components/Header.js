@@ -5,15 +5,16 @@ import sfag from '../assets/sfag.png'
 export default class Header extends Component {
   render() {
     return (
-      <div className="d-flex flex-column justify-content-center align-items-center">
+      <div className="p-2 d-flex flex-column align-items-center">
         <Media>
           <a href="https://sfaudioguild.com">
           <img
             src={sfag}
+            width={80}
+            height={80}
           />
           </a>
         </Media>
-        <hr style={{width: '75%'}}/>
       </div>
     )
   }
