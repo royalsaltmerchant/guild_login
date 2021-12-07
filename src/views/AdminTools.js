@@ -1,9 +1,9 @@
 import React, { Component } from 'react'
 import {inject, observer} from 'mobx-react'
-import CreateProject from './CreateProject'
-import CreateEntry from './CreateEntry'
-import CreatePack from './CreatePack'
-import CreateAssetType from './CreateAssetType'
+import CreateProject from '../components/CreateProject'
+import CreateEntry from '../components/CreateEntry'
+import CreatePack from '../components/CreatePack'
+import CreateAssetType from '../components/CreateAssetType'
 import {Spinner, Button, Form, Image} from 'react-bootstrap'
 import {
   editProject as editProjectAPICall,
@@ -34,6 +34,7 @@ class AdminTools extends Component {
   componentDidMount() {
     this.props.userStore.getUsersList()
     this.props.packsStore.getPacks()
+    this.props.projectsStore.getProjects()
   }
 
   handleToggleClick(toggleKey, editKey) {
@@ -472,7 +473,7 @@ class AdminTools extends Component {
       const projectToggleKey = `project${project.id}Toggle`
       const projectEditKey = `project${project.id}Edit`
       return(
-        <div key={project.id} className="px-3 py-1 border rounded">
+        <div key={project.id} className="px-3 py-1 border rounded admin-tools-item">
           <div className="d-flex justify-content-between">
             <Button variant="link" onClick={() => this.handleToggleClick(projectToggleKey, projectEditKey)}>
               {project.title} {this.state[projectToggleKey] ? "▼" : "▲"}
@@ -657,7 +658,7 @@ class AdminTools extends Component {
         .map((s) => s.charAt(0).toUpperCase() + s.substring(1))
         .join(' ')
       return(
-        <div key={pack.id} className="px-3 py-1 rounded border">
+        <div key={pack.id} className="px-3 py-1 rounded border admin-tools-item">
           <div className="d-flex justify-content-between">
             <Button variant="link" onClick={() => this.handleToggleClick(packToggleKey, packEditKey)}>
               {packTitle} {this.state[packToggleKey] ? "▼" : "▲"}
@@ -731,7 +732,7 @@ class AdminTools extends Component {
       const userEditKey = `user${user.id}Edit`
       if(user.active) {
         return(
-          <div className="px-3 py-1 rounded border">
+          <div className="px-3 py-1 rounded border admin-tools-item">
             <div className="d-flex justify-content-between">
               <Button variant="link" onClick={() => this.handleToggleClick(userToggleKey, userEditKey)}>
                 {`${user.first_name} ${user.last_name} (${user.username}) ${user.email}`} {this.state[userToggleKey] ? "▼" : "▲"}
@@ -770,8 +771,8 @@ class AdminTools extends Component {
 
   render() {
     return (
-      <div className="border w-100 p-3 rounded card-style" style={{backgroundColor: 'white'}}>
-        <p style={{fontSize:"20px"}}>Admin Tools</p>
+      <div className="w-75">
+        <p style={{fontSize:"20px"}}>Create</p>
         <div className="d-flex flex-column justify-content-start align-items-start">
           <Button className="px-3 py-1" variant="link" onClick={() => this.setState({createProjectBoolean: !this.state.createProjectBoolean})}>
             {this.state.createProjectBoolean ? '- Create New Project' : '+ Create New Project'}
@@ -783,13 +784,13 @@ class AdminTools extends Component {
           {this.state.createPackBoolean ? <CreatePack createPackBoolean={value => this.setState({createPackBoolean: value})}/> : null}
         </div>
         <hr />
-        <p style={{fontSize:"20px"}}>Projects:</p>
+        <p style={{fontSize:"20px"}}>Projects</p>
         {this.renderProjects()}
         <hr />
-        <p style={{fontSize:"20px"}}>Packs:</p>
+        <p style={{fontSize:"20px"}}>Packs</p>
         {this.renderPacks()}
         <hr />
-        <p style={{fontSize:"20px"}}>Users:</p>
+        <p style={{fontSize:"20px"}}>Users</p>
         {this.renderUsersList()}
       </div>
     )

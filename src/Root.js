@@ -23,6 +23,7 @@ import {authenticate as authenticateAPICall} from './config/api'
 import ForgotPassword from './views/ForgotPassword';
 import ResetPassword from './views/ResetPassword';
 import ManageContribution from './views/ManageContribution';
+import AdminTools from './views/AdminTools';
 
 class Root extends React.Component{
 
@@ -115,6 +116,9 @@ class Root extends React.Component{
             </Route>
             <Route path="/Manage/:id">
             {authenticated ? <ManageContribution /> : <AccessDenied loadingAuth={loadingAuth}/>}
+            </Route>
+            <Route path="/admin/tools">
+              {authenticated ? <AdminTools /> : <AccessDenied loadingAuth={loadingAuth}/>}
             </Route>
             <Route render={() => <NoMatch />}/>
           </Switch>

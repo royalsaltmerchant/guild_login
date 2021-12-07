@@ -62,7 +62,7 @@ class CreatePack extends Component {
 
   render() {
     return (
-      <div className="p-3 border rounded card-style">
+      <div className="p-3 border rounded card-style admin-tools-item">
         
         <Form onSubmit={(event) => this.handleSubmitPack(event)}>
           <Form.Group controlId="packTitle">

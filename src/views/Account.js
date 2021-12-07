@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import {inject, observer} from 'mobx-react'
 import {Spinner, Button} from 'react-bootstrap'
-import AdminTools from '../components/AdminTools'
+import AdminTools from './AdminTools'
 import moment from 'moment'
 
 class Account extends Component {
@@ -118,8 +118,6 @@ class Account extends Component {
         <div className="d-flex flex-row flex-wrap">
           {this.renderContributions(userInfo.contributions)}
         </div>
-        <br />
-        {userInfo.admin ? <AdminTools /> : null}
       </div>
     )
   }

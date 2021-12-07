@@ -15,14 +15,17 @@
   color: rgb(50, 111, 255);
   transition: all 0.2s ease-out;
   text-decoration: none;
-  border-right: 1px solid #cccccc;
+  border-bottom: 1px solid #cccccc;
 
+}
+
+.admin-tools-item {
+  background-color: white;
 }
 
 .card-style {
   /* transition: all 0.3s ease-out; */
   box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.2);
-  border: 1px solid #cccccc;
 }
 
 .small-img {
