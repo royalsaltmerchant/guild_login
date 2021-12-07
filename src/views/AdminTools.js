@@ -771,7 +771,7 @@ class AdminTools extends Component {
 
   render() {
     return (
-      <div className="w-75">
+      <div>
         <p style={{fontSize:"20px"}}>Create</p>
         <div className="d-flex flex-column justify-content-start align-items-start">
           <Button className="px-3 py-1" variant="link" onClick={() => this.setState({createProjectBoolean: !this.state.createProjectBoolean})}>

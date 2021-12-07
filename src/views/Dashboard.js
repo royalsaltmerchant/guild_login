@@ -94,7 +94,7 @@ const Dashboard = inject('userStore', 'projectsStore')(observer((props) => {
   }
 
   return (
-    <div className="d-flex flex-column">
+    <div>
       <h3>Available Projects</h3>
       {renderProjects()}
     </div>
