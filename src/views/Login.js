@@ -77,7 +77,7 @@ class Login extends Component {
     } else {
       if(!authenticated){
         return(
-          <div style={{width: '50vh'}}>
+          <div style={{width: '30vw'}}>
             {this.renderAlert()}
             <h2 className="pb-3">Login</h2>
             <div>

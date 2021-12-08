@@ -53,7 +53,7 @@ export default function ResetPassword() {
   }
 
   return (
-    <div style={{width: '50vh'}}>
+    <div style={{width: '30vw'}}>
       {renderAlert()}
       <h2 className="pb-3">Reset Password</h2>
       <Form onSubmit={(event) => handleSubmit(event)}>

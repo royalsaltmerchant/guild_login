@@ -116,7 +116,7 @@ export default function Register(props) {
   }
 
   return (
-    <div style={{width: '50vh'}}>
+    <div style={{width: '30vw'}}>
       {renderAlert()}
         <h2 className="pb-3">Register</h2>
         <Form onSubmit={(event) => handleSubmit(event)}>

@@ -76,7 +76,7 @@ class Root extends React.Component{
   render(){
     const {authenticated, loadingAuth} = this.state
     return(
-      <div className="App d-flex flex-row" style={{height: '100vh'}}>
+      <div className="App d-flex flex-row" style={{height: '100%'}}>
         {
           this.state.hideSideBar 
           ?

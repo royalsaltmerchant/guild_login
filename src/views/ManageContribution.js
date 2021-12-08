@@ -156,7 +156,7 @@ const ManageContribution = inject('contributionStore', 'projectsStore', 'entrySt
   }
   
   return (
-    <div style={{width: '100vh'}}>
+    <div style={{width: '60vw'}}>
       <h2 className="pb-3">Asset Management</h2>
       {renderContributedAssets()}
       <br />

@@ -94,7 +94,7 @@ const Dashboard = inject('userStore', 'projectsStore')(observer((props) => {
   }
 
   return (
-    <div style={{width: '100vh'}}>
+    <div style={{width: '60vw'}}>
       <h3>Available Projects</h3>
       {renderProjects()}
     </div>

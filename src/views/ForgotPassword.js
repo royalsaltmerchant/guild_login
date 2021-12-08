@@ -62,7 +62,7 @@ export default class ForgotPassword extends Component {
   }
   render() {
     return (
-      <div style={{width: '50vh'}}>
+      <div style={{width: '30vw'}}>
         {this.renderAlert()}
         <h2 className="pb-3">Forgot Password</h2>
         <Form onSubmit={(event) => this.handleSubmit(event)}>

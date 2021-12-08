@@ -114,7 +114,7 @@ const Upload = inject('entryStore', 'userStore', 'projectsStore')(observer((prop
   }
 
   return (
-    <div style={{width: '100vh'}}>
+    <div style={{width: '50vw'}}>
       {renderUploaderOrLoading()}
     </div>
   )
