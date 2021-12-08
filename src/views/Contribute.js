@@ -100,8 +100,8 @@ const Upload = inject('entryStore', 'userStore', 'projectsStore')(observer((prop
     const dirName = `submissions/${projectInfo.title}/${entryInfo.title}/${userInfo.first_name}_${userInfo.last_name}`
     return(
       <div>
-        <h2 className="text-center">{entryInfo.title}</h2>
-        <p className="text-center">{entryInfo.description}</p>
+        <h2>{entryInfo.title}</h2>
+        <p>{entryInfo.description}</p>
         <hr />
         <Uploader
           dirName={dirName}
@@ -114,7 +114,7 @@ const Upload = inject('entryStore', 'userStore', 'projectsStore')(observer((prop
   }
 
   return (
-    <div className="w-50 d-flex flex-column justify-content-center">
+    <div style={{width: '100vh'}}>
       {renderUploaderOrLoading()}
     </div>
   )

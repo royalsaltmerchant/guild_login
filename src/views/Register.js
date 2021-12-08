@@ -116,8 +116,9 @@ export default function Register(props) {
   }
 
   return (
-    <div className="w-50 d-flex flex-column justify-content-center">
+    <div style={{width: '50vh'}}>
       {renderAlert()}
+        <h2 className="pb-3">Register</h2>
         <Form onSubmit={(event) => handleSubmit(event)}>
           <Form.Group controlId="username">
             <Form.Label>Username</Form.Label>

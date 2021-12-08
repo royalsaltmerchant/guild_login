@@ -23,7 +23,7 @@ class Logout extends Component {
 
   render() {
     return (
-      <div className="w-50 d-flex flex-column justify-content-center">
+      <div>
         <h1>Logout</h1>
         <p>{this.state.logoutMessage}</p>
       </div>

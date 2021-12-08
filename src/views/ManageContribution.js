@@ -156,8 +156,8 @@ const ManageContribution = inject('contributionStore', 'projectsStore', 'entrySt
   }
   
   return (
-    <div className="w-50 d-flex flex-column justify-content-center p-3">
-      <h3 className="text-center">Asset Management</h3>
+    <div style={{width: '100vh'}}>
+      <h2 className="pb-3">Asset Management</h2>
       {renderContributedAssets()}
       <br />
       <Button variant="outline-info" disabled={coinsToGive === 0} onClick={() => handleComplete()}>Send {coinsToGive} Coins</Button>

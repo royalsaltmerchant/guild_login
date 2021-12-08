@@ -76,7 +76,7 @@ class Root extends React.Component{
   render(){
     const {authenticated, loadingAuth} = this.state
     return(
-      <div className="App d-flex flex-row">
+      <div className="App d-flex flex-row" style={{height: '100vh'}}>
         {
           this.state.hideSideBar 
           ?
@@ -104,7 +104,7 @@ class Root extends React.Component{
             </button>
           </div>
         }
-        <Container className="p-2 d-flex flex-column align-items-center">
+        <div className="container-fluid" style={{height: '100%'}}>
           <Switch>
             <Route exact path="/">
               <Redirect to="/login" />
@@ -147,7 +147,7 @@ class Root extends React.Component{
             </Route>
             <Route render={() => <NoMatch />}/>
           </Switch>
-        </Container>
+        </div>
       </div>
     )
   }

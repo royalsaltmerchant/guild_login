@@ -3,7 +3,11 @@ import { Image } from 'react-bootstrap'
 import { inject, observer } from 'mobx-react'
 import { useHistory } from 'react-router'
 import {finalConfig as config} from '../config/config'
-import { Spinner } from 'react-bootstrap'
+import {
+  Spinner,
+  Form,
+  Button
+} from 'react-bootstrap'
 
 const Library = inject('packsStore')(observer((props) => {
   const history = useHistory()
@@ -30,7 +34,7 @@ const Library = inject('packsStore')(observer((props) => {
         
         if(pack.active) {
           return(
-            <div key={pack.id} className="img-div p-3 m-3">
+            <div key={pack.id} className="img-div p-3">
               <Image className="pack-img" src={`${config.packImageURL}${pack.image_file}`} />
               <button className="di-btn" onClick={() => history.push(`/pack/${editedPackTitle}`)}>
                 Details
@@ -43,12 +47,43 @@ const Library = inject('packsStore')(observer((props) => {
     }
   }
 
+  function handleSearch() {
+    
+  }
+
+  function renderSearchBar() {
+    return(
+      <Form className="form-inline" onSubmit={(event) => handleSearch(event)}>
+        <Form.Group controlId="formSearch">
+          <Form.Control 
+            size="sm"
+            type="search" 
+            placeholder="Search"
+          />
+        </Form.Group>
+      </Form>
+    )
+  }
+
   return (
-    <div className="d-flex flex-column justify-content-center align-items-center">
-      <h4 className="p-3 text-center">Available SFX Packs</h4>
-      <div className="d-flex flex-row flex-wrap">
+    <div>
+      <div className="border rounded mt-2 d-flex flex-row px-2 py-1" style={{backgroundColor: '#ebebeb', width: '100%'}}>
+        <div className="d-flex flex-row align-items-center mr-5">
+          <h5 className="mt-1 mr-5">Library</h5>
+          {renderSearchBar()}
+        </div>
+        <div>
+          <Button variant="link">Packs</Button>
+          <Button variant="link">Tracks</Button>
+        </div>
+      </div>
+      <h4 className="p-3">Available SFX Packs</h4>
+      <div className="d-flex flex-row">
         {renderSFXPacks()}
       </div>
+      {/* <div className="border ml-auto" style={{width: '170px'}}>
+        <p>okay</p>
+      </div> */}
     </div>
   )
 }))

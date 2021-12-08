@@ -73,22 +73,13 @@ class Login extends Component {
   renderLogin(){
     const {authenticated, loadingAuth} = this.props
     if(loadingAuth){
-      return(
-        <div>
-          <h2 className="pb-3 text-center">Login</h2>
-          <div className="d-flex justify-content-center align-items-center" style={{width: '75vw', backgroundColor: '#fff'}}>
-            <Spinner animation="border" role="status">
-              <span className="sr-only">Loading...</span>
-            </Spinner>
-          </div>
-        </div>
-      )
+      return <Spinner animation="border" role="status" />
     } else {
       if(!authenticated){
         return(
-          <div className="w-50 d-flex flex-column justify-content-center">
+          <div style={{width: '50vh'}}>
             {this.renderAlert()}
-            <h2 className="pb-3 text-center">Login</h2>
+            <h2 className="pb-3">Login</h2>
             <div>
               <Form onSubmit={(event) => this.handleSubmit(event)}>
                 <Form.Group controlId="username_or_email">

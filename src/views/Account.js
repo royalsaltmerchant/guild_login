@@ -3,6 +3,7 @@ import {inject, observer} from 'mobx-react'
 import {Spinner, Button} from 'react-bootstrap'
 import AdminTools from './AdminTools'
 import moment from 'moment'
+import {BiCoin} from 'react-icons/bi'
 
 class Account extends Component {
   constructor(props) {
@@ -103,14 +104,12 @@ class Account extends Component {
       <div>
         <h4>Account Info</h4>
         <hr />
-        <div className="px-3 d-flex flex-column">
+        <div>
           <h4>{userInfo.username}</h4>
           <p>{userInfo.first_name} {userInfo.last_name}</p>
           <p>{userInfo.email}</p>
-          <p><u>Approved asset count</u></p>
-          <p><b>{userInfo.approved_asset_count}</b></p>
-          <p><u>Coins</u></p>
-          <p><b>{userInfo.coins}</b></p>
+          <p>Approved asset count - {userInfo.approved_asset_count}</p>
+          <p>Coins <BiCoin /> - {userInfo.coins}</p>
         </div>
         <br />
         <h4>Contributions</h4>

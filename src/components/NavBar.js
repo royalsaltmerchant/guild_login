@@ -3,6 +3,7 @@ import React, { Component } from 'react'
 import {
   NavLink
 } from "react-router-dom";
+import {BiCoin} from 'react-icons/bi'
 
 class NavBar extends Component {
 
@@ -19,6 +20,15 @@ class NavBar extends Component {
     }
   }
 
+  renderBuyCoins() {
+    const {authenticated, userStore} = this.props
+    if(userStore.userInfo && authenticated) {
+      return(
+        <NavLink className="d-flex flex-row align-items-center nav-link" to="/buy-coins">Buy <BiCoin className="ml-1" style={{fontSize: '25px', color: 'orange'}} /><p style={{fontSize: '10px', color: 'green'}}>{userStore.userInfo.coins}</p></NavLink>
+      )
+    }
+  }
+
   render() {
     const {authenticated} = this.props
     return(
@@ -27,6 +37,7 @@ class NavBar extends Component {
         {authenticated && <NavLink className="d-flex flex-row align-items-center nav-link" to="/account">Account</NavLink>}
         {authenticated && <NavLink className="d-flex flex-row align-items-center nav-link" to="/dashboard">Dashboard</NavLink>}
         <NavLink className="d-flex flex-row align-items-center nav-link" to="/library">Library</NavLink>
+        {this.renderBuyCoins()}
         {this.renderAdminToolsLink()}
         {authenticated ? 
           <NavLink className="d-flex flex-row align-items-center nav-link" to="/logout">Logout</NavLink> : 
