@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Image } from 'react-bootstrap'
 import { inject, observer } from 'mobx-react'
 import { useHistory } from 'react-router'
@@ -8,9 +8,12 @@ import {
   Form,
   Button
 } from 'react-bootstrap'
+import {AiOutlineSound} from 'react-icons/ai'
+import {BsDownload} from 'react-icons/bs'
 
 const Library = inject('packsStore')(observer((props) => {
   const history = useHistory()
+  const [view, setView] = useState('packs')
 
   useEffect(() => {
     props.packsStore.getPacks()
@@ -65,6 +68,31 @@ const Library = inject('packsStore')(observer((props) => {
     )
   }
 
+  function renderPacksOrTracksView() {
+    if(view === 'packs') {
+      return(
+        <div>
+          <h4 className="p-3">Packs</h4>
+          <div className="d-flex flex-row">
+            {renderSFXPacks()}
+          </div>
+        </div>
+      )
+    } else {
+      return(
+        <div>
+          <h4 className="p-3">Tracks</h4>
+          <div className="py-2 px-2 d-flex flex-row justify-content-between align-items-baseline border rounded" style={{backgroundColor: 'white'}}>
+            <Button variant="link">asset name <AiOutlineSound /></Button>
+            <div className="d-flex flex-row align-items-baseline">
+              <Button variant="link-secondary" style={{fontSize: '20px'}}><BsDownload /></Button>
+            </div>
+          </div>
+        </div>
+      )
+    }
+  }
+
   return (
     <div>
       <div className="border rounded mt-2 d-flex flex-row px-2 py-1" style={{backgroundColor: '#ebebeb', width: '100%'}}>
@@ -73,14 +101,11 @@ const Library = inject('packsStore')(observer((props) => {
           {renderSearchBar()}
         </div>
         <div>
-          <Button variant="link">Packs</Button>
-          <Button variant="link">Tracks</Button>
+          <Button variant="link" onClick={() => setView('packs')}>Packs</Button>
+          <Button variant="link" onClick={() => setView('tracks')}>Tracks</Button>
         </div>
       </div>
-      <h4 className="p-3">Available SFX Packs</h4>
-      <div className="d-flex flex-row">
-        {renderSFXPacks()}
-      </div>
+      {renderPacksOrTracksView()}
       {/* <div className="border ml-auto" style={{width: '170px'}}>
         <p>okay</p>
       </div> */}
