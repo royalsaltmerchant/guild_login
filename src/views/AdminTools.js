@@ -4,6 +4,7 @@ import CreateProject from '../components/CreateProject'
 import CreateEntry from '../components/CreateEntry'
 import CreatePack from '../components/CreatePack'
 import CreateAssetType from '../components/CreateAssetType'
+import UploadTrack from '../components/UploadTrack'
 import {Spinner, Button, Form, Image} from 'react-bootstrap'
 import {
   editProject as editProjectAPICall,
@@ -28,6 +29,7 @@ class AdminTools extends Component {
       createEntryBoolean: false,
       createPackBoolean: false,
       createAssetTypeBoolean: false,
+      uploadTrackBoolean: false
     }
   }
   
@@ -782,6 +784,10 @@ class AdminTools extends Component {
             {this.state.createPackBoolean ? '- Create New Pack' : '+ Create New Pack'}
           </Button>
           {this.state.createPackBoolean ? <CreatePack createPackBoolean={value => this.setState({createPackBoolean: value})}/> : null}
+          <Button className="px-3 py-1" variant="link" onClick={() => this.setState({uploadTrackBoolean: !this.state.uploadTrackBoolean})}>
+            {this.state.uploadTrackBoolean ? '- Upload New Track' : '+ Upload New Track'}
+          </Button>
+          {this.state.uploadTrackBoolean ? <UploadTrack uploadTrackBoolean={value => this.setState({uploadTrackBoolean: value})}/> : null}
         </div>
         <hr />
         <p style={{fontSize:"20px"}}>Projects</p>

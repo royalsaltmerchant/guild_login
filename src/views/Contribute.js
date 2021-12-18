@@ -25,11 +25,11 @@ const Upload = inject('entryStore', 'userStore', 'projectsStore')(observer((prop
     if(contributionSuccess) {
       const contributionId = contributionSuccess.data.id
       await Promise.all(
-        successList.map(async asset => {
+        successList.map(async file => {
           try {
             const params = {
               contribution_id: contributionId,
-              name: asset
+              name: file.name
             }
             await createContributedAssetAPICall(params)
           } catch(err) {

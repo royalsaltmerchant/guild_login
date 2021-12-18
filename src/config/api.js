@@ -386,6 +386,26 @@ const resetPassword = async (password, token) => {
   return res
 }
 
+const getTrackAssets = async (query) => {
+  const res = await axios({
+    method: 'get',
+    url: `${config.apiURL}/api/get_track_assets/${query}`,
+  })
+  return res
+}
+
+const addTrackAsset = async (formData) => {
+  const res = await axios({
+    method: 'post',
+    url: `${config.apiURL}/api/add_track_asset`,
+    headers: {
+      "x-access-token": localStorage.getItem("token")
+    },
+    data: formData
+  })
+  return res
+}
+
 export {
   login,
   authenticate,
@@ -418,5 +438,7 @@ export {
   editAssetType,
   deleteAssetType,
   requestResetEmail,
-  resetPassword
+  resetPassword,
+  getTrackAssets,
+  addTrackAsset
 }

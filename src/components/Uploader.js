@@ -19,8 +19,11 @@ export default function Uploader(props) {
     event.preventDefault()
     const toUploadFilesList = Object.values(event.target.file.files)
     const toUploadFilesListAmount = toUploadFilesList.length
-    const totalAmountOfContributionAttempts = props.calculateTotalAmountOfContributionAttempts ? props.calculateTotalAmountOfContributionAttempts(toUploadFilesListAmount) : null
-    if(!totalAmountOfContributionAttempts) return
+    if(props.calculateTotalAmountOfContributionAttempts) {
+      const totalAmountOfContributionAttempts = props.calculateTotalAmountOfContributionAttempts(toUploadFilesListAmount)
+      if(!totalAmountOfContributionAttempts) return
+
+    }
     const filesSuccessOrFailed = await UploadFiles(props.dirName, toUploadFilesList)
 
     const newSuccessList = filesSuccessOrFailed.successList
@@ -32,9 +35,9 @@ export default function Uploader(props) {
 
   function renderFilesSuccessList() {
     if(successList.length !== 0) {
-      const mapList = successList.map(item => (
-        <div key={item} className="d-flex justify-content-between">
-          <p>{item}</p>
+      const mapList = successList.map(file => (
+        <div key={file} className="d-flex justify-content-between">
+          <p>{file.name}</p>
           <p style={{color: 'green'}}>✓</p>
         </div>
       ))
@@ -44,9 +47,9 @@ export default function Uploader(props) {
 
   function renderFilesFailedList() {
     if(failedList.length !== 0) {
-      const mapList = failedList.map(item => (
-        <div key={item} className="d-flex justify-content-between">
-          <p>{item}</p>
+      const mapList = failedList.map(file => (
+        <div key={file} className="d-flex justify-content-between">
+          <p>{file.name}</p>
           <p style={{color: 'red'}}>Failed</p>
           <hr />
         </div>

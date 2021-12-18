@@ -20,14 +20,14 @@ export default async function UploadFiles(dirName, toUploadFilesList) {
         const res = await S3Client.uploadFile(file, file.name)
         if(res.status === 204 || res.status === 200) {
           console.log('success', file.name)
-          successList.push(file.name)
+          successList.push(file)
         } else {
-          console.log('failed', file.name)
-          failedList.push(file.name)
+          console.log('failed', file)
+          failedList.push(file)
         }
       } catch(err) {
-        console.log('failed', file.name)
-        failedList.push(file.name)
+        console.log('failed', file)
+        failedList.push(file)
       }
     })
   )
