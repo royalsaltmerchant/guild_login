@@ -8,10 +8,11 @@ import {
   Form,
   Button
 } from 'react-bootstrap'
-import {AiOutlineSound} from 'react-icons/ai'
+import {IoPlay} from 'react-icons/io5'
 import {BsDownload} from 'react-icons/bs'
 import { getTrackAssets } from '../config/api'
 import downloadFiles from '../utils/DownloadFIles'
+import Waveform from "react-audio-waveform"
 
 const Library = inject('packsStore')(observer((props) => {
   const history = useHistory()
@@ -79,7 +80,7 @@ const Library = inject('packsStore')(observer((props) => {
     )
   }
 
-  function handlePlayAudio(trackName) {
+  function handlePlayAudio(trackName, second) {
     const assetURL = tracksURLs.filter(URL => URL.name === trackName)[0].url
     const audio = new Audio(assetURL)
     audio.play()
@@ -93,11 +94,26 @@ const Library = inject('packsStore')(observer((props) => {
       return <p>Can't get tracks</p>
     }
     if(tracksData.length !== 0) {
+      console.log(tracksData)
       return tracksData.map(track => {
         if(track.active === true) {
           return(
             <div className="py-2 px-2 d-flex flex-row justify-content-between align-items-baseline border rounded" style={{backgroundColor: 'white'}}>
-              <Button variant="link" onClick={() => handlePlayAudio(track.name)}>{track.name}<AiOutlineSound /></Button>
+              <div className="d-flex flex-row align-items-baseline">
+                <p>{track.name}</p>
+              </div>
+              <div style={{width: '400px', alignSelf: 'center'}}>
+                <Waveform
+                  barWidth={1}
+                  peaks={track.waveform}
+                  height={40}
+                  duration={track.length}
+                  // pos={this.props.pos}
+                  onClick={(second) => handlePlayAudio(track.name, second)}
+                  color="green"
+                  progressColor="blue"
+                />
+              </div>
               <div className="d-flex flex-row align-items-baseline">
                 <Button variant="link-secondary" style={{fontSize: '20px'}}><BsDownload /></Button>
               </div>
@@ -155,7 +171,7 @@ const Library = inject('packsStore')(observer((props) => {
       console.log(err)
     }
   }
-  console.log(tracksURLs)
+  
   return (
     <div>
       <div className="border rounded mt-2 d-flex flex-row px-2 py-1" style={{backgroundColor: '#ebebeb', width: '100%'}}>

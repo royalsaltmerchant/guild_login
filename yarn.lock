@@ -9248,6 +9248,11 @@ react-app-polyfill@^2.0.0:
     regenerator-runtime "^0.13.7"
     whatwg-fetch "^3.4.1"
 
+react-audio-waveform@^0.0.5:
+  version "0.0.5"
+  resolved "https://registry.yarnpkg.com/react-audio-waveform/-/react-audio-waveform-0.0.5.tgz#32376a27ca2271e7e9f4ecb62c3319bd8a5b1e8a"
+  integrity sha512-4dJwhl+LQRuywzmmjuhWT5GueT3Ai2ZhB+loVxg0sRdhplyDp96xAu10/V/+J25Cl7YqNtl2DWSxvSoI/i6l6w==
+
 react-aws-s3@^1.5.0:
   version "1.5.0"
   resolved "https://registry.yarnpkg.com/react-aws-s3/-/react-aws-s3-1.5.0.tgz#bcc212014e50103d2d9ef974a4244ff539792ead"
