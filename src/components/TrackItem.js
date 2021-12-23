@@ -20,7 +20,7 @@ export default function TrackItem(props) {
     <div className="mb-1 py-2 px-2 d-flex flex-row justify-content-between align-items-baseline border rounded" style={{backgroundColor: 'white'}}>
       <div className="d-flex flex-row align-items-baseline justify-content-between">
         <p style={{fontSize: '22px'}}>{track.name}</p>
-        <Button as={Link} variant="link" to={`${track.author}`}>{track.author}</Button>
+        <Button as={Link} variant="link" to={`/profile/${track.author}`}>{track.author}</Button>
       </div>
       <div className='d-flex flex-row' style={{width: '350px', alignSelf: 'center'}}>
         <div className="waveform" style={{width: '250px'}}>

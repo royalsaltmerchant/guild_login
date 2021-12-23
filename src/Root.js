@@ -128,7 +128,7 @@ class Root extends React.Component{
             <Route path="/account">
               <Account/>
             </Route>
-            <Route path="/:username">
+            <Route path="/profile/:username">
               <Profile/>
             </Route>
             <Route path="/Dashboard">
