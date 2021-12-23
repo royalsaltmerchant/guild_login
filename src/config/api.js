@@ -394,6 +394,14 @@ const getTrackAssets = async (query) => {
   return res
 }
 
+const getTrackAssetsByUsername = async (username) => {
+  const res = await axios({
+    method: 'get',
+    url: `${config.apiURL}/api/get_track_assets_by_username/${username}`,
+  })
+  return res
+}
+
 const addTrackAsset = async (formData) => {
   const res = await axios({
     method: 'post',
@@ -440,5 +448,6 @@ export {
   requestResetEmail,
   resetPassword,
   getTrackAssets,
+  getTrackAssetsByUsername,
   addTrackAsset
 }
