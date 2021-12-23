@@ -8,7 +8,7 @@ import {
   Form,
   Button
 } from 'react-bootstrap'
-import {IoPlay} from 'react-icons/io5'
+import {BiCoin} from 'react-icons/bi'
 import {BsDownload} from 'react-icons/bs'
 import { getTrackAssets } from '../config/api'
 import downloadFiles from '../utils/DownloadFIles'
@@ -80,7 +80,7 @@ const Library = inject('packsStore')(observer((props) => {
     )
   }
 
-  function handlePlayAudio(trackName, second) {
+  function handlePlayAudio(trackName) {
     const assetURL = tracksURLs.filter(URL => URL.name === trackName)[0].url
     const audio = new Audio(assetURL)
     audio.play()
@@ -100,22 +100,34 @@ const Library = inject('packsStore')(observer((props) => {
           return(
             <div className="py-2 px-2 d-flex flex-row justify-content-between align-items-baseline border rounded" style={{backgroundColor: 'white'}}>
               <div className="d-flex flex-row align-items-baseline">
-                <p>{track.name}</p>
+                <p style={{fontSize: '20px'}}>{track.name}</p>
               </div>
-              <div style={{width: '400px', alignSelf: 'center'}}>
-                <Waveform
-                  barWidth={1}
-                  peaks={track.waveform}
-                  height={40}
-                  duration={track.length}
-                  // pos={this.props.pos}
-                  onClick={(second) => handlePlayAudio(track.name, second)}
-                  color="green"
-                  progressColor="blue"
-                />
+              <div className='d-flex flex-row' style={{width: '350px', alignSelf: 'center'}}>
+                <div className="waveform" style={{width: '250px'}}>
+                  <Waveform
+                    barWidth={1}
+                    peaks={track.waveform}
+                    height={40}
+                    duration={track.length}
+                    // pos={this.props.pos}
+                    onClick={() => handlePlayAudio(track.name)}
+                    // color="green"
+                    progressColor="darkblue"
+                  />
+                </div>
+                <p className="align-self-end ml-2" style={{color: 'grey'}}>{track.length} s</p>
               </div>
               <div className="d-flex flex-row align-items-baseline">
-                <Button variant="link-secondary" style={{fontSize: '20px'}}><BsDownload /></Button>
+                {track.audio_metadata.map(metatag =>
+                  <Button variant="link" onClick={() => setQuery(metatag)}>#{metatag}</Button>
+                )}
+              </div>
+              <div className="d-flex flex-row align-items-baseline m-0 p-0">
+                <p style={{fontSize: '15px', color: 'green'}}>10</p>
+                <BiCoin className="align-self-center" style={{fontSize: '20px', color: 'orange'}} />
+                <Button variant="link-secondary" style={{fontSize: '20px'}}>
+                  <BsDownload />
+                </Button>
               </div>
             </div>
           )

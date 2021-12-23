@@ -4,6 +4,7 @@ import { Image, Button, Spinner } from 'react-bootstrap'
 import {finalConfig as config, awsConfig} from '../config/config'
 import downloadFiles from '../utils/DownloadFIles'
 import {inject, observer} from 'mobx-react'
+import { BiCoin } from 'react-icons/bi'
 import {
   editUser as editUserAPICall,
   editPack as editPackAPICall
@@ -72,12 +73,8 @@ const PackDetails = inject('packsStore', 'userStore')(observer((props) => {
     const {packInfo} = props.packsStore
     return(
       <div className="d-flex flex-column justify-content-center align-items-center">
-        <h3>Cost:</h3>
-        <h4>{packInfo.coin_cost} Coins</h4>
-        <br />
+        <h4>{packInfo.coin_cost} <BiCoin className="align-self-center" style={{fontSize: '25px', color: 'orange'}} /></h4>
         <Button  onClick={() => handleDownloadClick(packInfo)} disabled={props.userStore.userInfo.coins < packInfo.coin_cost || !uri}><a style={{color: 'white', textDecoration: 'none'}} href={uri}>Download</a></Button>
-        <br />
-        <small style={{color: 'red'}}>*{packInfo.coin_cost} coins will be deducted from your account</small>
       </div>
     )
   }
