@@ -25,6 +25,7 @@ import ResetPassword from './views/ResetPassword';
 import ManageContribution from './views/ManageContribution';
 import AdminTools from './views/AdminTools';
 import {BiHide, BiShow} from 'react-icons/bi';
+import Profile from './views/Profile';
 
 class Root extends React.Component{
 
@@ -126,6 +127,9 @@ class Root extends React.Component{
             </Route>
             <Route path="/account">
               <Account/>
+            </Route>
+            <Route path="/:username">
+              <Profile/>
             </Route>
             <Route path="/Dashboard">
               {authenticated ? <Dashboard /> : <AccessDenied loadingAuth={loadingAuth}/>}

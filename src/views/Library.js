@@ -13,6 +13,7 @@ import {BsDownload} from 'react-icons/bs'
 import { getTrackAssets } from '../config/api'
 import downloadFiles from '../utils/DownloadFIles'
 import Waveform from "react-audio-waveform"
+import { Link } from 'react-router-dom'
 
 const Library = inject('packsStore')(observer((props) => {
   const history = useHistory()
@@ -51,7 +52,7 @@ const Library = inject('packsStore')(observer((props) => {
             <div key={pack.id} className="img-div p-3">
               <Image className="pack-img" src={`${config.packImageURL}${pack.image_file}`} />
               <button className="di-btn" onClick={() => history.push(`/pack/${editedPackTitle}`)}>
-                Details
+                Info
               </button>
             </div>
           )   
@@ -98,9 +99,10 @@ const Library = inject('packsStore')(observer((props) => {
       return tracksData.map(track => {
         if(track.active === true) {
           return(
-            <div className="py-2 px-2 d-flex flex-row justify-content-between align-items-baseline border rounded" style={{backgroundColor: 'white'}}>
-              <div className="d-flex flex-row align-items-baseline">
-                <p style={{fontSize: '20px'}}>{track.name}</p>
+            <div className="mb-1 py-2 px-2 d-flex flex-row justify-content-between align-items-baseline border rounded" style={{backgroundColor: 'white'}}>
+              <div className="d-flex flex-row align-items-baseline justify-content-between">
+                <p style={{fontSize: '22px'}}>{track.name}</p>
+                <Button as={Link} variant="link" to={`${track.author}`}>{track.author}</Button>
               </div>
               <div className='d-flex flex-row' style={{width: '350px', alignSelf: 'center'}}>
                 <div className="waveform" style={{width: '250px'}}>
@@ -115,7 +117,7 @@ const Library = inject('packsStore')(observer((props) => {
                     progressColor="darkblue"
                   />
                 </div>
-                <p className="align-self-end ml-2" style={{color: 'grey'}}>{track.length} s</p>
+                <p className="align-self-end ml-2" style={{color: 'grey', fontSize: '12px'}}>{track.length} s</p>
               </div>
               <div className="d-flex flex-row align-items-baseline">
                 {track.audio_metadata.map(metatag =>

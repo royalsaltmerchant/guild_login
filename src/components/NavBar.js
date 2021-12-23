@@ -34,11 +34,11 @@ class NavBar extends Component {
     return(
       <div className="nav-button d-flex flex-column">
         <hr className="w-75 m-0 p-0 align-self-center"/>
-        {authenticated && <NavLink className="d-flex flex-row align-items-center nav-link" to="/account">Account</NavLink>}
-        {authenticated && <NavLink className="d-flex flex-row align-items-center nav-link" to="/dashboard">Dashboard</NavLink>}
-        <NavLink className="d-flex flex-row align-items-center nav-link" to="/library">Library</NavLink>
-        {this.renderBuyCoins()}
         {this.renderAdminToolsLink()}
+        {authenticated && <NavLink className="d-flex flex-row align-items-center nav-link" to="/account">Account</NavLink>}
+        <NavLink className="d-flex flex-row align-items-center nav-link" to="/library">Library</NavLink>
+        {authenticated && <NavLink className="d-flex flex-row align-items-center nav-link" to="/dashboard">Contribute</NavLink>}
+        {this.renderBuyCoins()}
         {authenticated ? 
           <NavLink className="d-flex flex-row align-items-center nav-link" to="/logout">Logout</NavLink> : 
           <NavLink className="d-flex flex-row align-items-center nav-link" to="/login">Login</NavLink>}

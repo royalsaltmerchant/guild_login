@@ -77,8 +77,9 @@ export default function Uploader(props) {
             size="md" 
             type="file" 
             multiple
-            accept="audio/*"
+            accept="audio/wav"
           />
+          <p style={{color: 'grey'}}>*only .wav files</p>
         </Form.Group>
           <Button variant="outline-success" type="submit">
             Upload Files

@@ -4,12 +4,14 @@ import {Spinner, Button} from 'react-bootstrap'
 import AdminTools from './AdminTools'
 import moment from 'moment'
 import {BiCoin} from 'react-icons/bi'
+import UploadTrack from '../components/UploadTrack'
 
 class Account extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      contributionsToggle: false
+      contributionsToggle: false,
+      uploadTrackBoolean: false
     }
   }
 
@@ -110,6 +112,14 @@ class Account extends Component {
           <p>{userInfo.email}</p>
           <p>Approved asset count - {userInfo.approved_asset_count}</p>
           <p>Coins <BiCoin /> - {userInfo.coins}</p>
+        </div>
+        <h4>Upload to Library</h4>
+        <hr />
+        <div className="d-flex flex-column justify-content-start align-items-start">
+          <Button className="px-3 py-1" variant="link" onClick={() => this.setState({uploadTrackBoolean: !this.state.uploadTrackBoolean})}>
+            {this.state.uploadTrackBoolean ? '- Upload New Track' : '+ Upload New Track'}
+          </Button>
+          {this.state.uploadTrackBoolean ? <UploadTrack author={userInfo.username} uploadTrackBoolean={value => this.setState({uploadTrackBoolean: value})}/> : null}
         </div>
         <br />
         <h4>Contributions</h4>
