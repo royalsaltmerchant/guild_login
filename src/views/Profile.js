@@ -4,6 +4,7 @@ import downloadFiles from '../utils/DownloadFIles'
 import { Spinner } from 'react-bootstrap'
 import TrackItem from '../components/TrackItem'
 import { useParams } from 'react-router-dom'
+import SearchBar from '../components/SearchBar'
 
 export default function Profile() {
   const params = useParams()
@@ -34,7 +35,7 @@ export default function Profile() {
         setTracksURLs(newTracksURLs)
         setTracksData(res.data)
         setLoadingTracks(false)
-      } else throw new Error
+      } else throw new Error()
     } catch(err) {
       setLoadingTracks(false)
       console.log(err)
@@ -51,13 +52,18 @@ export default function Profile() {
     if(tracksData.length !== 0) {
       console.log(tracksData)
       return tracksData.map(track => {
-        return <TrackItem tracksURLs={tracksURLs} track={track}/>
+        return <TrackItem tracksURLs={tracksURLs} track={track} setQuery={(query) => setQuery(query)}/>
       })
     }
   }
 
   return (
     <div>
+      <div className='mt-2 d-flex flex-row'>
+        <h4 className='mr-5'>{params.username}</h4>
+        <SearchBar setQuery={(query) => setQuery(query)}/>
+      </div>
+      <br />
       {renderTracksList()}
     </div>
   )

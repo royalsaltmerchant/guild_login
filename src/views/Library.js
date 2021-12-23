@@ -11,6 +11,7 @@ import {
 import { getTrackAssets } from '../config/api'
 import downloadFiles from '../utils/DownloadFIles'
 import TrackItem from '../components/TrackItem'
+import SearchBar from '../components/SearchBar'
 
 const Library = inject('packsStore')(observer((props) => {
   const history = useHistory()
@@ -59,25 +60,6 @@ const Library = inject('packsStore')(observer((props) => {
     }
   }
 
-  function handleSearch(event) {
-    event.preventDefault()
-    setQuery(event.target.formSearch.value.toLowerCase())
-  }
-
-  function renderSearchBar() {
-    return(
-      <Form className="form-inline" onSubmit={(event) => handleSearch(event)}>
-        <Form.Group controlId="formSearch">
-          <Form.Control 
-            size="sm"
-            type="search" 
-            placeholder="Search"
-          />
-        </Form.Group>
-      </Form>
-    )
-  }
-
   function renderTracksList() {
     if(loadingTracks) {
       return <Spinner animation="border" role="status" />
@@ -89,7 +71,7 @@ const Library = inject('packsStore')(observer((props) => {
       console.log(tracksData)
       return tracksData.map(track => {
         if(track.active === true) {
-          return <TrackItem tracksURLs={tracksURLs} track={track}/>
+          return <TrackItem tracksURLs={tracksURLs} track={track} setQuery={(query) => setQuery(query)}/>
         }
       })
     }
@@ -136,7 +118,7 @@ const Library = inject('packsStore')(observer((props) => {
         setTracksURLs(newTracksURLs)
         setTracksData(res.data)
         setLoadingTracks(false)
-      } else throw new Error
+      } else throw new Error()
     } catch(err) {
       setLoadingTracks(false)
       console.log(err)
@@ -148,7 +130,7 @@ const Library = inject('packsStore')(observer((props) => {
       <div className="border rounded mt-2 d-flex flex-row px-2 py-1" style={{backgroundColor: '#ebebeb', width: '100%'}}>
         <div className="d-flex flex-row align-items-center mr-5">
           <h5 className="mt-1 mr-5">Library</h5>
-          {renderSearchBar()}
+          <SearchBar setQuery={(query) => setQuery(query)}/>
         </div>
         <div>
           <Button variant="link" onClick={() => setView('packs')}>Packs</Button>

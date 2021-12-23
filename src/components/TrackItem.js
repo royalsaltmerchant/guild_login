@@ -15,7 +15,7 @@ export default function TrackItem(props) {
     audio.play()
   }
 
-  const {track} = props
+  const {track, setQuery} = props
   return (
     <div className="mb-1 py-2 px-2 d-flex flex-row justify-content-between align-items-baseline border rounded" style={{backgroundColor: 'white'}}>
       <div className="d-flex flex-row align-items-baseline justify-content-between">
@@ -38,9 +38,9 @@ export default function TrackItem(props) {
         <p className="align-self-end ml-2" style={{color: 'grey', fontSize: '12px'}}>{track.length} s</p>
       </div>
       <div className="d-flex flex-row align-items-baseline">
-        {/* {track.audio_metadata.map(metatag =>
+        {track.audio_metadata.map(metatag =>
           <Button variant="link" onClick={() => setQuery(metatag)}>#{metatag}</Button>
-        )} */}
+        )}
       </div>
       <div className="d-flex flex-row align-items-baseline m-0 p-0">
         <p style={{fontSize: '15px', color: 'green'}}>10</p>
