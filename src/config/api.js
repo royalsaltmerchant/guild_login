@@ -414,6 +414,18 @@ const addTrackAsset = async (formData) => {
   return res
 }
 
+const editTrackAsset = async (params) => {
+  const res = await axios({
+    method: 'post',
+    url: `${config.apiURL}/api/edit_track_asset`,
+    headers: {
+      "x-access-token": localStorage.getItem("token")
+    },
+    data: params
+  })
+  return res
+}
+
 export {
   login,
   authenticate,
@@ -449,5 +461,6 @@ export {
   resetPassword,
   getTrackAssets,
   getTrackAssetsByUsername,
-  addTrackAsset
+  addTrackAsset,
+  editTrackAsset
 }

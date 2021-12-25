@@ -787,7 +787,7 @@ class AdminTools extends Component {
           <Button className="px-3 py-1" variant="link" onClick={() => this.setState({uploadTrackBoolean: !this.state.uploadTrackBoolean})}>
             {this.state.uploadTrackBoolean ? '- Upload New Track' : '+ Upload New Track'}
           </Button>
-          {this.state.uploadTrackBoolean ? <UploadTrack author="SFAudioGuild" uploadTrackBoolean={value => this.setState({uploadTrackBoolean: value})}/> : null}
+          {this.state.uploadTrackBoolean ? <UploadTrack authorId={this.props.userStore.userInfo.id} uploadTrackBoolean={value => this.setState({uploadTrackBoolean: value})}/> : null}
         </div>
         <hr />
         <p style={{fontSize:"20px"}}>Projects</p>

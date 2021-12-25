@@ -119,7 +119,7 @@ class Account extends Component {
           <Button className="px-3 py-1" variant="link" onClick={() => this.setState({uploadTrackBoolean: !this.state.uploadTrackBoolean})}>
             {this.state.uploadTrackBoolean ? '- Upload New Track' : '+ Upload New Track'}
           </Button>
-          {this.state.uploadTrackBoolean ? <UploadTrack author={userInfo.username} uploadTrackBoolean={value => this.setState({uploadTrackBoolean: value})}/> : null}
+          {this.state.uploadTrackBoolean ? <UploadTrack authorId={userInfo.id} uploadTrackBoolean={value => this.setState({uploadTrackBoolean: value})}/> : null}
         </div>
         <br />
         <h4>Contributions</h4>

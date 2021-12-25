@@ -12,7 +12,7 @@ export default function UploadTrack(props) {
         const formData = new FormData()
         formData.append("audio_file", file)
         formData.append("name", file.name)
-        formData.append("author", props.author)
+        formData.append("author_id", props.authorId)
 
         try{
           await addTrackAsset(formData)
