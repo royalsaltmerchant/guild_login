@@ -1,10 +1,10 @@
 import React, { Component } from 'react'
 import {inject, observer} from 'mobx-react'
 import {Spinner, Button} from 'react-bootstrap'
-import AdminTools from './AdminTools'
 import moment from 'moment'
 import {BiCoin} from 'react-icons/bi'
 import UploadTrack from '../components/UploadTrack'
+import { Link } from 'react-router-dom'
 
 class Account extends Component {
   constructor(props) {
@@ -107,7 +107,10 @@ class Account extends Component {
         <h4>Account Info</h4>
         <hr />
         <div>
-          <h4>{userInfo.username}</h4>
+          <div className='d-flex flex-row align-items-baseline'>
+            <h4>{userInfo.username}</h4>
+            <Button variant="link" style={{fontSize: '12px'}} as={Link} to={`/profile/${userInfo.username}`}>View Profile</Button>
+          </div>
           <p>{userInfo.first_name} {userInfo.last_name}</p>
           <p>{userInfo.email}</p>
           <p>Approved asset count - {userInfo.approved_asset_count}</p>

@@ -47,7 +47,7 @@ export default function Profile() {
       return <Spinner animation="border" role="status" />
     }
     if(!loadingTracks && tracksData.length === 0) {
-      return <p>Can't get tracks</p>
+      return <p>Can't find any tracks</p>
     }
     if(tracksData.length !== 0) {
       console.log(tracksData)

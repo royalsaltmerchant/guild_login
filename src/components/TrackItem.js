@@ -53,39 +53,48 @@ const TrackItem = inject('userStore')(observer((props) => {
     }
   }
 
+  function handleEditTags(track) {
+    console.log(track)
+  }
+
   const {track, setQuery} = props
   return (
-    <div className="mb-1 py-2 px-2 d-flex flex-row justify-content-between align-items-baseline border rounded" style={{backgroundColor: 'white'}}>
-      <div className="d-flex flex-row align-items-baseline justify-content-between">
-        <p style={{fontSize: '22px'}}>{track.name}</p>
-        <Button as={Link} variant="link" to={`/profile/${track.author_username}`}>{track.author_username}</Button>
-      </div>
-      <div className='d-flex flex-row' style={{width: '350px', alignSelf: 'center'}}>
-        <div className="waveform" style={{width: '250px'}}>
-          <Waveform
-            barWidth={1}
-            peaks={track.waveform}
-            height={40}
-            duration={track.length}
-            // pos={this.props.pos}
-            onClick={() => handlePlayAudio(track.name)}
-            // color="green"
-            progressColor="darkblue"
-          />
+    <div className="mb-1 py-2 px-2 d-flex flex-row flex-wrap justify-content-between align-items-center border rounded" style={{backgroundColor: 'white'}}>
+      <div className='d-flex flex-row flex-wrap ml-2 align-items-center'>
+        <div className="d-flex flex-row flex-wrap align-items-baseline" style={{width: '350px'}}>
+          <p style={{fontSize: '20px', margin: 0, padding: 0}}>{track.name}</p>
+          <Button as={Link} variant="link" to={`/profile/${track.author_username}`}>{track.author_username}</Button>
         </div>
-        <p className="align-self-end ml-2" style={{color: 'grey', fontSize: '12px'}}>{track.length} s</p>
+        <div className='waveform-div d-flex flex-row border rounded px-1' style={{width: '300px', paddingTop: '6px', backgroundColor: '#fdf0ff'}}>
+          <div className="waveform" style={{width: '250px'}}>
+            <Waveform
+              barWidth={1}
+              peaks={track.waveform}
+              height={40}
+              duration={track.length}
+              // pos={this.props.pos}
+              onClick={() => handlePlayAudio(track.name)}
+              // color="green"
+              progressColor="darkblue"
+            />
+          </div>
+          <p className="align-self-end ml-2" style={{fontSize: '12px'}}>{track.length} s</p>
+        </div>
       </div>
-      <div className="d-flex flex-row align-items-baseline">
-        {track.audio_metadata.map(metatag =>
-          <Button variant="link" onClick={() => setQuery(metatag)}>#{metatag}</Button>
-        )}
-      </div>
-      <div className="d-flex flex-row align-items-baseline m-0 p-0">
-        <p style={{fontSize: '15px', color: 'green'}}>10</p>
-        <BiCoin className="align-self-center" style={{fontSize: '20px', color: 'orange'}} />
-        <Button variant="link-secondary" style={{fontSize: '20px'}} onClick={() => handleDownload(track)}>
-          <BsDownload />
-        </Button>
+      <div className='d-flex flex-row flex-wrap align-items-center'>
+        <div className="d-flex flex-row align-items-baseline">
+          {track.audio_metadata.length !== 0 ? track.audio_metadata.map(metatag =>
+            <Button variant="link" onClick={() => setQuery(metatag)}>#{metatag}</Button>
+            ) : "No Tags"}
+            {track.author_id === props.userStore.userInfo.id ? <Button variant="outline-secondary" onClick={() => handleEditTags(track)}>Edit Tags</Button> : null}
+        </div>
+        <div className="d-flex flex-row align-items-baseline p-0 ml-3">
+          <p style={{fontSize: '15px', color: 'green'}}>10</p>
+          <BiCoin className="align-self-center" style={{fontSize: '20px', color: 'orange'}} />
+          <Button variant="link-secondary" style={{fontSize: '20px'}} onClick={() => handleDownload(track)}>
+            <BsDownload />
+          </Button>
+        </div>
       </div>
     </div>
   )
