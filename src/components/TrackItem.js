@@ -93,7 +93,7 @@ const TrackItem = inject('userStore')(observer((props) => {
   }
 
   function renderAddTag(track) {
-    if(props.userStore.userInfo && track.author_id === props.userStore.userInfo.id) {
+    if(props.userStore.userInfo && track.author_id === props.userStore.userInfo.id && track.audio_metadata.length < 5) {
       if(tagBoolean) {
         return(
           <Form className="form-inline" onSubmit={e => handleAddTag(e, track)}>
@@ -114,7 +114,7 @@ const TrackItem = inject('userStore')(observer((props) => {
   function renderTags(track, metatag) {
     if(props.userStore.userInfo && track.author_id === props.userStore.userInfo.id) {
       return(
-        <div className='d-flex flex-row'>
+        <div className='d-flex flex-row flex-wrap'>
           <Button variant="link" className="p-0 ml-2" onClick={() => setQuery(metatag)}>#{metatag}</Button>
           <Button variant="link" className="p-0 align-self-start" style={{color: 'red', fontSize: '13px'}} onClick={(e) => handleRemoveTag(e, track, metatag)}>✕</Button>
         </div>
