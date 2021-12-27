@@ -71,7 +71,7 @@ const Library = inject('packsStore')(observer((props) => {
       console.log(tracksData)
       return tracksData.map(track => {
         if(track.active === true) {
-          return <TrackItem tracksURLs={tracksURLs} track={track} setQuery={(query) => setQuery(query)}/>
+          return <TrackItem getTracks={() => handleTracksClicked()} tracksURLs={tracksURLs} track={track} setQuery={(query) => setQuery(query)}/>
         }
       })
     }

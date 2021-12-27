@@ -52,7 +52,7 @@ export default function Profile() {
     if(tracksData.length !== 0) {
       console.log(tracksData)
       return tracksData.map(track => {
-        return <TrackItem tracksURLs={tracksURLs} track={track} setQuery={(query) => setQuery(query)}/>
+        return <TrackItem getTracks={() => getTracksByUser()} tracksURLs={tracksURLs} track={track} setQuery={(query) => setQuery(query)}/>
       })
     }
   }
@@ -61,7 +61,6 @@ export default function Profile() {
     <div>
       <div className='mt-2 d-flex flex-row'>
         <h4 className='mr-5'>{params.username}</h4>
-        <SearchBar setQuery={(query) => setQuery(query)}/>
       </div>
       <br />
       {renderTracksList()}

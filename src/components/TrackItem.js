@@ -1,21 +1,28 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import {BiCoin} from 'react-icons/bi'
 import {BsDownload} from 'react-icons/bs'
 import Waveform from "react-audio-waveform"
 import { Link } from 'react-router-dom'
 import { inject, observer } from 'mobx-react'
 import {
-  Button
+  Button, Form
 } from 'react-bootstrap'
 import { editTrackAsset as editTrackAssetAPICall, editUser as editUserAPICall } from '../config/api'
 
+
 const TrackItem = inject('userStore')(observer((props) => {
+  const [tagBoolean, setTagBoolean] = useState(false)
+
   function handlePlayAudio(trackName) {
     const {tracksURLs} = props
     const assetURL = tracksURLs.filter(URL => URL.name === trackName)[0].url
     const audio = new Audio(assetURL)
     audio.play()
   }
+  
+  useEffect(() => {
+    props.userStore.getUserInfo()
+  },[])
 
   async function handleDownload(track) {
     const {tracksURLs, userStore} = props
@@ -53,8 +60,66 @@ const TrackItem = inject('userStore')(observer((props) => {
     }
   }
 
-  function handleEditTags(track) {
-    console.log(track)
+  async function handleAddTag(e, track) {
+    const {getTracks} = props
+    e.preventDefault()
+    const tag = e.target.tag.value
+    setTagBoolean(false)
+    const params = {
+      track_id: track.id,
+      add_tag: tag
+    }
+    try {
+      await editTrackAssetAPICall(params)
+      getTracks()
+    } catch(err) {
+      console.log(err)
+    }
+  }
+
+  async function handleRemoveTag(e, track, metatag) {
+    const {getTracks} = props
+    e.preventDefault()
+    const params = {
+      track_id: track.id,
+      remove_tag: metatag
+    }
+    try {
+      await editTrackAssetAPICall(params)
+      getTracks()
+    } catch(err) {
+      console.log(err)
+    }
+  }
+
+  function renderAddTag(track) {
+    if(props.userStore.userInfo && track.author_id === props.userStore.userInfo.id) {
+      if(tagBoolean) {
+        return(
+          <Form className="form-inline" onSubmit={e => handleAddTag(e, track)}>
+            <Form.Group controlId="tag">
+              <Form.Control 
+                style={{width: '100px'}}
+                size="sm"
+                type="text"
+                placeholder="Tag"
+              />
+            </Form.Group>
+          </Form>
+        )
+      } else return <Button variant="link" onClick={() => setTagBoolean(true)}>+ Tag</Button>
+    }
+  }
+
+  function renderTags(track, metatag) {
+    if(props.userStore.userInfo && track.author_id === props.userStore.userInfo.id) {
+      return(
+        <div className='d-flex flex-row'>
+          <Button variant="link" className="p-0 ml-2" onClick={() => setQuery(metatag)}>#{metatag}</Button>
+          <Button variant="link" className="p-0 align-self-start" style={{color: 'red', fontSize: '13px'}} onClick={(e) => handleRemoveTag(e, track, metatag)}>✕</Button>
+        </div>
+      )
+    } else return <Button variant="link" onClick={() => setQuery(metatag)}>#{metatag}</Button>
   }
 
   const {track, setQuery} = props
@@ -83,10 +148,10 @@ const TrackItem = inject('userStore')(observer((props) => {
       </div>
       <div className='d-flex flex-row flex-wrap align-items-center'>
         <div className="d-flex flex-row align-items-baseline">
-          {track.audio_metadata.length !== 0 ? track.audio_metadata.map(metatag =>
-            <Button variant="link" onClick={() => setQuery(metatag)}>#{metatag}</Button>
+          {track.audio_metadata && track.audio_metadata.length !== 0 ? track.audio_metadata.map(metatag =>
+            renderTags(track, metatag)
             ) : "No Tags"}
-            {track.author_id === props.userStore.userInfo.id ? <Button variant="outline-secondary" onClick={() => handleEditTags(track)}>Edit Tags</Button> : null}
+            {renderAddTag(track)}
         </div>
         <div className="d-flex flex-row align-items-baseline p-0 ml-3">
           <p style={{fontSize: '15px', color: 'green'}}>10</p>
