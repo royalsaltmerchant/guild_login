@@ -51,12 +51,14 @@ const TrackItem = inject('userStore')(observer((props) => {
     link.click()
 
     // edit user and track
-    try {
-      await editUserAPICall(editCurrentUserParams)
-      await editUserAPICall(editAuthorUserParams)
-      await editTrackAssetAPICall(editTrackAssetParams)
-    } catch(err) {
-      console.log(err)
+    if(props.userStore.userInfo && track.author_id != props.userStore.userInfo.id) {
+        try {
+          await editUserAPICall(editCurrentUserParams)
+          await editUserAPICall(editAuthorUserParams)
+          await editTrackAssetAPICall(editTrackAssetParams)
+        } catch(err) {
+          console.log(err)
+        }
     }
   }
 
@@ -133,12 +135,10 @@ const TrackItem = inject('userStore')(observer((props) => {
     } else return <Button variant="link" onClick={() => setQuery(metatag)}>#{metatag}</Button>
   }
 
-  function renderDownloadOrRemove(track) {
+  function renderRemove(track) {
     if(props.userStore.userInfo && track.author_id === props.userStore.userInfo.id) {
-      return <Button variant="link" className="p-0 align-self-center" style={{color: 'red', fontSize: '25px'}} onClick={(e) => handleRemoveTrack(e, track)}>✕</Button>
-    } else return(
-      <Button variant="link-secondary" style={{fontSize: '20px'}} onClick={() => handleDownload(track)}><BsDownload /></Button>
-    )
+      return <Button variant="link" className="p-0 align-self-center" style={{color: 'red', fontSize: '25px', marginLeft: '30px'}} onClick={(e) => handleRemoveTrack(e, track)}>✕</Button>
+    }
   }
 
   const {track, setQuery} = props
@@ -173,9 +173,13 @@ const TrackItem = inject('userStore')(observer((props) => {
             {renderAddTag(track)}
         </div>
         <div className="d-flex flex-row align-items-baseline p-0 ml-3">
+          {props.userStore.userInfo && track.author_id === props.userStore.userInfo.id ? null : <BiCoin className="align-self-center" style={{fontSize: '20px', color: 'orange', paddingRight: 0}} />}
           {props.userStore.userInfo && track.author_id === props.userStore.userInfo.id ? null : <p style={{fontSize: '15px', color: 'green'}}>10</p>}
-          {props.userStore.userInfo && track.author_id === props.userStore.userInfo.id ? null : <BiCoin className="align-self-center" style={{fontSize: '20px', color: 'orange'}} />}
-          {renderDownloadOrRemove(track)}
+          <div className='d-flex flex-row'>
+            <Button variant="link-secondary" style={{fontSize: '20px', paddingRight: 0, paddingTop: 0}} onClick={() => handleDownload(track)}><BsDownload /></Button>
+            <p style={{fontSize: '12px', color: 'purple'}}>{track.downloads}</p>
+          </div>
+          {renderRemove(track)}
         </div>
       </div>
     </div>
