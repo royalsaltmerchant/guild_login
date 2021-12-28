@@ -7,7 +7,7 @@ import { inject, observer } from 'mobx-react'
 import {
   Button, Form
 } from 'react-bootstrap'
-import { editTrackAsset as editTrackAssetAPICall, editUser as editUserAPICall } from '../config/api'
+import { editTrackAsset as editTrackAssetAPICall, editUser as editUserAPICall, removeTrackAsset as removeTrackAssetAPICall } from '../config/api'
 
 
 const TrackItem = inject('userStore')(observer((props) => {
@@ -92,6 +92,17 @@ const TrackItem = inject('userStore')(observer((props) => {
     }
   }
 
+  async function handleRemoveTrack(e, track) {
+    const {getTracks} = props
+    e.preventDefault()
+    try {
+      await removeTrackAssetAPICall(track.id)
+      getTracks()
+    } catch(err) {
+      console.log(err)
+    }
+  }
+
   function renderAddTag(track) {
     if(props.userStore.userInfo && track.author_id === props.userStore.userInfo.id && track.audio_metadata.length < 5) {
       if(tagBoolean) {
@@ -120,6 +131,14 @@ const TrackItem = inject('userStore')(observer((props) => {
         </div>
       )
     } else return <Button variant="link" onClick={() => setQuery(metatag)}>#{metatag}</Button>
+  }
+
+  function renderDownloadOrRemove(track) {
+    if(props.userStore.userInfo && track.author_id === props.userStore.userInfo.id) {
+      return <Button variant="link" className="p-0 align-self-center" style={{color: 'red', fontSize: '25px'}} onClick={(e) => handleRemoveTrack(e, track)}>✕</Button>
+    } else return(
+      <Button variant="link-secondary" style={{fontSize: '20px'}} onClick={() => handleDownload(track)}><BsDownload /></Button>
+    )
   }
 
   const {track, setQuery} = props
@@ -154,11 +173,9 @@ const TrackItem = inject('userStore')(observer((props) => {
             {renderAddTag(track)}
         </div>
         <div className="d-flex flex-row align-items-baseline p-0 ml-3">
-          <p style={{fontSize: '15px', color: 'green'}}>10</p>
-          <BiCoin className="align-self-center" style={{fontSize: '20px', color: 'orange'}} />
-          <Button variant="link-secondary" style={{fontSize: '20px'}} onClick={() => handleDownload(track)}>
-            <BsDownload />
-          </Button>
+          {props.userStore.userInfo && track.author_id === props.userStore.userInfo.id ? null : <p style={{fontSize: '15px', color: 'green'}}>10</p>}
+          {props.userStore.userInfo && track.author_id === props.userStore.userInfo.id ? null : <BiCoin className="align-self-center" style={{fontSize: '20px', color: 'orange'}} />}
+          {renderDownloadOrRemove(track)}
         </div>
       </div>
     </div>

@@ -426,6 +426,20 @@ const editTrackAsset = async (params) => {
   return res
 }
 
+const removeTrackAsset = async (trackId) => {
+  const res = await axios({
+    method: 'post',
+    url: `${config.apiURL}/api/remove_track_asset`,
+    headers: {
+      "x-access-token": localStorage.getItem("token")
+    },
+    data: {
+      track_id: trackId
+    }
+  })
+  return res
+}
+
 export {
   login,
   authenticate,
@@ -462,5 +476,6 @@ export {
   getTrackAssets,
   getTrackAssetsByUsername,
   addTrackAsset,
-  editTrackAsset
+  editTrackAsset,
+  removeTrackAsset
 }
