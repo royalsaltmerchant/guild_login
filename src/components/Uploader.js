@@ -42,7 +42,7 @@ export default function Uploader(props) {
         </div>
       ))
       return mapList
-    }
+    } else return <p style={{color: 'grey'}}>No Successful Uploads</p>
   }
 
   function renderFilesFailedList() {
@@ -55,7 +55,7 @@ export default function Uploader(props) {
         </div>
       ))
       return mapList
-    }
+    } else return <p style={{color: 'grey'}}>No Failed Uploads</p>
   }
 
   return (

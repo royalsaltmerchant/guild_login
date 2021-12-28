@@ -28,7 +28,7 @@ const Dashboard = inject('userStore', 'projectsStore')(observer((props) => {
       if(singleContributionUser) {
         return(
           <div key={contribution.id} className="px-5 d-flex flex-row justify-content-between align-items-baseline flex-wrap">
-            <p style={{color: 'purple'}}>{singleContributionUser.username}: <b>{contribution.amount}</b></p>
+            <p style={{color: 'purple'}}>{singleContributionUser.username} - <b>{contribution.amount}</b></p>
             <p style={{color: 'green'}}>{contribution.status}</p>
             {props.userStore.userInfo && props.userStore.userInfo.admin ? <Button as={Link} variant="outline-secondary" to={`/Manage/${contribution.id}`}>Manage</Button> : null}
           </div>
@@ -46,7 +46,7 @@ const Dashboard = inject('userStore', 'projectsStore')(observer((props) => {
         <div className="flex-column">
         <div className="d-flex flex-row justify-content-between align-items-baseline flex-wrap">
           <p><b>{`${entry.title}`}</b></p>
-          <p>Amount: <b>{entry.amount}</b></p>
+          <p>How many: <b>{entry.amount}</b></p>
           {entry.complete ? <p style={{color: 'green'}}>Complete</p> : <Button as={Link} variant="outline-success" to={`/Contribute/entry/${entry.id}`}>
             Contribute
           </Button>}
@@ -83,7 +83,7 @@ const Dashboard = inject('userStore', 'projectsStore')(observer((props) => {
             <hr style={{marginTop: "-15px"}} />
             <div className="py-3">
               <p className="px-3"><u>About</u></p>
-              <p className="px-3"> {project.description}</p>
+              <p className="px-3"> "{project.description}"</p>
             </div>
             {renderProjectEntries(project.entries)}
           </div>
@@ -96,6 +96,7 @@ const Dashboard = inject('userStore', 'projectsStore')(observer((props) => {
   return (
     <div style={{width: '60vw'}}>
       <h3>Available Projects</h3>
+      <hr />
       {renderProjects()}
     </div>
   )
