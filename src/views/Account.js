@@ -111,10 +111,12 @@ class Account extends Component {
             <h4>{userInfo.username}</h4>
             <Button variant="link" style={{fontSize: '12px'}} as={Link} to={`/profile/${userInfo.username}`}>View Profile</Button>
           </div>
-          <p>{userInfo.first_name} {userInfo.last_name}</p>
-          <p>{userInfo.email}</p>
-          <p>Approved asset count - {userInfo.approved_asset_count}</p>
-          <p>Coins <BiCoin style={{color: 'orange', fontSize: '20px'}}/> - {userInfo.coins}</p>
+          <div className='px-3'>
+            <p>{userInfo.first_name} {userInfo.last_name}</p>
+            <p>{userInfo.email}</p>
+            <p>Approved asset count - {userInfo.approved_asset_count}</p>
+            <p>Coins <BiCoin style={{color: 'orange', fontSize: '20px'}}/> - {userInfo.coins}</p>
+          </div>
         </div>
         <h4>Upload to Library</h4>
         <hr />
