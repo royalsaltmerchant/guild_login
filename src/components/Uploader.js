@@ -2,10 +2,12 @@ import React, {useState, useEffect} from 'react'
 import { Form, Button } from 'react-bootstrap'
 import UploadFiles from '../utils/UploadFiles'
 import {Prompt} from 'react-router-dom'
+import { Spinner } from 'react-bootstrap'
 
 export default function Uploader(props) {
   const [successList, setSuccessList] = useState([])
   const [failedList, setFailedList] = useState([])
+  const [uploading, setUploading] = useState(false)
 
   useEffect(() => {
     if(successList.length !== 0 && !props.complete) {
@@ -24,8 +26,9 @@ export default function Uploader(props) {
       if(!totalAmountOfContributionAttempts) return
 
     }
+    setUploading(true)
     const filesSuccessOrFailed = await UploadFiles(props.dirName, toUploadFilesList)
-
+    setUploading(false)
     const newSuccessList = filesSuccessOrFailed.successList
     const newFailedList = filesSuccessOrFailed.failedList
 
@@ -50,8 +53,9 @@ export default function Uploader(props) {
       const mapList = failedList.map(file => (
         <div key={file} className="d-flex justify-content-between">
           <p>{file.name}</p>
+          <p style={{color: 'red'}}>{file.failMessage ? file.failMessage : null}</p>
+          <br />
           <p style={{color: 'red'}}>Failed</p>
-          <hr />
         </div>
       ))
       return mapList
@@ -64,7 +68,7 @@ export default function Uploader(props) {
         when={successList.length != 0 && !props.complete}
         message="If you leave without pressing Complete your uploads will be lost! Are you sure you want to navigate away?"
       />
-      <p>Uploaded Files:</p>
+      <p>Upload SFX</p>
       <div className="p-1 rounded border border-dark" style={{height: '25vh', backgroundColor: '#fff', overflowY: 'auto'}}>
         {renderFilesSuccessList()}
         {renderFilesFailedList()}
@@ -79,11 +83,14 @@ export default function Uploader(props) {
             multiple
             accept="audio/wav"
           />
-          <p style={{color: 'grey'}}>*only .wav files</p>
+          <p style={{color: 'grey'}}>* only accepts .wav files</p>
         </Form.Group>
+        {
+          uploading ? <Spinner animation="border" role="status" /> :
           <Button variant="outline-success" type="submit">
             Upload Files
           </Button>
+        }
       </Form>
       <br />
       <small style={{color: 'red'}}>* Do not navigate away without clicking complete, or your uploads will not register!</small>
