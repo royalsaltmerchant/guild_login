@@ -114,7 +114,7 @@ class Account extends Component {
           <p>{userInfo.first_name} {userInfo.last_name}</p>
           <p>{userInfo.email}</p>
           <p>Approved asset count - {userInfo.approved_asset_count}</p>
-          <p>Coins <BiCoin /> - {userInfo.coins}</p>
+          <p>Coins <BiCoin style={{color: 'orange', fontSize: '20px'}}/> - {userInfo.coins}</p>
         </div>
         <h4>Upload to Library</h4>
         <hr />

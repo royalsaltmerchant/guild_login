@@ -12,6 +12,7 @@ import { editTrackAsset as editTrackAssetAPICall, editUser as editUserAPICall, r
 
 const TrackItem = inject('userStore')(observer((props) => {
   const [tagBoolean, setTagBoolean] = useState(false)
+  const DEFAULT_COIN_COST = 10
 
   function handlePlayAudio(trackName) {
     const {tracksURLs} = props
@@ -27,8 +28,8 @@ const TrackItem = inject('userStore')(observer((props) => {
   async function handleDownload(track) {
     const {tracksURLs, userStore} = props
     const assetURL = tracksURLs.filter(URL => URL.name === track.name)[0]
-    const newCurrentUserCoinsAmount = -Math.abs(10)
-    const newAuthorUserCoinsAmount = 10
+    const newCurrentUserCoinsAmount = -Math.abs(DEFAULT_COIN_COST)
+    const newAuthorUserCoinsAmount = DEFAULT_COIN_COST
     const newDownloadsAmount = track.downloads + 1
     const editCurrentUserParams = {
       user_id: userStore.userInfo.id,
@@ -54,6 +55,7 @@ const TrackItem = inject('userStore')(observer((props) => {
     if(props.userStore.userInfo && track.author_id != props.userStore.userInfo.id) {
         try {
           await editUserAPICall(editCurrentUserParams)
+          props.userStore.getUserInfo()
           await editUserAPICall(editAuthorUserParams)
           await editTrackAssetAPICall(editTrackAssetParams)
         } catch(err) {
@@ -174,11 +176,15 @@ const TrackItem = inject('userStore')(observer((props) => {
         </div>
         <div className="d-flex flex-row align-items-baseline p-0 ml-3">
           {props.userStore.userInfo && track.author_id === props.userStore.userInfo.id ? null : <BiCoin className="align-self-center" style={{fontSize: '20px', color: 'orange', paddingRight: 0}} />}
-          {props.userStore.userInfo && track.author_id === props.userStore.userInfo.id ? null : <p style={{fontSize: '15px', color: 'green'}}>10</p>}
-          <div className='d-flex flex-row'>
-            <Button variant="link-secondary" style={{fontSize: '20px', paddingRight: 0, paddingTop: 0}} onClick={() => handleDownload(track)}><BsDownload /></Button>
-            <p style={{fontSize: '12px', color: 'purple'}}>{track.downloads}</p>
-          </div>
+          {props.userStore.userInfo && track.author_id === props.userStore.userInfo.id ? null : <p style={{fontSize: '15px', color: 'green'}}>{DEFAULT_COIN_COST}</p>}
+          {
+            props.userStore.userInfo.coins >= DEFAULT_COIN_COST ?
+            <div className='d-flex flex-row'>
+              <Button variant="link-secondary" style={{fontSize: '20px', paddingRight: 0, paddingTop: 0}} onClick={() => handleDownload(track)}><BsDownload /></Button>
+              <p style={{fontSize: '12px', color: 'purple'}}>{track.downloads}</p>
+            </div>
+            : null
+          }
           {renderRemove(track)}
         </div>
       </div>
