@@ -70,7 +70,7 @@ export default function Profile() {
       return tracksData.map(track => {
         return(
           <>
-            <TrackItem getTracks={() => getTracksByUser()} tracksURLs={tracksURLs} track={track} setQuery={(query) => setQuery(query)}/>
+            <TrackItem tracksURLs={tracksURLs} track={track} setQuery={(query) => setQuery(query)}/>
             {tracksData.length !== trackCount ? <Button variant='link' onClick={() => handleGetMoreTracks()}>Get More Tracks</Button> : null}
           </>
         )

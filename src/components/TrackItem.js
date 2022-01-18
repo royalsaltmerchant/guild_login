@@ -7,12 +7,14 @@ import { inject, observer } from 'mobx-react'
 import {
   Button, Form
 } from 'react-bootstrap'
+import { useHistory } from 'react-router'
 import { editTrackAsset as editTrackAssetAPICall, editUser as editUserAPICall, removeTrackAsset as removeTrackAssetAPICall } from '../config/api'
 
 
 const TrackItem = inject('userStore')(observer((props) => {
   const [tagBoolean, setTagBoolean] = useState(false)
   const DEFAULT_COIN_COST = 10
+  const history = useHistory()
 
   function handlePlayAudio(trackName) {
     const {tracksURLs} = props
@@ -65,7 +67,6 @@ const TrackItem = inject('userStore')(observer((props) => {
   }
 
   async function handleAddTag(e, track) {
-    const {getTracks} = props
     e.preventDefault()
     const tag = e.target.tag.value
     setTagBoolean(false)
@@ -75,14 +76,13 @@ const TrackItem = inject('userStore')(observer((props) => {
     }
     try {
       await editTrackAssetAPICall(params)
-      getTracks()
+      history.go(0)
     } catch(err) {
       console.log(err)
     }
   }
 
   async function handleRemoveTag(e, track, metatag) {
-    const {getTracks} = props
     e.preventDefault()
     const params = {
       track_id: track.id,
@@ -90,18 +90,17 @@ const TrackItem = inject('userStore')(observer((props) => {
     }
     try {
       await editTrackAssetAPICall(params)
-      getTracks()
+      history.go(0)
     } catch(err) {
       console.log(err)
     }
   }
 
   async function handleRemoveTrack(e, track) {
-    const {getTracks} = props
     e.preventDefault()
     try {
       await removeTrackAssetAPICall(track.id)
-      getTracks()
+      history.go(0)
     } catch(err) {
       console.log(err)
     }

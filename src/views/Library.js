@@ -83,7 +83,7 @@ const Library = inject('packsStore')(observer((props) => {
         if(track.active === true) {
           return(
             <>
-              <TrackItem getTracks={() => handleGetTracks()} tracksURLs={tracksURLs} track={track} setQuery={(query) => setQuery(query)}/>
+              <TrackItem tracksURLs={tracksURLs} track={track} setQuery={(query) => setQuery(query)}/>
               {tracksData.length !== trackCount ? <Button variant='link' onClick={() => handleGetMoreTracks()}>Get More Tracks</Button> : null}
             </>
           )
