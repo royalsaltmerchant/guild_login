@@ -59,6 +59,17 @@ export default function Profile() {
     setOffset(offset + 20)
   }
 
+  function renderGetMoreButton() {
+    if(tracksData.length !== trackCount) {
+      return(
+        <div className='py-5 text-center'>
+          <p>{offset + 20} of {trackCount}</p>
+          <Button variant='link' onClick={() => handleGetMoreTracks()}>Get More Tracks</Button>
+        </div>
+      )
+    }
+  }
+
   function renderTracksList() {
     if(loadingTracks) {
       return <Spinner animation="border" role="status" />
@@ -84,7 +95,7 @@ export default function Profile() {
       </div>
       <br />
       {renderTracksList()}
-      {tracksData.length !== trackCount ? <Button variant='link' onClick={() => handleGetMoreTracks()}>Get More Tracks</Button> : null}
+      {renderGetMoreButton()}
     </div>
   )
 }

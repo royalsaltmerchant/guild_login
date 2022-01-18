@@ -91,6 +91,17 @@ const Library = inject('packsStore')(observer((props) => {
     }
   }
 
+  function renderGetMoreButton() {
+    if(tracksData.length !== trackCount) {
+      return(
+        <div className='py-5 text-center'>
+          <p>{offset + 20} of {trackCount}</p>
+          <Button variant='link' onClick={() => handleGetMoreTracks()}>Get More Tracks</Button>
+        </div>
+      )
+    }
+  }
+
   function renderPacksOrTracksView() {
     if(view === 'packs') {
       return(
@@ -108,7 +119,7 @@ const Library = inject('packsStore')(observer((props) => {
           <h4 className="pt-3">Tracks</h4>
           <hr />
           {renderTracksList()}
-          {tracksData.length !== trackCount ? <Button variant='link' onClick={() => handleGetMoreTracks()}>Get More Tracks</Button> : null}
+          {renderGetMoreButton()}
         </div>
       )
     }
