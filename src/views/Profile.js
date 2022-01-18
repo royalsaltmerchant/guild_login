@@ -71,7 +71,6 @@ export default function Profile() {
         return(
           <>
             <TrackItem tracksURLs={tracksURLs} track={track} setQuery={(query) => setQuery(query)}/>
-            {tracksData.length !== trackCount ? <Button variant='link' onClick={() => handleGetMoreTracks()}>Get More Tracks</Button> : null}
           </>
         )
       })
@@ -85,6 +84,7 @@ export default function Profile() {
       </div>
       <br />
       {renderTracksList()}
+      {tracksData.length !== trackCount ? <Button variant='link' onClick={() => handleGetMoreTracks()}>Get More Tracks</Button> : null}
     </div>
   )
 }

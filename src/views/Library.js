@@ -84,7 +84,6 @@ const Library = inject('packsStore')(observer((props) => {
           return(
             <>
               <TrackItem tracksURLs={tracksURLs} track={track} setQuery={(query) => setQuery(query)}/>
-              {tracksData.length !== trackCount ? <Button variant='link' onClick={() => handleGetMoreTracks()}>Get More Tracks</Button> : null}
             </>
           )
         }
@@ -109,6 +108,7 @@ const Library = inject('packsStore')(observer((props) => {
           <h4 className="pt-3">Tracks</h4>
           <hr />
           {renderTracksList()}
+          {tracksData.length !== trackCount ? <Button variant='link' onClick={() => handleGetMoreTracks()}>Get More Tracks</Button> : null}
         </div>
       )
     }
