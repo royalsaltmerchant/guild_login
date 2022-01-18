@@ -20,13 +20,20 @@ const Library = inject('packsStore')(observer((props) => {
   const [loadingTracks, setLoadingTracks] = useState([])
   const [query, setQuery] = useState('')
   const [tracksURLs, setTracksURLs] = useState([])
+  const [offset, setOffset] = useState(0)
+  const [trackCount, setTrackCount] = useState(0)
+  const getTrackAmount = 20
 
   useEffect(() => {
     props.packsStore.getPacks()
   },[])
 
   useEffect(() => {
-    handleTracksClicked()
+    handleGetTracks({getMore: true})
+  }, [offset])
+
+  useEffect(() => {
+    handleGetTracks({getMore: false})
   }, [query])
 
   function renderSFXPacks() {
@@ -60,6 +67,10 @@ const Library = inject('packsStore')(observer((props) => {
     }
   }
 
+  function handleGetMoreTracks() {
+    setOffset(offset + 20)
+  }
+
   function renderTracksList() {
     if(loadingTracks) {
       return <Spinner animation="border" role="status" />
@@ -68,10 +79,14 @@ const Library = inject('packsStore')(observer((props) => {
       return <p>Can't find any tracks</p>
     }
     if(tracksData.length !== 0) {
-      console.log(tracksData)
       return tracksData.map(track => {
         if(track.active === true) {
-          return <TrackItem getTracks={() => handleTracksClicked()} tracksURLs={tracksURLs} track={track} setQuery={(query) => setQuery(query)}/>
+          return(
+            <>
+              <TrackItem getTracks={() => handleGetTracks()} tracksURLs={tracksURLs} track={track} setQuery={(query) => setQuery(query)}/>
+              {tracksData.length !== trackCount ? <Button variant='link' onClick={() => handleGetMoreTracks()}>Get More Tracks</Button> : null}
+            </>
+          )
         }
       })
     }
@@ -99,25 +114,31 @@ const Library = inject('packsStore')(observer((props) => {
     }
   }
 
-  async function handleTracksClicked() {
+  async function handleGetTracks({getMore}) {
     setView('tracks')
     setLoadingTracks(true)
     try {
-      const res = await getTrackAssets(query)
-      console.log(res)
+      const res = await getTrackAssets(query, offset, getTrackAmount)
       if(res.status === 200) {
         const newTracksURLs = []
         await Promise.all(
-          res.data.map(async asset => {
+          res.data.tracks.map(async asset => {
             const assetName = asset.name
             const objectName = `tracks/${assetName}`
             const presignedURL = await downloadFiles(objectName)
             newTracksURLs.push({name: assetName, url: presignedURL})
           })
         )
-        setTracksURLs(newTracksURLs)
-        setTracksData(res.data)
-        setLoadingTracks(false)
+        if(getMore) {
+          setTracksURLs([...tracksURLs, ...newTracksURLs])
+          setTracksData([...tracksData, ...res.data.tracks])
+          setLoadingTracks(false)
+        } else {
+          setTracksURLs(newTracksURLs)
+          setTracksData(res.data.tracks)
+          setLoadingTracks(false)
+        }
+        setTrackCount(res.data.track_count)
       } else throw new Error()
     } catch(err) {
       setLoadingTracks(false)
@@ -134,7 +155,7 @@ const Library = inject('packsStore')(observer((props) => {
         </div>
         <div>
           <Button variant="link" onClick={() => setView('packs')}>Packs</Button>
-          <Button variant="link" onClick={() => handleTracksClicked()}>Tracks</Button>
+          <Button variant="link" onClick={() => handleGetTracks({getMore: false})}>Tracks</Button>
         </div>
       </div>
       {renderPacksOrTracksView()}
