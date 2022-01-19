@@ -33,9 +33,10 @@ export default function Profile() {
         await Promise.all(
           res.data.tracks.map(async asset => {
             const assetName = asset.name
-            const objectName = `tracks/${assetName}`
+            const assetUUID = asset.uuid
+            const objectName = `tracks/${assetUUID}.wav`
             const presignedURL = await downloadFiles(objectName)
-            newTracksURLs.push({name: assetName, url: presignedURL})
+            newTracksURLs.push({uuid: assetUUID, name: assetName, url: presignedURL})
           })
         )
         if(getMore) {

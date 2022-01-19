@@ -130,7 +130,7 @@ class Account extends Component {
         <h4>Contributions</h4>
         <hr />
         <div className="d-flex flex-row flex-wrap">
-          {this.renderContributions(userInfo.contributions)}
+          {userInfo.contributions ? this.renderContributions(userInfo.contributions) : null}
         </div>
       </div>
     )

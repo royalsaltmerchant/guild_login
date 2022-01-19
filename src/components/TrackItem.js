@@ -16,9 +16,10 @@ const TrackItem = inject('userStore')(observer((props) => {
   const DEFAULT_COIN_COST = 10
   const history = useHistory()
 
-  function handlePlayAudio(trackName) {
+  function handlePlayAudio(trackUUID) {
     const {tracksURLs} = props
-    const assetURL = tracksURLs.filter(URL => URL.name === trackName)[0].url
+    const assetURL = tracksURLs.filter(URL => URL.uuid === trackUUID)[0].url
+    console.log(assetURL)
     const audio = new Audio(assetURL)
     audio.play()
   }
@@ -29,7 +30,7 @@ const TrackItem = inject('userStore')(observer((props) => {
 
   async function handleDownload(track) {
     const {tracksURLs, userStore} = props
-    const assetURL = tracksURLs.filter(URL => URL.name === track.name)[0]
+    const assetURL = tracksURLs.filter(URL => URL.uuid === track.uuid)[0]
     const newCurrentUserCoinsAmount = -Math.abs(DEFAULT_COIN_COST)
     const newAuthorUserCoinsAmount = DEFAULT_COIN_COST
     const newDownloadsAmount = track.downloads + 1
@@ -158,7 +159,7 @@ const TrackItem = inject('userStore')(observer((props) => {
               height={40}
               duration={track.length}
               // pos={this.props.pos}
-              onClick={() => handlePlayAudio(track.name)}
+              onClick={() => handlePlayAudio(track.uuid)}
               // color="green"
               progressColor="darkblue"
             />

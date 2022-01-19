@@ -29,7 +29,8 @@ const Upload = inject('entryStore', 'userStore', 'projectsStore')(observer((prop
           try {
             const params = {
               contribution_id: contributionId,
-              name: file.name
+              name: file.name,
+              uuid: file.uuid
             }
             await createContributedAssetAPICall(params)
           } catch(err) {

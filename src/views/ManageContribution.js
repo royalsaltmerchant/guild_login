@@ -38,9 +38,10 @@ const ManageContribution = inject('contributionStore', 'projectsStore', 'entrySt
     await Promise.all(
       contributedAssets.map(async asset => {
         const assetName = asset.name
-        const objectName = `submissions/${projectTitle}/${entryTitle}/${userName}/${assetName}`
+        const assetUUID = asset.uuid
+        const objectName = `submissions/${projectTitle}/${entryTitle}/${userName}/${assetUUID}.wav`
         const presignedURL = await downloadFiles(objectName)
-        contributedAssetsURLs.push({name: assetName, url: presignedURL})
+        contributedAssetsURLs.push({name: assetName, uuid: assetUUID, url: presignedURL})
       })
     )
     setAssetURLs(contributedAssetsURLs)
@@ -83,8 +84,8 @@ const ManageContribution = inject('contributionStore', 'projectsStore', 'entrySt
     }
   }
 
-  function handlePlayAudio(assetName) {
-    const assetURL = assetURLs.filter(URL => URL.name === assetName)[0].url
+  function handlePlayAudio(assetUUID) {
+    const assetURL = assetURLs.filter(URL => URL.uuid === assetUUID)[0].url
     const audio = new Audio(assetURL)
     audio.play()
   }
@@ -108,8 +109,8 @@ const ManageContribution = inject('contributionStore', 'projectsStore', 'entrySt
     }
   }
 
-  function handleDownload(assetName) {
-    const assetURL = assetURLs.filter(URL => URL.name === assetName)[0]
+  function handleDownload(assetUUID) {
+    const assetURL = assetURLs.filter(URL => URL.uuid === assetUUID)[0]
     const link = document.createElement("a")
     link.href = assetURL.url
     link.download = assetURL.name
@@ -139,10 +140,10 @@ const ManageContribution = inject('contributionStore', 'projectsStore', 'entrySt
       const contributedAssetsMap = contributedAssets.map(asset => {
         return(
           <div className="py-2 px-2 d-flex flex-row justify-content-between align-items-baseline border rounded" style={{backgroundColor: 'white'}}>
-            <Button variant="link" onClick={() => handlePlayAudio(asset.name)}>{asset.name} <AiOutlineSound /></Button>
+            <Button variant="link" onClick={() => handlePlayAudio(asset.uuid)}>{asset.name} <AiOutlineSound /></Button>
             <div className="d-flex flex-row align-items-baseline">
               {renderManageButtonsByStatus(asset)}
-              <Button variant="link-secondary" style={{fontSize: '20px'}} onClick={() => handleDownload(asset.name)}><BsDownload /></Button>
+              <Button variant="link-secondary" style={{fontSize: '20px'}} onClick={() => handleDownload(asset.uuid)}><BsDownload /></Button>
             </div>
           </div>
         )

@@ -1,5 +1,6 @@
 import S3 from 'react-aws-s3'
 import { awsConfig } from '../config/config'
+import { v4 as uuidv4 } from 'uuid'
 
 export default async function UploadFiles(dirName, toUploadFilesList) {
   const config = {
@@ -22,8 +23,11 @@ export default async function UploadFiles(dirName, toUploadFilesList) {
         file.failMessage = `Size limit exceeded`
         failedList.push(file)
       } else {
+        // hash file name
+        const uuid = uuidv4()
+        file.uuid = uuid
         try {
-          const res = await S3Client.uploadFile(file, file.name)
+          const res = await S3Client.uploadFile(file, uuid)
           if(res.status === 204 || res.status === 200) {
             console.log('success', file.name)
             successList.push(file)
