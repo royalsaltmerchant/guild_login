@@ -26,6 +26,7 @@ import ManageContribution from './views/ManageContribution';
 import AdminTools from './views/AdminTools';
 import {BiHide, BiShow} from 'react-icons/bi';
 import Profile from './views/Profile';
+import Upgrade from './views/Upgrade';
 
 class Root extends React.Component{
 
@@ -143,12 +144,16 @@ class Root extends React.Component{
             <Route path="/reset_password/:token">
               <ResetPassword />
             </Route>
+            <Route path="/upgrade/">
+              {authenticated ? <Upgrade /> : <AccessDenied loadingAuth={loadingAuth}/>}
+            </Route>
             <Route path="/Manage/:id">
             {authenticated ? <ManageContribution /> : <AccessDenied loadingAuth={loadingAuth}/>}
             </Route>
             <Route path="/admin/tools">
               {authenticated ? <AdminTools /> : <AccessDenied loadingAuth={loadingAuth}/>}
             </Route>
+            
             <Route render={() => <NoMatch />}/>
           </Switch>
         </div>

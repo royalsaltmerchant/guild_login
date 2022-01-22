@@ -104,7 +104,10 @@ class Account extends Component {
     const {userInfo} = this.props.userStore
     return(
       <div>
-        <h4>Account Info</h4>
+        <div className="d-flex flex-row justify-content-between pt-2">
+          <h4>Account Info</h4>
+          {userInfo.premium ? null : <Button as={Link} to={'/upgrade'} variant="warning">Upgrade to Premium!</Button>}
+        </div>
         <hr />
         <div>
           <div className='d-flex flex-row align-items-baseline'>
@@ -116,12 +119,15 @@ class Account extends Component {
             <p>{userInfo.email}</p>
             <p>Approved asset count - {userInfo.approved_asset_count}</p>
             <p>Coins <BiCoin style={{color: 'orange', fontSize: '20px'}}/> - {userInfo.coins}</p>
+            <p>Premium member - {userInfo.premium ? "Yes" : "No"}</p>
           </div>
         </div>
+        <br />
         <h4>Upload to Library</h4>
         <hr />
         <div className="d-flex flex-column justify-content-start align-items-start">
-          <Button className="px-3 py-1" variant="link" onClick={() => this.setState({uploadTrackBoolean: !this.state.uploadTrackBoolean})}>
+          {!userInfo.premium && userInfo.upload_count >= 20 ? <p style={{color: 'red'}}>You have reached your upload limit, please upgrade to Premium to upload more tracks.</p> : null}
+          <Button className="px-3 py-1" variant="link" onClick={() => this.setState({uploadTrackBoolean: !this.state.uploadTrackBoolean})} disabled={!userInfo.premium && userInfo.upload_count >= 20}>
             {this.state.uploadTrackBoolean ? '- Upload New Track' : '+ Upload New Track'}
           </Button>
           {this.state.uploadTrackBoolean ? <UploadTrack authorId={userInfo.id} uploadTrackBoolean={value => this.setState({uploadTrackBoolean: value})}/> : null}
