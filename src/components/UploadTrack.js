@@ -19,6 +19,7 @@ export default function UploadTrack(props) {
           await addTrackAsset(formData)
         } catch(err) {
           console.log(err)
+          window.alert(`Something went wrong, please try again later.`)
         }
       })
     )

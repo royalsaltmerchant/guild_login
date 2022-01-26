@@ -8,6 +8,7 @@ export default function Uploader(props) {
   const [successList, setSuccessList] = useState([])
   const [failedList, setFailedList] = useState([])
   const [uploading, setUploading] = useState(false)
+  const [completeLoading, setCompleteLoading] = useState(false)
 
   useEffect(() => {
     if(successList.length !== 0 && !props.complete) {
@@ -62,6 +63,12 @@ export default function Uploader(props) {
     } else return <p style={{color: 'grey'}}>No Failed Uploads</p>
   }
 
+  async function handleComplete() {
+    setCompleteLoading(true)
+    await props.handleComplete(successList)
+    setCompleteLoading(false)
+  }
+
   return (
     <div>
       <Prompt
@@ -94,9 +101,12 @@ export default function Uploader(props) {
       </Form>
       <br />
       <small style={{color: 'red'}}>* Do not navigate away without clicking complete, or your uploads will not register!</small>
-      <Button variant="info" className="w-100" disabled={successList.length === 0} onClick={() => props.handleComplete(successList)}>
-        Complete
-      </Button>  
+      {
+        completeLoading ? <Spinner animation="border" role="status" /> :
+        <Button variant="info" className="w-100" disabled={successList.length === 0} onClick={() => handleComplete()}>
+          Complete
+        </Button>  
+      }
     </div>
   )
 }

@@ -34,6 +34,7 @@ const Upload = inject('entryStore', 'userStore', 'projectsStore')(observer((prop
             }
             await createContributedAssetAPICall(params)
           } catch(err) {
+            window.alert(`Something went wrong, please try again later.`)
             console.log(err)
           }
         })
