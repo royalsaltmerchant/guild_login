@@ -7,14 +7,12 @@ import { inject, observer } from 'mobx-react'
 import {
   Button, Form
 } from 'react-bootstrap'
-import { useHistory } from 'react-router'
 import { editTrackAsset as editTrackAssetAPICall, editUser as editUserAPICall, removeTrackAsset as removeTrackAssetAPICall } from '../config/api'
 
 
 const TrackItem = inject('userStore')(observer((props) => {
   const [tagBoolean, setTagBoolean] = useState(false)
   const DEFAULT_COIN_COST = 10
-  const history = useHistory()
 
   function handlePlayAudio(trackUUID) {
     const {tracksURLs} = props
@@ -77,7 +75,7 @@ const TrackItem = inject('userStore')(observer((props) => {
     }
     try {
       await editTrackAssetAPICall(params)
-      history.go(0)
+      props.getTracks()
     } catch(err) {
       console.log(err)
     }
@@ -91,7 +89,7 @@ const TrackItem = inject('userStore')(observer((props) => {
     }
     try {
       await editTrackAssetAPICall(params)
-      history.go(0)
+      props.getTracks()
     } catch(err) {
       console.log(err)
     }
@@ -101,7 +99,7 @@ const TrackItem = inject('userStore')(observer((props) => {
     e.preventDefault()
     try {
       await removeTrackAssetAPICall(track.id)
-      history.go(0)
+      props.getTracks()
     } catch(err) {
       console.log(err)
     }

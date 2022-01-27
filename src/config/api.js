@@ -386,26 +386,20 @@ const resetPassword = async (password, token) => {
   return res
 }
 
-const getTrackAssets = async (query, offset, amount) => {
+const getTrackAssets = async (params) => {
   const res = await axios({
     method: 'post',
-    url: `${config.apiURL}/api/get_track_assets/${query}`,
-    data: {
-      offset: offset,
-      amount: amount
-    }
+    url: `${config.apiURL}/api/get_track_assets`,
+    data: params
   })
   return res
 }
 
-const getTrackAssetsByUsername = async (username, offset, amount) => {
+const getTrackAssetsByUsername = async (username, params) => {
   const res = await axios({
     method: 'post',
     url: `${config.apiURL}/api/get_track_assets_by_username/${username}`,
-    data: {
-      offset: offset,
-      amount: amount
-    }
+    data: params
   })
   return res
 }

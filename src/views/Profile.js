@@ -5,29 +5,43 @@ import { Spinner, Button } from 'react-bootstrap'
 import TrackItem from '../components/TrackItem'
 import { useParams } from 'react-router-dom'
 import SearchBar from '../components/SearchBar'
+import { inject, observer } from 'mobx-react'
 
-export default function Profile() {
-  const params = useParams()
+const Profile = inject('userStore')(observer((props) => {
+  const pageParams = useParams()
   const [tracksData, setTracksData] = useState([])
   const [loadingTracks, setLoadingTracks] = useState([])
   const [query, setQuery] = useState('')
   const [tracksURLs, setTracksURLs] = useState([])
   const [offset, setOffset] = useState(0)
   const [trackCount, setTrackCount] = useState(0)
-  const getTrackAmount = 20
+  const getTrackLimit = 10
 
   useEffect(() => {
-    getTracksByUser({getMore: false})
+    props.userStore.getUserInfo()
+    getTracksByUser()
   },[])
 
   useEffect(() => {
-    getTracksByUser({getMore: true})
+    getTracksByUser()
   }, [offset])
 
-  async function getTracksByUser({getMore}) {
+  useEffect(() => {
+    setOffset(0)
+    getTracksByUser()
+  }, [query])
+
+  async function getTracksByUser() {
     setLoadingTracks(true)
+    const params = {
+      offset: offset,
+      limit: getTrackLimit
+    }
+    if(query !== "") {
+      params.query = query
+    }
     try {
-      const res = await getTrackAssetsByUsername(params.username, offset, getTrackAmount)
+      const res = await getTrackAssetsByUsername(pageParams.username, params)
       if(res.status === 200) {
         const newTracksURLs = []
         await Promise.all(
@@ -39,15 +53,9 @@ export default function Profile() {
             newTracksURLs.push({uuid: assetUUID, name: assetName, url: presignedURL})
           })
         )
-        if(getMore) {
-          setTracksURLs([...tracksURLs, ...newTracksURLs])
-          setTracksData([...tracksData, ...res.data.tracks])
-          setLoadingTracks(false)
-        } else {
-          setTracksURLs(newTracksURLs)
-          setTracksData(res.data.tracks)
-          setLoadingTracks(false)
-        }
+        setTracksURLs(newTracksURLs)
+        setTracksData(res.data.tracks)
+        setLoadingTracks(false)
         setTrackCount(res.data.track_count)
       } else throw new Error()
     } catch(err) {
@@ -56,19 +64,23 @@ export default function Profile() {
     }
   }
 
-  function handleGetMoreTracks() {
-    setOffset(offset + 20)
+  function handleGetNextTracks() {
+    setOffset(offset + getTrackLimit)
   }
 
-  function renderGetMoreButton() {
-    if(tracksData.length !== trackCount) {
-      return(
-        <div className='py-5 text-center'>
-          <p>{offset + 20} of {trackCount}</p>
-          <Button variant='link' onClick={() => handleGetMoreTracks()}>Get More Tracks</Button>
+  function handleGetPreviousTracks() {
+    setOffset(offset - getTrackLimit)
+  }
+
+  function renderPaginationButtons() {
+    return(
+      <div className='py-3 text-center align-items-center'>
+        <div className="d-flex flex-row justify-content-between">
+          <Button disabled={offset === 0} variant='link' onClick={() => handleGetPreviousTracks()}>Previous</Button>
+          <Button disabled={(offset + getTrackLimit) >= trackCount} variant='link' onClick={() => handleGetNextTracks()}>Next</Button>
         </div>
-      )
-    }
+      </div>
+    )
   }
 
   function renderTracksList() {
@@ -82,7 +94,7 @@ export default function Profile() {
       return tracksData.map(track => {
         return(
           <>
-            <TrackItem tracksURLs={tracksURLs} track={track} setQuery={(query) => setQuery(query)}/>
+            <TrackItem tracksURLs={tracksURLs} track={track} setQuery={(query) => setQuery(query)} getTracks={() => getTracksByUser()}/>
           </>
         )
       })
@@ -92,11 +104,22 @@ export default function Profile() {
   return (
     <div>
       <div className='mt-2 d-flex flex-row'>
-        <h4 className='mr-5'>{params.username}</h4>
+        <h4 className='mr-5'>{pageParams.username}</h4>
+        <SearchBar setQuery={(query) => setQuery(query)}/>
       </div>
-      <br />
+      <div>
+        <div className="d-flex flex-row align-items-baseline">
+          <p>About:</p>
+          {props.userStore.userInfo.username === pageParams.username ? <Button variant="link">Edit +</Button> : null}
+        </div>
+        <p className="ml-3">{props.userStore.userInfo ? props.userStore.userInfo.about: null}</p>
+      </div>
+      <hr />
+      <p className='d-flex flex-row justify-content-end'>Results: {trackCount}</p>
       {renderTracksList()}
-      {renderGetMoreButton()}
+      {renderPaginationButtons()}
     </div>
   )
-}
+}))
+
+export default Profile

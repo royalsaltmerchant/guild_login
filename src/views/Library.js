@@ -22,18 +22,19 @@ const Library = inject('packsStore')(observer((props) => {
   const [tracksURLs, setTracksURLs] = useState([])
   const [offset, setOffset] = useState(0)
   const [trackCount, setTrackCount] = useState(0)
-  const getTrackAmount = 20
+  const getTrackLimit = 10
 
   useEffect(() => {
     props.packsStore.getPacks()
   },[])
 
   useEffect(() => {
-    handleGetTracks({getMore: true})
+    handleGetTracks()
   }, [offset])
 
   useEffect(() => {
-    handleGetTracks({getMore: false})
+    setOffset(0)
+    handleGetTracks()
   }, [query])
 
   function renderSFXPacks() {
@@ -67,10 +68,7 @@ const Library = inject('packsStore')(observer((props) => {
     }
   }
 
-  function handleGetMoreTracks() {
-    setOffset(offset + 20)
-  }
-
+  
   function renderTracksList() {
     if(loadingTracks) {
       return <Spinner animation="border" role="status" />
@@ -83,7 +81,7 @@ const Library = inject('packsStore')(observer((props) => {
         if(track.active === true) {
           return(
             <>
-              <TrackItem tracksURLs={tracksURLs} track={track} setQuery={(query) => setQuery(query)}/>
+              <TrackItem tracksURLs={tracksURLs} track={track} setQuery={(query) => setQuery(query)} getTracks={() => handleGetTracks()}/>
             </>
           )
         }
@@ -91,15 +89,23 @@ const Library = inject('packsStore')(observer((props) => {
     }
   }
 
-  function renderGetMoreButton() {
-    if(tracksData.length !== trackCount) {
-      return(
-        <div className='py-5 text-center'>
-          <p>{offset + 20} of {trackCount}</p>
-          <Button variant='link' onClick={() => handleGetMoreTracks()}>Get More Tracks</Button>
+  function handleGetNextTracks() {
+    setOffset(offset + getTrackLimit)
+  }
+
+  function handleGetPreviousTracks() {
+    setOffset(offset - getTrackLimit)
+  }
+  
+  function renderPaginationButtons() {
+    return(
+      <div className='py-3 text-center align-items-center'>
+        <div className="d-flex flex-row justify-content-between">
+          <Button disabled={offset === 0} variant='link' onClick={() => handleGetPreviousTracks()}>Previous</Button>
+          <Button disabled={(offset + getTrackLimit) >= trackCount} variant='link' onClick={() => handleGetNextTracks()}>Next</Button>
         </div>
-      )
-    }
+      </div>
+    )
   }
 
   function renderPacksOrTracksView() {
@@ -118,18 +124,27 @@ const Library = inject('packsStore')(observer((props) => {
         <div>
           <h4 className="pt-3">Tracks</h4>
           <hr />
+          <p className='d-flex flex-row justify-content-end'>Results: {trackCount}</p>
           {renderTracksList()}
-          {renderGetMoreButton()}
+          {renderPaginationButtons()}
         </div>
       )
     }
   }
 
-  async function handleGetTracks({getMore}) {
+  async function handleGetTracks() {
     setView('tracks')
     setLoadingTracks(true)
+    const params = {
+      offset: offset,
+      limit: getTrackLimit
+    }
+    if(query !== "") {
+      console.log(query)
+      params.query = query
+    }
     try {
-      const res = await getTrackAssets(query, offset, getTrackAmount)
+      const res = await getTrackAssets(params)
       if(res.status === 200) {
         const newTracksURLs = []
         await Promise.all(
@@ -141,15 +156,9 @@ const Library = inject('packsStore')(observer((props) => {
             newTracksURLs.push({uuid: assetUUID, name: assetName, url: presignedURL})
           })
         )
-        if(getMore) {
-          setTracksURLs([...tracksURLs, ...newTracksURLs])
-          setTracksData([...tracksData, ...res.data.tracks])
-          setLoadingTracks(false)
-        } else {
-          setTracksURLs(newTracksURLs)
-          setTracksData(res.data.tracks)
-          setLoadingTracks(false)
-        }
+        setTracksURLs(newTracksURLs)
+        setTracksData(res.data.tracks)
+        setLoadingTracks(false)
         setTrackCount(res.data.track_count)
       } else throw new Error()
     } catch(err) {
@@ -167,7 +176,7 @@ const Library = inject('packsStore')(observer((props) => {
         </div>
         <div>
           <Button variant="link" onClick={() => setView('packs')}>Packs</Button>
-          <Button variant="link" onClick={() => handleGetTracks({getMore: false})}>Tracks</Button>
+          <Button variant="link" onClick={() => handleGetTracks()}>Tracks</Button>
         </div>
       </div>
       {renderPacksOrTracksView()}
