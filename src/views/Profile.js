@@ -6,6 +6,7 @@ import TrackItem from '../components/TrackItem'
 import { useParams } from 'react-router-dom'
 import SearchBar from '../components/SearchBar'
 import { inject, observer } from 'mobx-react'
+import EditSingleItem from '../components/EditSingleItem'
 
 const Profile = inject('userStore')(observer((props) => {
   const pageParams = useParams()
@@ -15,10 +16,13 @@ const Profile = inject('userStore')(observer((props) => {
   const [tracksURLs, setTracksURLs] = useState([])
   const [offset, setOffset] = useState(0)
   const [trackCount, setTrackCount] = useState(0)
+  const [aboutToggle, setAboutToggle] = useState(false)
+  const [about, setAbout] = useState()
   const getTrackLimit = 10
 
-  useEffect(() => {
-    props.userStore.getUserInfo()
+  useEffect(async () => {
+    await props.userStore.getUserInfo()
+    setAbout(props.userStore.userInfo.about)
     getTracksByUser()
   },[])
 
@@ -64,6 +68,12 @@ const Profile = inject('userStore')(observer((props) => {
     }
   }
 
+  function handleEditAbout({params}) {
+    params.user_id = props.userStore.userInfo.id
+    props.userStore.editUserInfo(params)
+    setAboutToggle(false)
+  }
+
   function handleGetNextTracks() {
     setOffset(offset + getTrackLimit)
   }
@@ -101,25 +111,37 @@ const Profile = inject('userStore')(observer((props) => {
     }
   }
 
-  return (
-    <div>
-      <div className='mt-2 d-flex flex-row'>
-        <h4 className='mr-5'>{pageParams.username}</h4>
-        <SearchBar setQuery={(query) => setQuery(query)}/>
-      </div>
+  const {userInfo} = props.userStore
+  if(userInfo) {
+    return (
       <div>
-        <div className="d-flex flex-row align-items-baseline">
-          <p>About:</p>
-          {props.userStore.userInfo.username === pageParams.username ? <Button variant="link">Edit +</Button> : null}
+        <div className='mt-2 d-flex flex-row'>
+          <h4 className='mr-5'>{pageParams.username}</h4>
+          <SearchBar setQuery={(query) => setQuery(query)}/>
         </div>
-        <p className="ml-3">{props.userStore.userInfo ? props.userStore.userInfo.about: null}</p>
+        <div>
+          <div className="d-flex flex-row align-items-baseline">
+            <p>About:</p>
+            {userInfo.username && userInfo.username === pageParams.username ? <Button variant="link" onClick={() => setAboutToggle(!aboutToggle)}>{aboutToggle ? "Edit -" : "Edit +"}</Button> : null}
+          </div>
+          {
+            aboutToggle ? 
+            EditSingleItem({
+              typeOfEdit: 'about',
+              toggle: 'about',
+              inputType: 'textarea',
+              handleEdit: (data) => handleEditAbout(data),
+              item: about, setItem: setAbout}) 
+            : <p className="ml-3">{userInfo.about ? userInfo.about: null}</p>
+          }
+        </div>
+        <hr className='mt-1'/>
+        <p className='d-flex flex-row justify-content-end'>Results: {trackCount}</p>
+        {renderTracksList()}
+        {renderPaginationButtons()}
       </div>
-      <hr />
-      <p className='d-flex flex-row justify-content-end'>Results: {trackCount}</p>
-      {renderTracksList()}
-      {renderPaginationButtons()}
-    </div>
-  )
+    )
+  } else return null
 }))
 
 export default Profile

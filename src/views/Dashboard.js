@@ -47,7 +47,7 @@ const Dashboard = inject('userStore', 'projectsStore')(observer((props) => {
         <div className="d-flex flex-row justify-content-between align-items-baseline flex-wrap">
           <p><b>{`${entry.title}`}</b></p>
           <p>How many: <b>{entry.amount}</b></p>
-          {entry.complete ? <p style={{color: 'green'}}>Complete</p> : <Button as={Link} variant="outline-success" to={`/Contribute/entry/${entry.id}`}>
+          {entry.complete ? <p style={{color: 'green'}}>Complete</p> : <Button as={Link} variant="warning" to={`/Contribute/entry/${entry.id}`}>
             Contribute
           </Button>}
         </div>
@@ -96,7 +96,7 @@ const Dashboard = inject('userStore', 'projectsStore')(observer((props) => {
   return (
     <div style={{width: '60vw'}}>
       <h3>Available Projects</h3>
-      <hr />
+      <hr className='mt-1'/>
       {renderProjects()}
     </div>
   )

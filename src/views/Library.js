@@ -113,7 +113,7 @@ const Library = inject('packsStore')(observer((props) => {
       return(
         <div>
           <h4 className="pt-3">Packs</h4>
-          <hr />
+          <hr className='mt-1'/>
           <div className="d-flex flex-row">
             {renderSFXPacks()}
           </div>
@@ -123,7 +123,7 @@ const Library = inject('packsStore')(observer((props) => {
       return(
         <div>
           <h4 className="pt-3">Tracks</h4>
-          <hr />
+          <hr className='mt-1'/>
           <p className='d-flex flex-row justify-content-end'>Results: {trackCount}</p>
           {renderTracksList()}
           {renderPaginationButtons()}

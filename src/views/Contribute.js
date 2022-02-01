@@ -104,7 +104,7 @@ const Upload = inject('entryStore', 'userStore', 'projectsStore')(observer((prop
       <div>
         <h2>{entryInfo.title}</h2>
         <p>{entryInfo.description}</p>
-        <hr />
+        <hr className='mt-1'/>
         <Uploader
           dirName={dirName}
           complete={complete}

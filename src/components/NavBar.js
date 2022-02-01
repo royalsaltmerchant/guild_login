@@ -1,8 +1,9 @@
 import { inject, observer } from 'mobx-react';
 import React, { Component } from 'react'
 import {
-  NavLink
+  Link
 } from "react-router-dom";
+import { Button } from 'react-bootstrap';
 import {BiCoin} from 'react-icons/bi'
 
 class NavBar extends Component {
@@ -15,7 +16,7 @@ class NavBar extends Component {
     const {authenticated, userStore} = this.props
     if(userStore.userInfo && userStore.userInfo.admin && authenticated) {
       return(
-        <NavLink className="d-flex flex-row align-items-center nav-link" to="/admin/tools">Admin Tools</NavLink>
+        <Button variant="link" as={Link} className="d-flex flex-row align-items-center nav-link" to="/admin/tools">Admin Tools</Button>
       )
     }
   }
@@ -24,7 +25,7 @@ class NavBar extends Component {
     const {authenticated, userStore} = this.props
     if(userStore.userInfo && authenticated) {
       return(
-        <NavLink className="d-flex flex-row align-items-center nav-link" to="/buy-coins">Buy <BiCoin className="ml-1" style={{fontSize: '25px', color: 'orange'}} /><p style={{fontSize: '10px', color: 'green'}}>{userStore.userInfo.coins}</p></NavLink>
+        <Button variant="link" as={Link} className="d-flex flex-row align-items-center nav-link" to="/buy-coins">Buy <BiCoin className="ml-1" style={{fontSize: '25px', color: 'orange'}} /><p style={{fontSize: '10px', color: 'green'}}>{userStore.userInfo.coins}</p></Button>
       )
     }
   }
@@ -35,13 +36,13 @@ class NavBar extends Component {
       <div className="nav-button d-flex flex-column">
         <hr className="w-75 m-0 p-0 align-self-center"/>
         {this.renderAdminToolsLink()}
-        {authenticated && <NavLink className="d-flex flex-row align-items-center nav-link" to="/account">Account</NavLink>}
-        {authenticated && <NavLink className="d-flex flex-row align-items-center nav-link" to="/library">Library</NavLink>}
-        {authenticated && <NavLink className="d-flex flex-row align-items-center nav-link" to="/dashboard">Contribute</NavLink>}
+        {authenticated && <Button variant="link" as={Link} className="d-flex flex-row align-items-center nav-link" to="/account">Account</Button>}
+        {authenticated && <Button variant="link" as={Link} className="d-flex flex-row align-items-center nav-link" to="/library">Library</Button>}
+        {authenticated && <Button variant="link" as={Link} className="d-flex flex-row align-items-center nav-link" to="/dashboard">Contribute</Button>}
         {/* {this.renderBuyCoins()} */}
         {authenticated ? 
-          <NavLink className="d-flex flex-row align-items-center nav-link" to="/logout">Logout</NavLink> : 
-          <NavLink className="d-flex flex-row align-items-center nav-link" to="/login">Login</NavLink>}
+          <Button variant="link" as={Link} className="d-flex flex-row align-items-center nav-link" to="/logout">Logout</Button> : 
+          <Button variant="link" as={Link} className="d-flex flex-row align-items-center nav-link" to="/login">Login</Button>}
       </div>
     )
   }

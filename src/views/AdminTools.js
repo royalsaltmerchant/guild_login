@@ -789,13 +789,13 @@ class AdminTools extends Component {
           </Button>
           {this.state.uploadTrackBoolean ? <UploadTrack authorId={this.props.userStore.userInfo.id} uploadTrackBoolean={value => this.setState({uploadTrackBoolean: value})}/> : null}
         </div>
-        <hr />
+        <hr className='mt-1'/>
         <p style={{fontSize:"20px"}}>Projects</p>
         {this.renderProjects()}
-        <hr />
+        <hr className='mt-1'/>
         <p style={{fontSize:"20px"}}>Packs</p>
         {this.renderPacks()}
-        <hr />
+        <hr className='mt-1'/>
         <p style={{fontSize:"20px"}}>Users</p>
         {this.renderUsersList()}
       </div>

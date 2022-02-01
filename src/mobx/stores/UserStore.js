@@ -1,5 +1,6 @@
 import { observable, makeObservable, action, toJS, runInAction } from 'mobx';
 import {
+  editUser as editUserApiCall,
   getUser as getUserAPICall,
   getUsers as getUsersAPICall
 } from '../../config/api'
@@ -17,7 +18,8 @@ export default class UserStore {
       userInfoLoading: observable,
       usersListLoading: observable,
       getUserInfo: action,
-      getUsersList: action
+      getUsersList: action,
+      editUserInfo: action
     })
   }
 
@@ -54,6 +56,17 @@ export default class UserStore {
     } catch(err) {
       console.log(err)
       this.usersListLoading = false
+    }
+  }
+
+  async editUserInfo(params) {
+    try {
+      const res = await editUserApiCall(params)
+      if(res.status === 200) {
+        this.getUserInfo()
+      } else throw new Error()
+    } catch(err) {
+      console.log(err)
     }
   }
 }

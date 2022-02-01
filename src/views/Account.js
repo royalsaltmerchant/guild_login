@@ -1,8 +1,9 @@
 import React, { Component } from 'react'
 import {inject, observer} from 'mobx-react'
-import {Spinner, Button} from 'react-bootstrap'
+import {Spinner, Button, Row, Col} from 'react-bootstrap'
 import moment from 'moment'
 import {BiCoin} from 'react-icons/bi'
+import {GiRoundStar} from 'react-icons/gi'
 import UploadTrack from '../components/UploadTrack'
 import { Link } from 'react-router-dom'
 
@@ -105,38 +106,49 @@ class Account extends Component {
     return(
       <div>
         <div className="d-flex flex-row justify-content-between pt-2">
-          <h4>Account Info</h4>
+          <h4 className="align-self-end m-0">Account</h4>
           {userInfo.premium ? null : <Button as={Link} to={'/upgrade'} variant="warning">Upgrade to Premium!</Button>}
         </div>
-        <hr />
+        <hr className='mt-1'/>
         <div>
           <div className='d-flex flex-row align-items-baseline'>
-            <h4>{userInfo.username}</h4>
+            <h4>{userInfo.premium ? <GiRoundStar style={{color: 'orange', marginBottom: '7px'}} /> : null}{userInfo.username}</h4>
             <Button variant="link" style={{fontSize: '12px'}} as={Link} to={`/profile/${userInfo.username}`}>View Profile</Button>
           </div>
           <div className='px-3'>
             <p>{userInfo.first_name} {userInfo.last_name}</p>
             <p>{userInfo.email}</p>
-            <p>Approved asset count - {userInfo.approved_asset_count}</p>
+            {/* <p>Approved asset count - {userInfo.approved_asset_count}</p> */}
             <p>Coins <BiCoin style={{color: 'orange', fontSize: '20px'}}/> - {userInfo.coins}</p>
-            <p>Premium member - {userInfo.premium ? "Yes" : "No"}</p>
+            {/* <p>Premium member - {userInfo.premium ? "Yes" : "No"}</p> */}
           </div>
         </div>
         <br />
-        <h4>Upload to Library</h4>
-        <hr />
+        <h4>Upload SFX to Library and Profile</h4>
+        <small className='m-0 p-0' style={{color: 'green'}}>- If other users buy your tracks with coins, you will receive those coins!</small>
+        <br />
+        <small className='p-0 m-0' style={{color: 'red'}}>- Members who do not have a premium subscription are limited to 20 free uploads.</small>
+        <hr className='mt-1'/>
         <div className="d-flex flex-column justify-content-start align-items-start">
           {!userInfo.premium && userInfo.upload_count >= 20 ? <p style={{color: 'red'}}>You have reached your upload limit, please upgrade to Premium to upload more tracks.</p> : null}
-          <Button className="px-3 py-1" variant="link" onClick={() => this.setState({uploadTrackBoolean: !this.state.uploadTrackBoolean})} disabled={!userInfo.premium && userInfo.upload_count >= 20}>
+          <Button className="px-3 py-1" onClick={() => this.setState({uploadTrackBoolean: !this.state.uploadTrackBoolean})} disabled={!userInfo.premium && userInfo.upload_count >= 20}>
             {this.state.uploadTrackBoolean ? '- Upload New Track' : '+ Upload New Track'}
           </Button>
-          {this.state.uploadTrackBoolean ? <UploadTrack authorId={userInfo.id} uploadTrackBoolean={value => this.setState({uploadTrackBoolean: value})}/> : null}
+          {this.state.uploadTrackBoolean ? <UploadTrack upload_count={userInfo.upload_count} premium={userInfo.premium} authorId={userInfo.id} uploadTrackBoolean={value => this.setState({uploadTrackBoolean: value})}/> : null}
         </div>
         <br />
-        <h4>Contributions</h4>
-        <hr />
+        <h4>Contributions to SF Audio Guild Projects</h4>
+        <small style={{color: 'green'}}>- By contributing to our projects, you can earn 10 coins if your sound is approved!</small>
+        <hr className='mt-1'/>
         <div className="d-flex flex-row flex-wrap">
-          {userInfo.contributions ? this.renderContributions(userInfo.contributions) : null}
+          {
+            userInfo.contributions && userInfo.contributions.length !== 0 ? 
+            this.renderContributions(userInfo.contributions) : 
+            <div>
+              <p>You have not made any contributions yet</p>
+              <Button variant="warning" as={Link} to={'/dashboard'}>Start Contributing</Button>
+            </div>
+          }
         </div>
       </div>
     )

@@ -28,13 +28,19 @@ export default function UploadTrack(props) {
     props.uploadTrackBoolean(false)
   }
 
-  
+  function calculateCanUploadMoreIfNotPremium(currentUploadAmount) {
+    if((props.upload_count + currentUploadAmount) > 20) {
+      return false
+    } else return true
+  }
+
   return (
     <div className="p-3 border rounded card-style admin-tools-item">
       <Uploader
         dirName={dirName}
         complete={complete}
         handleComplete={(successList) => handleComplete(successList)}
+        calculateCanUploadMoreIfNotPremium={!props.premium ? (currentUploadAmount) => calculateCanUploadMoreIfNotPremium(currentUploadAmount) : null}
       />
     </div>
   )

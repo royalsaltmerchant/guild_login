@@ -25,7 +25,13 @@ export default function Uploader(props) {
     if(props.calculateTotalAmountOfContributionAttempts) {
       const totalAmountOfContributionAttempts = props.calculateTotalAmountOfContributionAttempts(toUploadFilesListAmount)
       if(!totalAmountOfContributionAttempts) return
-
+    }
+    if(props.calculateCanUploadMoreIfNotPremium) {
+      const canUploadMoreIfNotPremium = props.calculateCanUploadMoreIfNotPremium(toUploadFilesListAmount)
+      if(!canUploadMoreIfNotPremium) {
+        window.alert(`You have exceeded the maximum limit of uploads, please upgrade to premium for more.`)
+        return
+      }
     }
     setUploading(true)
     const filesSuccessOrFailed = await UploadFiles(props.dirName, toUploadFilesList)

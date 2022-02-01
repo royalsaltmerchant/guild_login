@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import {BiCoin} from 'react-icons/bi'
+import {GiRoundStar} from 'react-icons/gi'
 import {BsDownload} from 'react-icons/bs'
 import Waveform from "react-audio-waveform"
 import { Link } from 'react-router-dom'
@@ -141,13 +142,17 @@ const TrackItem = inject('userStore')(observer((props) => {
     }
   }
 
+  function renderTrackAuthorIsPremium() {
+    return null
+  }
+
   const {track, setQuery} = props
   return (
     <div className="mb-1 py-2 px-2 d-flex flex-row flex-wrap justify-content-between align-items-center border rounded" style={{backgroundColor: 'white'}}>
       <div className='d-flex flex-row flex-wrap ml-2 align-items-center'>
         <div className="d-flex flex-row flex-wrap align-items-baseline" style={{width: '350px'}}>
           <p style={{fontSize: '20px', margin: 0, padding: 0}}>{track.name}</p>
-          <Button as={Link} variant="link" to={`/profile/${track.author_username}`}>{track.author_username}</Button>
+          <Button as={Link} variant="link" to={`/profile/${track.author_username}`}>{renderTrackAuthorIsPremium()} {track.author_username}</Button>
         </div>
         <div className='waveform-div d-flex flex-row border rounded px-1' style={{width: '300px', paddingTop: '6px', backgroundColor: '#fdf0ff'}}>
           <div className="waveform" style={{width: '250px'}}>
