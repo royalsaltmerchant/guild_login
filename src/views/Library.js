@@ -136,7 +136,6 @@ const Library = inject('packsStore')(observer((props) => {
           <Dropdown.Item onClick={() => setFilter('weapons')}>weapons</Dropdown.Item>
           <Dropdown.Item onClick={() => setFilter('magic')}>magic</Dropdown.Item>
           <Dropdown.Item onClick={() => setFilter('creatures')}>creatures</Dropdown.Item>
-          <Dropdown.Item onClick={() => setFilter('ambient')}>creatures</Dropdown.Item>
           <Dropdown.Item onClick={() => setFilter('foley')}>foley</Dropdown.Item>
         </Dropdown.Menu>
       </Dropdown>
@@ -191,6 +190,7 @@ const Library = inject('packsStore')(observer((props) => {
       params.query = query
     }
     if(filter) {
+      console.log(filter)
       params.filter = filter
     }
     try {
