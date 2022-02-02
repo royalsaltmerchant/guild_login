@@ -6,7 +6,8 @@ import {finalConfig as config} from '../config/config'
 import {
   Spinner,
   Form,
-  Button
+  Button,
+  Dropdown
 } from 'react-bootstrap'
 import { getTrackAssets } from '../config/api'
 import downloadFiles from '../utils/DownloadFIles'
@@ -22,6 +23,7 @@ const Library = inject('packsStore')(observer((props) => {
   const [tracksURLs, setTracksURLs] = useState([])
   const [offset, setOffset] = useState(0)
   const [trackCount, setTrackCount] = useState(0)
+  const [filter, setFilter] = useState(null)
   const getTrackLimit = 10
 
   useEffect(() => {
@@ -36,6 +38,11 @@ const Library = inject('packsStore')(observer((props) => {
     setOffset(0)
     handleGetTracks()
   }, [query])
+
+  useEffect(() => {
+    setOffset(0)
+    handleGetTracks()
+  }, [filter])
 
   function renderSFXPacks() {
     const {packs, packsLoading} = props.packsStore
@@ -108,6 +115,34 @@ const Library = inject('packsStore')(observer((props) => {
     )
   }
 
+  function renderFilterName() {
+    if(filter) {
+      return filter
+    } else return "Filter"
+  }
+
+  function renderSelectFilter() {
+    return(
+      <Dropdown>
+        <Dropdown.Toggle
+          variant="outline-secondary"
+        >
+          {renderFilterName()}
+        </Dropdown.Toggle>
+
+        <Dropdown.Menu>
+          <Dropdown.Item onClick={() => setFilter(null)}>None</Dropdown.Item>
+          <Dropdown.Item onClick={() => setFilter('popular')}>popular</Dropdown.Item>
+          <Dropdown.Item onClick={() => setFilter('weapons')}>weapons</Dropdown.Item>
+          <Dropdown.Item onClick={() => setFilter('magic')}>magic</Dropdown.Item>
+          <Dropdown.Item onClick={() => setFilter('creatures')}>creatures</Dropdown.Item>
+          <Dropdown.Item onClick={() => setFilter('ambient')}>creatures</Dropdown.Item>
+          <Dropdown.Item onClick={() => setFilter('foley')}>foley</Dropdown.Item>
+        </Dropdown.Menu>
+      </Dropdown>
+    )
+  }
+
   function renderPacksOrTracksView() {
     if(view === 'packs') {
       return(
@@ -124,7 +159,20 @@ const Library = inject('packsStore')(observer((props) => {
         <div>
           <h4 className="pt-3">Tracks</h4>
           <hr className='mt-1'/>
-          <p className='d-flex flex-row justify-content-end'>Results: {trackCount}</p>
+          <div className='p-1 d-flex flex-row justify-content-between'>
+            <div className='d-flex flex-row align-items-baseline'>
+              {renderSelectFilter()}  
+              {
+                query !== '' ?
+                <div className='ml-2 d-flex flex-row align-items-baseline'>
+                  <p>{`+ ${query}`}</p>
+                  <Button variant="link" onClick={() => setQuery('')}>Remove</Button>
+                </div>
+                : null
+              }
+            </div>
+            <p>Results: {trackCount}</p>
+          </div>
           {renderTracksList()}
           {renderPaginationButtons()}
         </div>
@@ -139,9 +187,11 @@ const Library = inject('packsStore')(observer((props) => {
       offset: offset,
       limit: getTrackLimit
     }
-    if(query !== "") {
-      console.log(query)
+    if(query !== '') {
       params.query = query
+    }
+    if(filter) {
+      params.filter = filter
     }
     try {
       const res = await getTrackAssets(params)

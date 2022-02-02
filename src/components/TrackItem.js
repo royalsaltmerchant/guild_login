@@ -12,6 +12,7 @@ import { editTrackAsset as editTrackAssetAPICall, editUser as editUserAPICall, r
 
 
 const TrackItem = inject('userStore')(observer((props) => {
+  const [trackToggle, setTrackToggle] = useState(false)
   const [tagBoolean, setTagBoolean] = useState(false)
   const DEFAULT_COIN_COST = 10
 
@@ -107,7 +108,7 @@ const TrackItem = inject('userStore')(observer((props) => {
   }
 
   function renderAddTag(track) {
-    if(props.userStore.userInfo && track.author_id === props.userStore.userInfo.id && track.audio_metadata.length < 5) {
+    if(props.userStore.userInfo && track.author_id === props.userStore.userInfo.id && track.audio_metadata.length < 20) {
       if(tagBoolean) {
         return(
           <Form className="form-inline" onSubmit={e => handleAddTag(e, track)}>
@@ -146,50 +147,72 @@ const TrackItem = inject('userStore')(observer((props) => {
     return null
   }
 
+  function handleTrackToggle(e) {
+    e.preventDefault()
+    if(e.target === e.currentTarget) {
+      setTrackToggle(!trackToggle)
+    }
+  }
+
   const {track, setQuery} = props
   return (
-    <div className="mb-1 py-2 px-2 d-flex flex-row flex-wrap justify-content-between align-items-center border rounded" style={{backgroundColor: 'white'}}>
-      <div className='d-flex flex-row flex-wrap ml-2 align-items-center'>
-        <div className="d-flex flex-row flex-wrap align-items-baseline" style={{width: '350px'}}>
-          <p style={{fontSize: '20px', margin: 0, padding: 0}}>{track.name}</p>
-          <Button as={Link} variant="link" to={`/profile/${track.author_username}`}>{renderTrackAuthorIsPremium()} {track.author_username}</Button>
-        </div>
-        <div className='waveform-div d-flex flex-row border rounded px-1' style={{width: '300px', paddingTop: '6px', backgroundColor: '#fdf0ff'}}>
-          <div className="waveform" style={{width: '250px'}}>
-            <Waveform
-              barWidth={1}
-              peaks={track.waveform}
-              height={40}
-              duration={track.length}
-              // pos={this.props.pos}
-              onClick={() => handlePlayAudio(track.uuid)}
-              // color="green"
-              progressColor="darkblue"
-            />
+    <div className='d-flex flex-column  border rounded track-button' style={{backgroundColor: 'white'}} onClick={(e) => handleTrackToggle(e)}>
+      <div className="mb-1 py-2 px-2 d-flex flex-row flex-wrap justify-content-between align-items-center" onClick={(e) => handleTrackToggle(e)}>
+        <div className='d-flex flex-row flex-wrap ml-2 align-items-center' onClick={(e) => handleTrackToggle(e)}>
+          <div className="d-flex flex-row flex-wrap align-items-baseline" style={{width: '450px'}} onClick={(e) => handleTrackToggle(e)}>
+            <p style={{fontSize: '20px', margin: 0, padding: 0}}>{track.name}</p>
+            <Button as={Link} variant="link" to={`/profile/${track.author_username}`}>{renderTrackAuthorIsPremium()} {track.author_username}</Button>
           </div>
-          <p className="align-self-end ml-2" style={{fontSize: '12px'}}>{track.length} s</p>
+          <div className='waveform-div d-flex flex-row border rounded px-1' style={{width: '300px', paddingTop: '6px', backgroundColor: '#fdf0ff'}}>
+            <div className="waveform" style={{width: '250px'}}>
+              <Waveform
+                barWidth={1}
+                peaks={track.waveform}
+                height={40}
+                duration={track.length}
+                // pos={this.props.pos}
+                onClick={() => handlePlayAudio(track.uuid)}
+                // color="green"
+                progressColor="darkblue"
+              />
+            </div>
+            <p className="align-self-end ml-2" style={{fontSize: '12px'}}>{track.length} s</p>
+          </div>
+        </div>
+        <div className='d-flex flex-row flex-wrap align-items-center'>
+          <div className="d-flex flex-row align-items-baseline p-0 ml-3">
+            {props.userStore.userInfo && track.author_id === props.userStore.userInfo.id ? null : <BiCoin className="align-self-center" style={{fontSize: '30px', color: 'orange', paddingRight: 0}} />}
+            {props.userStore.userInfo && track.author_id === props.userStore.userInfo.id ? null : <p style={{fontSize: '15px', color: 'green'}}>{DEFAULT_COIN_COST}</p>}
+            {
+              props.userStore.userInfo ?
+              <div className='d-flex flex-row'>
+                <Button title="Download" disabled={props.userStore.userInfo.coins < DEFAULT_COIN_COST} variant="link-secondary" style={{fontSize: '30px', paddingRight: 0, paddingTop: 0}} onClick={() => handleDownload(track)}><BsDownload /></Button>
+              </div>
+              : null
+            }
+            {renderRemove(track)}
+          </div>
         </div>
       </div>
-      <div className='d-flex flex-row flex-wrap align-items-center'>
-        <div className="d-flex flex-row align-items-baseline">
-          {track.audio_metadata && track.audio_metadata.length !== 0 ? track.audio_metadata.map(metatag =>
-            renderTags(track, metatag)
-            ) : "No Tags"}
-            {renderAddTag(track)}
-        </div>
-        <div className="d-flex flex-row align-items-baseline p-0 ml-3">
-          {props.userStore.userInfo && track.author_id === props.userStore.userInfo.id ? null : <BiCoin className="align-self-center" style={{fontSize: '20px', color: 'orange', paddingRight: 0}} />}
-          {props.userStore.userInfo && track.author_id === props.userStore.userInfo.id ? null : <p style={{fontSize: '15px', color: 'green'}}>{DEFAULT_COIN_COST}</p>}
-          {
-            props.userStore.userInfo && props.userStore.userInfo.coins >= DEFAULT_COIN_COST ?
-            <div className='d-flex flex-row'>
-              <Button variant="link-secondary" style={{fontSize: '20px', paddingRight: 0, paddingTop: 0}} onClick={() => handleDownload(track)}><BsDownload /></Button>
-              <p style={{fontSize: '12px', color: 'purple'}}>{track.downloads}</p>
+      <div onClick={(e) => handleTrackToggle(e)}>
+        {
+          props.userStore.userInfo && trackToggle ?
+          <p onClick={(e) => handleTrackToggle(e)} className='ml-3 mr-2 mb-0 mt-0 p-0' style={{color: 'purple'}}>{track.downloads} {track.downloads.length === 1 ? "Download" : "Downloads"}</p>
+          : null
+        }
+        {
+          trackToggle ? 
+          <div className="d-flex flex-row align-items-baseline" onClick={(e) => handleTrackToggle(e)}>
+            <div className='m-3 d-flex flex-row'>
+              <p className='p-0 m-0'>Searchable Tags:</p>
+              {track.audio_metadata && track.audio_metadata.length !== 0 ? track.audio_metadata.map(metatag =>
+                renderTags(track, metatag)
+                ) : "No Tags"}
+                {renderAddTag(track)}
             </div>
-            : null
-          }
-          {renderRemove(track)}
-        </div>
+          </div>
+          : null
+        }
       </div>
     </div>
   )
