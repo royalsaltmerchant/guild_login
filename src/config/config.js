@@ -1,5 +1,5 @@
 export const finalConfig = {
-  apiURL: 'https://api.royalsaltserver.com',
+  apiURL: 'http://52.9.151.131/',
   // apiURL: 'http://127.0.0.1:5000',
   websiteURL: 'localhost:3000',
   projectImageURL: 'https://sfguildsubmissions.s3.us-west-1.amazonaws.com/project_images/',
