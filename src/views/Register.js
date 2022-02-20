@@ -127,7 +127,7 @@ export default function Register(props) {
               onChange={(event) => handleUsername(event)}
               size="md" 
               type="text" 
-              placeholder="Username" />
+              placeholder="Insert clever username here..." />
             {renderWarningTextUsername()}
             <Form.Text id="passwordHelpBlock" muted>
                 Your username must be shorter than 20 characters.
@@ -139,7 +139,7 @@ export default function Register(props) {
               required
               size="md"
               type="email"
-              placeholder="Enter email" />
+              placeholder="Your email address" />
             <Form.Text className="text-muted">
               We'll never share your info with anyone else.
             </Form.Text>
@@ -151,7 +151,7 @@ export default function Register(props) {
                 required
                 size="md"
                 type="text"
-                placeholder="Enter first name" />
+                placeholder="Your first name" />
             </Form.Group>
             <Form.Group controlId="lastName">
               <Form.Label>Last Name</Form.Label>
@@ -159,7 +159,7 @@ export default function Register(props) {
                 required
                 size="md"
                 type="text"
-                placeholder="Enter Last Name" />
+                placeholder="Your last name" />
             </Form.Group>
           </div>
 
