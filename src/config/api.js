@@ -32,6 +32,20 @@ const getUser = async () => {
   return res
 }
 
+const getUserByUsername = async (username) => {
+  const res = await axios({
+    method: 'post',
+    url: `${config.apiURL}/api/get_user_by_username`,
+    headers: {
+      "x-access-token": localStorage.getItem("token")
+    },
+    data: {
+      username: username
+    }
+  })
+  return res
+}
+
 const getUsers = async () => {
   const res = await axios({
     method: 'get',
@@ -446,6 +460,7 @@ export {
   login,
   authenticate,
   getUser,
+  getUserByUsername,
   getUsers,
   registerUser,
   editUser,

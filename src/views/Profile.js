@@ -7,6 +7,7 @@ import { useParams } from 'react-router-dom'
 import SearchBar from '../components/SearchBar'
 import { inject, observer } from 'mobx-react'
 import EditSingleItem from '../components/EditSingleItem'
+import { getUserByUsername } from '../config/api'
 
 const Profile = inject('userStore')(observer((props) => {
   const pageParams = useParams()
@@ -18,11 +19,13 @@ const Profile = inject('userStore')(observer((props) => {
   const [trackCount, setTrackCount] = useState(0)
   const [aboutToggle, setAboutToggle] = useState(false)
   const [about, setAbout] = useState()
+  const [userByUsernameInfo, setUserByUsernameInfo] = useState(null)
   const getTrackLimit = 10
 
   useEffect(async () => {
     await props.userStore.getUserInfo()
     setAbout(props.userStore.userInfo.about)
+    getUserByUsernameInfo()
     getTracksByUser()
   },[])
 
@@ -34,6 +37,11 @@ const Profile = inject('userStore')(observer((props) => {
     setOffset(0)
     getTracksByUser()
   }, [query])
+
+  async function getUserByUsernameInfo() {
+    const res = await getUserByUsername(pageParams.username)
+    setUserByUsernameInfo(res.data)
+  }
 
   async function getTracksByUser() {
     setLoadingTracks(true)
@@ -111,6 +119,19 @@ const Profile = inject('userStore')(observer((props) => {
     }
   }
 
+  function renderAbout() {
+    if(userInfo.username === pageParams.username) {
+      return(
+        <p className='pl-3' style={{fontSize: '20px'}}>"{props.userStore.userInfo.about}"</p>
+      )
+    }
+    else if(userByUsernameInfo) {
+      return(
+        <p className='pl-3' style={{fontSize: '20px'}}>"{userByUsernameInfo.about}"</p>
+      )
+    }
+  }
+
   const {userInfo} = props.userStore
   if(userInfo) {
     return (
@@ -132,7 +153,7 @@ const Profile = inject('userStore')(observer((props) => {
               inputType: 'textarea',
               handleEdit: (data) => handleEditAbout(data),
               item: about, setItem: setAbout}) 
-            : <p className="ml-3">{userInfo.about ? userInfo.about: null}</p>
+            : renderAbout()
           }
         </div>
         <hr className='mt-1'/>
