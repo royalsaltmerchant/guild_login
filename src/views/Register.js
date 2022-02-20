@@ -133,31 +133,6 @@ export default function Register(props) {
                 Your username must be shorter than 20 characters.
             </Form.Text>
           </Form.Group>
-
-          <Form.Group controlId="firstName">
-            <Form.Label>First Name</Form.Label>
-            <Form.Control 
-              required
-              size="md"
-              type="text"
-              placeholder="Enter first name" />
-            <Form.Text className="text-muted">
-              We'll never share your name with anyone else.
-            </Form.Text>
-          </Form.Group>
-
-          <Form.Group controlId="lastName">
-            <Form.Label>Last Name</Form.Label>
-            <Form.Control 
-              required
-              size="md"
-              type="text"
-              placeholder="Enter Last Name" />
-            <Form.Text className="text-muted">
-              We'll never share your name with anyone else.
-            </Form.Text>
-          </Form.Group>
-
           <Form.Group controlId="email">
             <Form.Label>Email</Form.Label>
             <Form.Control 
@@ -166,9 +141,27 @@ export default function Register(props) {
               type="email"
               placeholder="Enter email" />
             <Form.Text className="text-muted">
-              We'll never share your email with anyone else.
+              We'll never share your info with anyone else.
             </Form.Text>
           </Form.Group>
+          <div className="d-flex flex-row flex-wrap">
+            <Form.Group controlId="firstName">
+              <Form.Label>First Name</Form.Label>
+              <Form.Control 
+                required
+                size="md"
+                type="text"
+                placeholder="Enter first name" />
+            </Form.Group>
+            <Form.Group controlId="lastName">
+              <Form.Label>Last Name</Form.Label>
+              <Form.Control 
+                required
+                size="md"
+                type="text"
+                placeholder="Enter Last Name" />
+            </Form.Group>
+          </div>
 
           <Form.Group controlId="password">
             <Form.Label>Password</Form.Label>

@@ -106,10 +106,8 @@ class Login extends Component {
                 </Button>
               </Form>
               <br />
-              <div className="d-flex flex-column">
-                <small>Need an Account?</small>
-                <Link to="/register">Join Us!</Link>
-              </div>
+              <br />
+              <Button as={Link} to='/register' variant="warning">Need an account?</Button>
             </div>
           </div>
         )
