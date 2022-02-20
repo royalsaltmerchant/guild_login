@@ -73,8 +73,9 @@ const PackDetails = inject('packsStore', 'userStore')(observer((props) => {
     const {packInfo} = props.packsStore
     return(
       <div className="d-flex flex-column justify-content-center align-items-center">
+        <p>Cost:</p>
         <h4>{packInfo.coin_cost} <BiCoin className="align-self-center" style={{fontSize: '25px', color: 'orange'}} /></h4>
-        <Button  onClick={() => handleDownloadClick(packInfo)} disabled={props.userStore.userInfo.coins < packInfo.coin_cost || !uri}><a style={{color: 'white', textDecoration: 'none'}} href={uri}>Download</a></Button>
+        {props.userStore.userInfo.coins < packInfo.coin_cost || !uri ? null : <Button  onClick={() => handleDownloadClick(packInfo)}><a style={{color: 'white', textDecoration: 'none'}} href={uri}>Download</a></Button>}
       </div>
     )
   }
