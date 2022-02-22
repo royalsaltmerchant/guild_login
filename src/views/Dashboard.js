@@ -47,9 +47,13 @@ const Dashboard = inject('userStore', 'projectsStore')(observer((props) => {
         <div className="d-flex flex-row justify-content-between align-items-baseline flex-wrap">
           <p><b>{`${entry.title}`}</b></p>
           <p>How many: <b>{entry.amount}</b></p>
-          {entry.complete ? <p style={{color: 'green'}}>Complete</p> : <Button as={Link} variant="warning" to={`/Contribute/entry/${entry.id}`}>
-            Contribute
-          </Button>}
+          { props.userStore.userInfo ?
+            <>
+              {entry.complete ? <p style={{color: 'green'}}>Complete</p> : <Button as={Link} variant="warning" to={`/Contribute/entry/${entry.id}`}>
+                Contribute
+              </Button>}
+            </> : null
+          }
         </div>
         <p className="px-1">"{entry.description}"</p>
         <p className="px-3"><u>Contributions</u></p>

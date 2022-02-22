@@ -14,7 +14,7 @@ import downloadFiles from '../utils/DownloadFIles'
 import TrackItem from '../components/TrackItem'
 import SearchBar from '../components/SearchBar'
 
-const Library = inject('packsStore')(observer((props) => {
+const Library = inject('packsStore', 'userStore')(observer((props) => {
   const history = useHistory()
   const [view, setView] = useState('packs')
   const [tracksData, setTracksData] = useState([])
@@ -28,6 +28,7 @@ const Library = inject('packsStore')(observer((props) => {
 
   useEffect(() => {
     props.packsStore.getPacks()
+    props.userStore.getUserInfo()
   },[])
 
   useEffect(() => {

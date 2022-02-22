@@ -37,8 +37,8 @@ class NavBar extends Component {
         <hr className="w-75 m-0 p-0 align-self-center"/>
         {this.renderAdminToolsLink()}
         {authenticated && <Button variant="link" as={Link} className="d-flex flex-row align-items-center nav-link" to="/account">Account</Button>}
-        {authenticated && <Button variant="link" as={Link} className="d-flex flex-row align-items-center nav-link" to="/library">Library</Button>}
-        {authenticated && <Button variant="link" as={Link} className="d-flex flex-row align-items-center nav-link" to="/dashboard">Contribute</Button>}
+        <Button variant="link" as={Link} className="d-flex flex-row align-items-center nav-link" to="/library">Library</Button>
+        <Button variant="link" as={Link} className="d-flex flex-row align-items-center nav-link" to="/dashboard">Contribute</Button>
         {/* {this.renderBuyCoins()} */}
         {authenticated ? 
           <Button variant="link" as={Link} className="d-flex flex-row align-items-center nav-link" to="/logout">Logout</Button> : 

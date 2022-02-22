@@ -19,14 +19,9 @@ const TrackItem = inject('userStore')(observer((props) => {
   function handlePlayAudio(trackUUID) {
     const {tracksURLs} = props
     const assetURL = tracksURLs.filter(URL => URL.uuid === trackUUID)[0].url
-    console.log(assetURL)
     const audio = new Audio(assetURL)
     audio.play()
   }
-  
-  useEffect(() => {
-    props.userStore.getUserInfo()
-  },[])
 
   async function handleDownload(track) {
     const {tracksURLs, userStore} = props

@@ -1,34 +1,31 @@
-import React, { Component } from 'react'
-import {withRouter} from 'react-router-dom'
-class Logout extends Component {
-  constructor(props) {
-    super(props)
-    this.state = {
-      logoutMessage: ''
-    }
-  }
+import { inject, observer } from 'mobx-react'
+import React, { Component, useState } from 'react'
+import { useEffect } from 'react'
+import {useHistory} from 'react-router-dom'
+const Logout = inject('userStore')(observer((props) => {
+  const history = useHistory()
+  const [logoutMessage, setLogoutMessage] = useState('')
 
-  componentDidMount() {
+  useEffect(() => {
     const token = localStorage.getItem('token')
     if(token) {
       localStorage.removeItem('token')
-      this.props.history.push('/login')
-      this.props.authenticate()
+      props.userStore.clearUserInfo()
+      history.push('/login')
+      props.authenticate()
     } else {
-      this.setState({
-        logoutMessage: 'not logged in'
-      })
+        setLogoutMessage('not logged in')
     }
-  }
-
-  render() {
+  })
+  
     return (
       <div>
         <h1>Logout</h1>
-        <p>{this.state.logoutMessage}</p>
+        <p>{logoutMessage}</p>
       </div>
     )
-  }
-}
 
-export default withRouter(Logout)
+}))
+
+
+export default Logout

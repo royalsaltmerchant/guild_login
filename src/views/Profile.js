@@ -24,20 +24,20 @@ const Profile = inject('userStore')(observer((props) => {
 
   useEffect(async () => {
     await props.userStore.getUserInfo()
-    setAbout(props.userStore.userInfo.about)
+    if(props.userStore.userInfo) setAbout(props.userStore.userInfo.about)
     getUserByUsernameInfo()
     getTracksByUser()
   },[])
-
+  
   useEffect(() => {
     getTracksByUser()
   }, [offset])
-
+  
   useEffect(() => {
     setOffset(0)
     getTracksByUser()
   }, [query])
-
+  
   async function getUserByUsernameInfo() {
     const res = await getUserByUsername(pageParams.username)
     setUserByUsernameInfo(res.data)
@@ -120,7 +120,7 @@ const Profile = inject('userStore')(observer((props) => {
   }
 
   function renderAbout() {
-    if(userInfo.username === pageParams.username) {
+    if(userInfo && userInfo.username === pageParams.username) {
       return(
         <p className='pl-3' style={{fontSize: '20px'}}>"{props.userStore.userInfo.about}"</p>
       )
@@ -133,7 +133,6 @@ const Profile = inject('userStore')(observer((props) => {
   }
 
   const {userInfo} = props.userStore
-  if(userInfo) {
     return (
       <div>
         <div className='mt-2 d-flex flex-row'>
@@ -143,7 +142,7 @@ const Profile = inject('userStore')(observer((props) => {
         <div>
           <div className="d-flex flex-row align-items-baseline">
             <p>About:</p>
-            {userInfo.username && userInfo.username === pageParams.username ? <Button variant="link" onClick={() => setAboutToggle(!aboutToggle)}>{aboutToggle ? "Edit -" : "Edit +"}</Button> : null}
+            {userInfo && userInfo.username === pageParams.username ? <Button variant="link" onClick={() => setAboutToggle(!aboutToggle)}>{aboutToggle ? "Edit -" : "Edit +"}</Button> : null}
           </div>
           {
             aboutToggle ? 
@@ -162,7 +161,6 @@ const Profile = inject('userStore')(observer((props) => {
         {renderPaginationButtons()}
       </div>
     )
-  } else return null
 }))
 
 export default Profile

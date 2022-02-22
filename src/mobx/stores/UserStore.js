@@ -18,8 +18,15 @@ export default class UserStore {
       userInfoLoading: observable,
       usersListLoading: observable,
       getUserInfo: action,
+      clearUserInfo: action,
       getUsersList: action,
       editUserInfo: action
+    })
+  }
+
+  clearUserInfo() {
+    runInAction(() => {
+      this.userInfo = null
     })
   }
 

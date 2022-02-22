@@ -133,7 +133,7 @@ class Root extends React.Component{
               <Profile/>
             </Route>
             <Route path="/Dashboard">
-              {authenticated ? <Dashboard /> : <AccessDenied loadingAuth={loadingAuth}/>}
+              <Dashboard /> 
             </Route>
             <Route path="/Contribute/entry/:entryId">
               {authenticated ? <Contribute /> : <AccessDenied loadingAuth={loadingAuth}/>}

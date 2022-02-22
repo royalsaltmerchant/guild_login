@@ -36,9 +36,6 @@ const getUserByUsername = async (username) => {
   const res = await axios({
     method: 'post',
     url: `${config.apiURL}/api/get_user_by_username`,
-    headers: {
-      "x-access-token": localStorage.getItem("token")
-    },
     data: {
       username: username
     }
@@ -270,9 +267,6 @@ const getPresignedURL = async (params) => {
   const res = await axios({
     method: 'post',
     url: `${config.apiURL}/api/signed_URL`,
-    headers: {
-      "x-access-token": localStorage.getItem("token")
-    },
     data: params
   })
   return res
