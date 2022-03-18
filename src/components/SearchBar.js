@@ -8,6 +8,7 @@ export default function SearchBar(props) {
   function handleSearch(event) {
     event.preventDefault()
     props.setQuery(event.target.formSearch.value.toLowerCase())
+    event.target.formSearch.value = ''
   }
 
   function renderSearchBar() {

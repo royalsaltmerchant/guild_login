@@ -16,34 +16,92 @@ import SearchBar from '../components/SearchBar'
 
 const Library = inject('packsStore', 'userStore')(observer((props) => {
   const history = useHistory()
-  const [view, setView] = useState('packs')
+  const [view, setView] = useState('tracks')
   const [tracksData, setTracksData] = useState([])
-  const [loadingTracks, setLoadingTracks] = useState([])
-  const [query, setQuery] = useState('')
+  const [loadingTracks, setLoadingTracks] = useState(false)
   const [tracksURLs, setTracksURLs] = useState([])
-  const [offset, setOffset] = useState(0)
   const [trackCount, setTrackCount] = useState(0)
-  const [filter, setFilter] = useState(null)
-  const getTrackLimit = 10
-
+  const getTrackLimit = 2
+  
   useEffect(() => {
-    props.packsStore.getPacks()
-    props.userStore.getUserInfo()
+    onload()
   },[])
 
-  useEffect(() => {
-    handleGetTracks()
-  }, [offset])
+  function onload() {
+    props.packsStore.getPacks()
+    props.userStore.getUserInfo()
+    if(view === 'tracks') handleGetTracks()
+  }
 
-  useEffect(() => {
-    setOffset(0)
-    handleGetTracks()
-  }, [query])
+  function serializeSearch(type, newParam) {
+    const params = new URLSearchParams({})
 
-  useEffect(() => {
-    setOffset(0)
+    if(type === 'query' && newParam !== '') {
+      params.append('query', newParam)
+      const filter = getFilter()
+      if(filter) params.append("filter", filter)
+    } 
+    else if(type === 'filter') {
+      if(newParam !== null) params.append('filter', newParam)
+      const query = getQuery()
+      if(query !== '') params.append('query', query)
+    }
+    else if(type === 'offset') {
+      const filter = getFilter()
+      if(filter) params.append("filter", filter)
+      const query = getQuery()
+      if(query !== '') params.append('query', query)
+      if(newParam !== 0) params.append('offset', newParam)
+    }
+
+    const paramsAsString = params.toString()
+    history.push({
+      pathname: '/library',
+      search: paramsAsString
+    })
+  }
+  
+  function setQuery(query) {
+    serializeSearch('query', query)
     handleGetTracks()
-  }, [filter])
+  }
+
+  function getQuery() {
+    const {query} = new Proxy(new URLSearchParams(history.location.search), {
+      get: (searchParams, prop) => searchParams.get(prop),
+    });  
+    if(query) {
+      return query
+    } else return ''
+  }
+
+  function setOffset(offset) {
+    serializeSearch('offset', offset)
+    handleGetTracks()
+  }
+
+  function getOffset() {
+    const {offset} = new Proxy(new URLSearchParams(history.location.search), {
+      get: (searchParams, prop) => searchParams.get(prop),
+    });  
+    if(offset) {
+      return offset
+    } else return 0
+  }
+
+  function setFilter(filter) {
+    serializeSearch('filter', filter)
+    handleGetTracks()
+  }
+
+  function getFilter() {
+    const {filter} = new Proxy(new URLSearchParams(history.location.search), {
+      get: (searchParams, prop) => searchParams.get(prop),
+    });  
+    if(filter) {
+      return filter
+    } else return null
+  }
 
   function renderSFXPacks() {
     const {packs, packsLoading} = props.packsStore
@@ -98,27 +156,27 @@ const Library = inject('packsStore', 'userStore')(observer((props) => {
   }
 
   function handleGetNextTracks() {
-    setOffset(offset + getTrackLimit)
+    setOffset(getOffset() + getTrackLimit)
   }
 
   function handleGetPreviousTracks() {
-    setOffset(offset - getTrackLimit)
+    setOffset(getOffset() - getTrackLimit)
   }
   
   function renderPaginationButtons() {
     return(
       <div className='py-3 text-center align-items-center'>
         <div className="d-flex flex-row justify-content-between">
-          <Button disabled={offset === 0} variant='link' onClick={() => handleGetPreviousTracks()}>Previous</Button>
-          <Button disabled={(offset + getTrackLimit) >= trackCount} variant='link' onClick={() => handleGetNextTracks()}>Next</Button>
+          <Button disabled={getOffset() === 0} variant='link' onClick={() => handleGetPreviousTracks()}>Previous</Button>
+          <Button disabled={(getOffset() + getTrackLimit) >= trackCount} variant='link' onClick={() => handleGetNextTracks()}>Next</Button>
         </div>
       </div>
     )
   }
 
   function renderFilterName() {
-    if(filter) {
-      return filter
+    if(getFilter()) {
+      return getFilter()
     } else return "Filter"
   }
 
@@ -163,12 +221,11 @@ const Library = inject('packsStore', 'userStore')(observer((props) => {
             <div className='d-flex flex-row align-items-baseline'>
               {renderSelectFilter()}  
               {
-                query !== '' ?
+                getQuery() !== '' ?
                 <div className='ml-2 d-flex flex-row align-items-baseline'>
-                  <p>{`+ ${query}`}</p>
+                  <p>{`+ ${getQuery()}`}</p>
                   <Button variant="link" onClick={() => setQuery('')}>Remove</Button>
-                </div>
-                : null
+                </div> : null
               }
             </div>
             <p>Results: {trackCount}</p>
@@ -181,18 +238,16 @@ const Library = inject('packsStore', 'userStore')(observer((props) => {
   }
 
   async function handleGetTracks() {
-    setView('tracks')
     setLoadingTracks(true)
     const params = {
-      offset: offset,
+      offset: parseInt(getOffset()),
       limit: getTrackLimit
     }
-    if(query !== '') {
-      params.query = query
+    if(getQuery() !== '') {
+      params.query = getQuery()
     }
-    if(filter) {
-      console.log(filter)
-      params.filter = filter
+    if(getFilter()) {
+      params.filter = getFilter()
     }
     try {
       const res = await getTrackAssets(params)
@@ -223,17 +278,14 @@ const Library = inject('packsStore', 'userStore')(observer((props) => {
       <div className="border rounded mt-2 d-flex flex-row px-2 py-1" style={{backgroundColor: '#ebebeb', width: '100%'}}>
         <div className="d-flex flex-row align-items-center mr-5">
           <h5 className="mt-1 mr-5">Library</h5>
-          <SearchBar setQuery={(query) => setQuery(query)}/>
+          {view === 'tracks' ? <SearchBar setQuery={(query) => setQuery(query)}/> : null}
         </div>
         <div>
           <Button variant="link" onClick={() => setView('packs')}>Packs</Button>
-          <Button variant="link" onClick={() => handleGetTracks()}>Tracks</Button>
+          <Button variant="link" onClick={() => setView('tracks')}>Tracks</Button>
         </div>
       </div>
       {renderPacksOrTracksView()}
-      {/* <div className="border ml-auto" style={{width: '170px'}}>
-        <p>okay</p>
-      </div> */}
     </div>
   )
 }))
