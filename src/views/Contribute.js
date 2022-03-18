@@ -96,6 +96,10 @@ const Upload = inject('entryStore', 'userStore', 'projectsStore')(observer((prop
       return <p>Can't Load Info</p>
     }
 
+    if(!props.userStore.userInfo.contributor) {
+      return <p>You are not registered as a contributor</p>
+    }
+
     const {entryInfo} = props.entryStore
     const {projectInfo} = props.projectsStore
     const {userInfo} = props.userStore

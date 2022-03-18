@@ -27,6 +27,7 @@ import AdminTools from './views/AdminTools';
 import {BiHide, BiShow} from 'react-icons/bi';
 import Profile from './views/Profile';
 import Upgrade from './views/Upgrade';
+import RegisterContributor from './views/RegisterContributor';
 
 class Root extends React.Component{
 
@@ -120,8 +121,11 @@ class Root extends React.Component{
             <Route path="/pack/:packName">
               <PackDetails />
             </Route>
-            <Route path="/register">
+            <Route exact path="/register">
               <Register />
+            </Route>
+            <Route exact path="/register-contributor">
+              <RegisterContributor />
             </Route>
             <Route path="/login">
               <Login authenticate={this.authenticate} authenticated={authenticated} loadingAuth={loadingAuth} />

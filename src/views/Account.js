@@ -85,6 +85,29 @@ class Account extends Component {
     return contributionsMap
   }
 
+  renderContributorOrNot(userInfo) {
+    if(userInfo.contributor) {
+      if(userInfo.contributions && userInfo.contributions.length !== 0) {
+        this.renderContributions(userInfo.contributions)
+      } else {
+        return(
+          <div>
+            <p>You have not made any contributions yet</p>
+            <Button variant="warning" as={Link} to={'/dashboard'}>Start Contributing</Button>
+          </div>
+        )
+      }
+    } else {
+      return(
+        <div className='d-flex flex-column'>
+          <Button variant="warning" as={Link} to={'/register-contributor'}>Become a Contributor</Button>
+          <br />
+          <small>What is a contributor? <a href="https://www.sfaudioguild.com/learn.html">Learn More</a></small>
+        </div>
+      )
+    }
+  }
+
   renderLoadingOrAccount() {
 
     if(this.props.userStore.userInfoLoading) {
@@ -141,14 +164,7 @@ class Account extends Component {
         <small style={{color: 'green'}}>- By contributing to our projects, you can earn 10 coins if your sound is approved!</small>
         <hr className='mt-1'/>
         <div className="d-flex flex-row flex-wrap">
-          {
-            userInfo.contributions && userInfo.contributions.length !== 0 ? 
-            this.renderContributions(userInfo.contributions) : 
-            <div>
-              <p>You have not made any contributions yet</p>
-              <Button variant="warning" as={Link} to={'/dashboard'}>Start Contributing</Button>
-            </div>
-          }
+          {this.renderContributorOrNot(userInfo)}
         </div>
       </div>
     )
