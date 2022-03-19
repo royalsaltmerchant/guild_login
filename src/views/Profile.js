@@ -8,19 +8,19 @@ import SearchBar from '../components/SearchBar'
 import { inject, observer } from 'mobx-react'
 import EditSingleItem from '../components/EditSingleItem'
 import { getUserByUsername } from '../config/api'
+import { useHistory } from 'react-router'
 
 const Profile = inject('userStore')(observer((props) => {
+  const history = useHistory()
   const pageParams = useParams()
   const [tracksData, setTracksData] = useState([])
-  const [loadingTracks, setLoadingTracks] = useState([])
-  const [query, setQuery] = useState('')
+  const [loadingTracks, setLoadingTracks] = useState(false)
   const [tracksURLs, setTracksURLs] = useState([])
-  const [offset, setOffset] = useState(0)
   const [trackCount, setTrackCount] = useState(0)
   const [aboutToggle, setAboutToggle] = useState(false)
   const [about, setAbout] = useState()
   const [userByUsernameInfo, setUserByUsernameInfo] = useState(null)
-  const getTrackLimit = 10
+  const getTrackLimit = 2
 
   useEffect(async () => {
     await props.userStore.getUserInfo()
@@ -28,15 +28,53 @@ const Profile = inject('userStore')(observer((props) => {
     getUserByUsernameInfo()
     getTracksByUser()
   },[])
-  
-  useEffect(() => {
+
+  function serializeSearch(type, newParam) {
+    const params = new URLSearchParams({})
+
+    if(type === 'query' && newParam !== '') {
+      params.append('query', newParam)
+    } 
+    else if(type === 'offset') {
+      const query = getQuery()
+      if(query !== '') params.append('query', query)
+      if(newParam !== 0) params.append('offset', newParam)
+    }
+
+    const paramsAsString = params.toString()
+    history.push({
+      pathname: `/profile/${pageParams.username}`,
+      search: paramsAsString
+    })
+  }
+
+  function setQuery(query) {
+    serializeSearch('query', query)
     getTracksByUser()
-  }, [offset])
-  
-  useEffect(() => {
-    setOffset(0)
+  }
+
+  function getQuery() {
+    const {query} = new Proxy(new URLSearchParams(history.location.search), {
+      get: (searchParams, prop) => searchParams.get(prop),
+    });  
+    if(query) {
+      return query
+    } else return ''
+  }
+
+  function setOffset(offset) {
+    serializeSearch('offset', offset)
     getTracksByUser()
-  }, [query])
+  }
+
+  function getOffset() {
+    const {offset} = new Proxy(new URLSearchParams(history.location.search), {
+      get: (searchParams, prop) => searchParams.get(prop),
+    });  
+    if(offset) {
+      return offset
+    } else return 0
+  }
   
   async function getUserByUsernameInfo() {
     const res = await getUserByUsername(pageParams.username)
@@ -46,11 +84,11 @@ const Profile = inject('userStore')(observer((props) => {
   async function getTracksByUser() {
     setLoadingTracks(true)
     const params = {
-      offset: offset,
+      offset: parseInt(getOffset()),
       limit: getTrackLimit
     }
-    if(query !== "") {
-      params.query = query
+    if(getQuery() !== '') {
+      params.query = getQuery()
     }
     try {
       const res = await getTrackAssetsByUsername(pageParams.username, params)
@@ -83,19 +121,19 @@ const Profile = inject('userStore')(observer((props) => {
   }
 
   function handleGetNextTracks() {
-    setOffset(offset + getTrackLimit)
+    setOffset(getOffset() + getTrackLimit)
   }
 
   function handleGetPreviousTracks() {
-    setOffset(offset - getTrackLimit)
+    setOffset(getOffset() - getTrackLimit)
   }
 
   function renderPaginationButtons() {
     return(
       <div className='py-3 text-center align-items-center'>
         <div className="d-flex flex-row justify-content-between">
-          <Button disabled={offset === 0} variant='link' onClick={() => handleGetPreviousTracks()}>Previous</Button>
-          <Button disabled={(offset + getTrackLimit) >= trackCount} variant='link' onClick={() => handleGetNextTracks()}>Next</Button>
+          <Button disabled={getOffset() === 0} variant='link' onClick={() => handleGetPreviousTracks()}>Previous</Button>
+          <Button disabled={(getOffset() + getTrackLimit) >= trackCount} variant='link' onClick={() => handleGetNextTracks()}>Next</Button>
         </div>
       </div>
     )
@@ -156,6 +194,15 @@ const Profile = inject('userStore')(observer((props) => {
           }
         </div>
         <hr className='mt-1'/>
+          <div className='d-flex flex-row align-items-baseline'>
+            {
+              getQuery() !== '' ?
+              <div className='ml-2 d-flex flex-row align-items-baseline'>
+                <p>{`+ ${getQuery()}`}</p>
+                <Button variant="link" onClick={() => setQuery('')}>Remove</Button>
+              </div> : null
+            }
+          </div>
         <p className='d-flex flex-row justify-content-end'>Results: {trackCount}</p>
         {renderTracksList()}
         {renderPaginationButtons()}
