@@ -21,7 +21,7 @@ const Library = inject('packsStore', 'userStore')(observer((props) => {
   const [loadingTracks, setLoadingTracks] = useState(false)
   const [tracksURLs, setTracksURLs] = useState([])
   const [trackCount, setTrackCount] = useState(0)
-  const getTrackLimit = 2
+  const getTrackLimit = 10
   
   useEffect(() => {
     onload()
