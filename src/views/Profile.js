@@ -20,7 +20,7 @@ const Profile = inject('userStore')(observer((props) => {
   const [aboutToggle, setAboutToggle] = useState(false)
   const [about, setAbout] = useState()
   const [userByUsernameInfo, setUserByUsernameInfo] = useState(null)
-  const getTrackLimit = 2
+  const getTrackLimit = 10
 
   useEffect(async () => {
     await props.userStore.getUserInfo()
