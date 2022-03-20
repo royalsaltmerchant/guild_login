@@ -63,6 +63,18 @@ const Dashboard = inject('userStore', 'projectsStore')(observer((props) => {
     ))
     return entriesMap
   }
+
+  function renderContributorOrNot() {
+    if(props.userStore.userInfo && !props.userStore.userInfo.contributor) {
+      return(
+        <div className='d-flex flex-column align-items-start'>
+          <Button variant="warning" as={Link} to={'/register-contributor'}>Become a Contributor</Button>
+          <p>What is a contributor? <a href="https://www.sfaudioguild.com/learn.html">Learn More</a></p>
+          <br />
+        </div>
+      )
+    }
+  }
   
   function renderProjects() {
 
@@ -99,6 +111,7 @@ const Dashboard = inject('userStore', 'projectsStore')(observer((props) => {
 
   return (
     <div>
+      {renderContributorOrNot()}
       {renderProjects()}
     </div>
   )

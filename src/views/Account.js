@@ -85,7 +85,8 @@ class Account extends Component {
     return contributionsMap
   }
 
-  renderContributorOrNot(userInfo) {
+  renderContributorOrNot() {
+    const {userInfo} = this.props.userStore
     if(userInfo.contributor) {
       if(userInfo.contributions && userInfo.contributions.length !== 0) {
         this.renderContributions(userInfo.contributions)
@@ -172,7 +173,7 @@ class Account extends Component {
         <small style={{color: 'green'}}>- By contributing to our projects, you can earn 10 coins if your sound is approved!</small>
         <hr className='mt-1'/>
         <div className="d-flex flex-row flex-wrap">
-          {this.renderContributorOrNot(userInfo)}
+          {this.renderContributorOrNot()}
         </div>
       </div>
     )
