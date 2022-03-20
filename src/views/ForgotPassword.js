@@ -62,20 +62,19 @@ export default class ForgotPassword extends Component {
   }
   render() {
     return (
-      <div style={{width: '30vw'}}>
+      <div>
         {this.renderAlert()}
-        <h2 className="pb-3">Forgot Password</h2>
         <Form onSubmit={(event) => this.handleSubmit(event)}>
           <Form.Group controlId="email">
-            <Form.Label>Enter your email to receive password reset link</Form.Label>
             <Form.Control 
               required
+              style={{maxWidth: '400px'}}
               size="md"
               type="text"
               placeholder="Email" />
           </Form.Group>
-          <Button variant="outline-success" type="submit">
-            Submit
+          <Button variant="outline-secondary" type="submit">
+            Send Reset Password Link
           </Button>
         </Form>
       </div>

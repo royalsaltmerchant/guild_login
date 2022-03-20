@@ -116,57 +116,54 @@ export default function Register(props) {
   }
 
   return (
-    <div style={{width: '30vw'}}>
+    <div>
       {renderAlert()}
-        <h2 className="pb-3">Register</h2>
         <Form onSubmit={(event) => handleSubmit(event)}>
           <Form.Group controlId="username">
-            <Form.Label>Username</Form.Label>
             <Form.Control 
               required
+              style={{maxWidth: '400px'}}
               onChange={(event) => handleUsername(event)}
               size="md" 
               type="text" 
-              placeholder="Insert clever username here..." />
+              placeholder="Username" />
             {renderWarningTextUsername()}
             <Form.Text id="passwordHelpBlock" muted>
                 Your username must be shorter than 20 characters.
             </Form.Text>
           </Form.Group>
           <Form.Group controlId="email">
-            <Form.Label>Email</Form.Label>
             <Form.Control 
               required
+              style={{maxWidth: '400px'}}
               size="md"
               type="email"
-              placeholder="Your email address" />
+              placeholder="Email Address" />
             <Form.Text className="text-muted">
               We'll never share your info with anyone else.
             </Form.Text>
           </Form.Group>
           <div className="d-flex flex-row flex-wrap">
             <Form.Group controlId="firstName">
-              <Form.Label>First Name</Form.Label>
               <Form.Control 
                 required
                 size="md"
                 type="text"
-                placeholder="Your first name" />
+                placeholder="First Name" />
             </Form.Group>
             <Form.Group controlId="lastName">
-              <Form.Label>Last Name</Form.Label>
               <Form.Control 
                 required
                 size="md"
                 type="text"
-                placeholder="Your last name" />
+                placeholder="Last Name" />
             </Form.Group>
           </div>
 
           <Form.Group controlId="password">
-            <Form.Label>Password</Form.Label>
             <Form.Control 
               required
+              style={{maxWidth: '400px'}}
               onChange={(event) => handlePassword(event)}
               size="md" 
               type="password" 
@@ -177,8 +174,8 @@ export default function Register(props) {
               Your password must be 8-20 characters long.
             </Form.Text>
           </Form.Group>
-          <Button variant="outline-success" type="submit">
-            Sign Up
+          <Button variant="outline-secondary" type="submit">
+            Register
           </Button>
         </Form>
         <br />

@@ -2,7 +2,7 @@ import React from "react";
 import {
   BrowserRouter as Router,
 } from "react-router-dom";
-import {Provider as MobxStoreProvider, inject, observer} from 'mobx-react';
+import {Provider as MobxStoreProvider} from 'mobx-react';
 import mobxStoresToInject from './mobx'
 import Root from './Root'
 

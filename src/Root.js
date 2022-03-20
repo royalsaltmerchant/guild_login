@@ -41,7 +41,6 @@ class Root extends React.Component{
   }
   
   componentDidMount() {
-    // authenticate
     this.authenticate()
   } 
 
@@ -74,40 +73,48 @@ class Root extends React.Component{
       } 
     })
   }
+
+  renderSideBar() {
+    const {authenticated} = this.state
+
+    if(this.state.hideSideBar) {
+      return(
+        <div 
+          className="d-flex flex-column sticky-top"
+          style={{height: '40px'}}
+        >
+          <button className="hide-btn m-0" onClick={() => this.setState({hideSideBar: false})}>
+            <BiShow style={{fontSize: '30px'}} />
+          </button>
+        </div>
+      )
+    } else {
+      return(
+        <div 
+          className="d-flex flex-column sticky-top border rounded card-style" 
+          style={{width: '170px', height: '100vh', backgroundColor: 'white'}}
+        >
+          <Header />
+          <NavBar authenticated={authenticated} />
+          <br />
+          <button 
+            className="hide-btn align-self-start ml-2"
+            onClick={() => this.setState({hideSideBar: true})}
+          >
+            <BiHide style={{fontSize: '30px'}}/>
+          </button>
+        </div>
+      )
+    }
+  }
   
 
   render(){
     const {authenticated, loadingAuth} = this.state
     return(
-      <div className="App d-flex flex-row" style={{height: '100%'}}>
-        {
-          this.state.hideSideBar 
-          ?
-          <div 
-            className="d-flex flex-column sticky-top"
-            style={{height: '40px'}}
-          >
-            <button className="hide-btn ml-2" onClick={() => this.setState({hideSideBar: false})}>
-              <BiShow style={{fontSize: '40px'}} />
-            </button>
-          </div>
-          :
-          <div 
-            className="d-flex flex-column sticky-top border rounded card-style" 
-            style={{width: '170px', height: '100vh', backgroundColor: 'white'}}
-          >
-            <Header />
-            <NavBar authenticated={authenticated} />
-            <br />
-            <button 
-              className="hide-btn align-self-start ml-2"
-              onClick={() => this.setState({hideSideBar: true})}
-            >
-              <BiHide style={{fontSize: '40px'}}/>
-            </button>
-          </div>
-        }
-        <div className="container-fluid" style={{height: '100%'}}>
+      <div className="App d-flex flex-row h-100">
+        {this.renderSideBar()}
+        <div className="container-fluid mt-3 h-100">
           <Switch>
             <Route exact path="/">
               <Redirect to="/login" />

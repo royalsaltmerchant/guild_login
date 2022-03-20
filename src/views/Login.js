@@ -2,7 +2,6 @@ import React, { Component } from 'react'
 import {Form, Button, Alert} from 'react-bootstrap'
 import {login as loginAPICall} from '../config/api'
 import {withRouter, Link} from 'react-router-dom';
-import {authenticate as authenticateAPICall} from '../config/api'
 import { Spinner } from 'react-bootstrap';
 
 class Login extends Component {
@@ -77,14 +76,13 @@ class Login extends Component {
     } else {
       if(!authenticated){
         return(
-          <div style={{width: '30vw'}}>
+          <div>
             {this.renderAlert()}
-            <h2 className="pb-3">Login</h2>
             <div>
               <Form onSubmit={(event) => this.handleSubmit(event)}>
                 <Form.Group controlId="username_or_email">
-                  <Form.Label>Username or Email</Form.Label>
                   <Form.Control 
+                    style={{maxWidth: '400px'}}
                     required
                     size="md"
                     type="text"
@@ -92,8 +90,8 @@ class Login extends Component {
                 </Form.Group>
 
                 <Form.Group controlId="password">
-                  <Form.Label>Password</Form.Label>
                   <Form.Control 
+                    style={{maxWidth: '400px'}}
                     required
                     size="md" 
                     type="password" 
@@ -101,7 +99,7 @@ class Login extends Component {
                   />
                   <Link to="/forgot_password"><small>Forgot Password?</small></Link>
                 </Form.Group>
-                <Button variant="outline-success" type="submit">
+                <Button variant="outline-secondary" type="submit">
                   Login
                 </Button>
               </Form>

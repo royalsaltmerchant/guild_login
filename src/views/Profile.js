@@ -173,7 +173,7 @@ const Profile = inject('userStore')(observer((props) => {
   const {userInfo} = props.userStore
     return (
       <div>
-        <div className='mt-2 d-flex flex-row'>
+        <div className='d-flex flex-row'>
           <h4 className='mr-5'>{pageParams.username}</h4>
           <SearchBar setQuery={(query) => setQuery(query)}/>
         </div>

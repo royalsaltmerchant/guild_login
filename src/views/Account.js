@@ -108,6 +108,18 @@ class Account extends Component {
     }
   }
 
+  renderUpgradeButtonOrNot() {
+    const {userInfo} = this.props.userStore
+
+    if(!userInfo.premium) {
+      return(
+        <div className="d-flex flex-row justify-content-end">
+          <Button as={Link} to={'/upgrade'} variant="warning">Upgrade to Premium!</Button>
+        </div>
+      )
+    }
+  }
+
   renderLoadingOrAccount() {
 
     if(this.props.userStore.userInfoLoading) {
@@ -128,11 +140,7 @@ class Account extends Component {
     const {userInfo} = this.props.userStore
     return(
       <div>
-        <div className="d-flex flex-row justify-content-between pt-2">
-          <h4 className="align-self-end m-0">Account</h4>
-          {userInfo.premium ? null : <Button as={Link} to={'/upgrade'} variant="warning">Upgrade to Premium!</Button>}
-        </div>
-        <hr className='mt-1'/>
+        {this.renderUpgradeButtonOrNot()}
         <div>
           <div className='d-flex flex-row align-items-baseline'>
             <h4>{userInfo.premium ? <GiRoundStar style={{color: 'orange', marginBottom: '7px'}} /> : null}{userInfo.username}</h4>

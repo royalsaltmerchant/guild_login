@@ -275,7 +275,7 @@ const Library = inject('packsStore', 'userStore')(observer((props) => {
   
   return (
     <div>
-      <div className="border rounded mt-2 d-flex flex-row px-2 py-1" style={{backgroundColor: '#ebebeb', width: '100%'}}>
+      <div className="border rounded d-flex flex-row px-2 py-1" style={{backgroundColor: '#ebebeb', width: '100%'}}>
         <div className="d-flex flex-row align-items-center mr-5">
           <h5 className="mt-1 mr-5">Library</h5>
           {view === 'tracks' ? <SearchBar setQuery={(query) => setQuery(query)}/> : null}

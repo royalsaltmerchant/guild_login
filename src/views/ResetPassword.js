@@ -53,20 +53,19 @@ export default function ResetPassword() {
   }
 
   return (
-    <div style={{width: '30vw'}}>
+    <div>
       {renderAlert()}
-      <h2 className="pb-3">Reset Password</h2>
       <Form onSubmit={(event) => handleSubmit(event)}>
       <Form.Group controlId="password">
-          <Form.Label>Enter your new password</Form.Label>
           <Form.Control 
             required
+            style={{maxWidth: '400px'}}
             size="md"
             type="password"
             placeholder="New Password" />
         </Form.Group>
-        <Button variant="outline-success" type="submit">
-          Reset
+        <Button variant="outline-secondary" type="submit">
+          Reset Password
         </Button>
       </Form>
     </div>

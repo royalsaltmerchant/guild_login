@@ -1,6 +1,8 @@
+@import url('https://fonts.googleapis.com/css2?family=Spectral:wght@400&display=swap');
+
 .App {
   color: rgb(71, 64, 119);
-  font-family: serif;
+  font-family: 'Spectral', serif;
   background-color: #f6f6f6;
 }
 
@@ -34,7 +36,6 @@
 }
 
 .card-style {
-  /* transition: all 0.3s ease-out; */
   box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.2);
 }
 
@@ -50,12 +51,6 @@
   box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.2);
   border: 1px solid #cccccc;
 }
-/* .pack-img:hover {
-  transition: all 0.3s ease-out;
-  width: 510px;
-  box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.2);
-  border: 1px solid #cccccc;
-} */
 
 .img-div {
   position: relative;

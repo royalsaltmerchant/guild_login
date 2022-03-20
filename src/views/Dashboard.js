@@ -78,7 +78,7 @@ const Dashboard = inject('userStore', 'projectsStore')(observer((props) => {
     const projectsMap = projects.map(project => {
       if(project.active && !project.complete) {
         return(
-          <div key={project.id} className="p-3 mb-5 card-style border rounded" style={{backgroundColor: 'white', fontFamily: 'Noto Sans'}}>
+          <div key={project.id} className="p-3 mb-5 card-style border rounded" style={{backgroundColor: 'white', fontFamily: 'Noto Sans', maxWidth: '800px'}}>
             <div className="d-flex flex-row align-items-baseline flex-wrap">
               <Image className="small-img pr-3" src={`${config.projectImageURL}${project.image_file}`} rounded />
               <h5><b>{project.title}</b></h5>
@@ -98,9 +98,7 @@ const Dashboard = inject('userStore', 'projectsStore')(observer((props) => {
   }
 
   return (
-    <div style={{width: '60vw'}}>
-      <h3>Available Projects</h3>
-      <hr className='mt-1'/>
+    <div>
       {renderProjects()}
     </div>
   )
