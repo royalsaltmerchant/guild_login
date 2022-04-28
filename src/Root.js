@@ -27,6 +27,7 @@ import AdminTools from './views/AdminTools';
 import {BiHide, BiShow} from 'react-icons/bi';
 import Profile from './views/Profile';
 import Upgrade from './views/Upgrade';
+import Coins from './views/Coins';
 import RegisterContributor from './views/RegisterContributor';
 
 class Root extends React.Component{
@@ -163,6 +164,9 @@ class Root extends React.Component{
             </Route>
             <Route path="/admin/tools">
               {authenticated ? <AdminTools /> : <AccessDenied loadingAuth={loadingAuth}/>}
+            </Route>
+            <Route path="/coins">
+              <Coins />
             </Route>
             
             <Route render={() => <NoMatch />}/>

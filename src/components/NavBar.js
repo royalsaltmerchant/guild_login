@@ -25,7 +25,7 @@ class NavBar extends Component {
     const {authenticated, userStore} = this.props
     if(userStore.userInfo && authenticated) {
       return(
-        <Button variant="link" as={Link} className="d-flex flex-row align-items-center nav-link" to="/buy-coins">Buy <BiCoin className="ml-1" style={{fontSize: '25px', color: 'orange'}} /><p style={{fontSize: '10px', color: 'green'}}>{userStore.userInfo.coins}</p></Button>
+        <Button variant="link" as={Link} className="d-flex flex-row align-items-center nav-link" to="/coins">Buy <BiCoin className="ml-1" style={{fontSize: '25px', color: 'orange'}} /><p style={{fontSize: '10px', color: 'green'}}>{userStore.userInfo.coins}</p></Button>
       )
     }
   }
@@ -39,7 +39,7 @@ class NavBar extends Component {
         {authenticated && <Button variant="link" as={Link} className="d-flex flex-row align-items-center nav-link" to="/account">Account</Button>}
         <Button variant="link" as={Link} className="d-flex flex-row align-items-center nav-link" to="/library">Library</Button>
         <Button variant="link" as={Link} className="d-flex flex-row align-items-center nav-link" to="/dashboard">Contribute</Button>
-        {/* {this.renderBuyCoins()} */}
+        {this.renderBuyCoins()}
         {authenticated ? 
           <Button variant="link" as={Link} className="d-flex flex-row align-items-center nav-link" to="/logout">Logout</Button> : 
           <Button variant="link" as={Link} className="d-flex flex-row align-items-center nav-link" to="/login">Login</Button>}
