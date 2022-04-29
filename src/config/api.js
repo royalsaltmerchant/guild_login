@@ -263,10 +263,19 @@ const editContributedAsset = async (params) => {
   return res
 }
 
-const getPresignedURL = async (params) => {
+const getPresignedURLForDownload = async (params) => {
   const res = await axios({
     method: 'post',
-    url: `${config.apiURL}/api/signed_URL`,
+    url: `${config.apiURL}/api/signed_URL_download`,
+    data: params
+  })
+  return res
+}
+
+const getPresignedURLForUpload = async (params) => {
+  const res = await axios({
+    method: 'post',
+    url: `${config.apiURL}/api/signed_URL_upload`,
     data: params
   })
   return res
@@ -473,7 +482,8 @@ export {
   deleteContribution,
   createContributedAsset,
   editContributedAsset,
-  getPresignedURL,
+  getPresignedURLForDownload,
+  getPresignedURLForUpload,
   getPacks,
   getPack,
   createPack,

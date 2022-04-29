@@ -1,16 +1,27 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { inject, observer } from 'mobx-react'
 import { Spinner, Button, Image } from 'react-bootstrap'
-import {finalConfig as config} from '../config/config'
 import { Link } from 'react-router-dom'
+import downloadFiles from '../utils/DownloadFIles'
 
 const Dashboard = inject('userStore', 'projectsStore')(observer((props) => {
+  const [projectImageURLs, setProjectImageURLs] = useState()
 
   useEffect(async () => {
     await props.projectsStore.getProjects()
+    getProjectImageURLs()
     props.userStore.getUsersList()
     props.userStore.getUserInfo()
   },[])
+
+  async function getProjectImageURLs() {
+    var projectImageURLList = []
+    await Promise.all(props.projectsStore.projects.map(async project => {
+      var newURL = await downloadFiles(`project_images/${project.image_file}`)
+      projectImageURLList.push(newURL)
+    }))
+    setProjectImageURLs(projectImageURLList)
+  }
     
   function renderEntryContributions(contributions) {
     if(props.userStore.usersListLoading) {
@@ -75,6 +86,12 @@ const Dashboard = inject('userStore', 'projectsStore')(observer((props) => {
       )
     }
   }
+
+  function renderProjectImage(project) {
+    if(!projectImageURLs) return <Spinner animation="border" role="status" />
+    const projectImageURL = projectImageURLs.filter(url => url.includes(project.image_file))
+    return <Image className="small-img pr-3" src={projectImageURL} rounded />
+  }
   
   function renderProjects() {
 
@@ -92,7 +109,7 @@ const Dashboard = inject('userStore', 'projectsStore')(observer((props) => {
         return(
           <div key={project.id} className="p-3 mb-5 card-style border rounded" style={{backgroundColor: 'white', fontFamily: 'Noto Sans', maxWidth: '800px'}}>
             <div className="d-flex flex-row align-items-baseline flex-wrap">
-              <Image className="small-img pr-3" src={`${config.projectImageURL}${project.image_file}`} rounded />
+              {renderProjectImage(project)}
               <h5><b>{project.title}</b></h5>
               <p className="pl-3" style={{color: 'purple'}}>{project.complete ? 'Completed' : 'In-Progress'}</p>
             </div>

@@ -17,7 +17,7 @@ const PackDetails = inject('packsStore', 'userStore')(observer((props) => {
   useEffect(async () => {
     await getPackInfoByName()
     await props.userStore.getUserInfo()
-    getPresignedURLForDownload()
+    getURLForDownload()
 
   },[])
 
@@ -47,7 +47,7 @@ const PackDetails = inject('packsStore', 'userStore')(observer((props) => {
     }
   }
 
-  async function getPresignedURLForDownload() {
+  async function getURLForDownload() {
     const {packName} = packNameParams
     const objectName = `packs/${packName}/${packName}.zip`
 

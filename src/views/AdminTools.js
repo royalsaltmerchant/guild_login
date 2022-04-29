@@ -18,8 +18,8 @@ import {
   deleteAssetType as deleteAssetTypeAPICall
 } from '../config/api'
 import {finalConfig as config} from '../config/config'
-import S3 from 'react-aws-s3'
 import {awsConfig} from '../config/config'
+import presignedUploadFile from '../utils/presignedUploadFile'
 
 class AdminTools extends Component {
   constructor(props) {
@@ -751,24 +751,13 @@ class AdminTools extends Component {
     return usersMap
   }
 
-  async uploadImageFile(imageFile, dirName) {
-    const config = {
-      bucketName: awsConfig.bucketName,
-      dirName: dirName,
-      region: awsConfig.region,
-      accessKeyId: awsConfig.accessKeyId,
-      secretAccessKey: awsConfig.secretAccessKey
+  async uploadImageFile(file, dirName) {
+    const preSignedParams = {
+      bucket_name: awsConfig.bucketName,
+      object_name: `${dirName}/${file.name}`,
     }
-    const S3Client = new S3(config)
 
-    try {
-      const res = await S3Client.uploadFile(imageFile, imageFile.name)
-      if(res.status === 204) {
-        console.log('succesful upload to aws')
-      } else throw new Error
-    } catch(err) {
-      console.log('failed to upload image to amazon',err)
-    }
+    presignedUploadFile(file, preSignedParams)
   }
 
   render() {

@@ -1,19 +1,10 @@
-import S3 from 'react-aws-s3'
 import { awsConfig } from '../config/config'
 import { v4 as uuidv4 } from 'uuid'
+import presignedUploadFile from './presignedUploadFile'
 
 export default async function UploadFiles(dirName, toUploadFilesList) {
-  const config = {
-    bucketName: awsConfig.bucketName,
-    dirName: dirName,
-    region: awsConfig.region,
-    accessKeyId: awsConfig.accessKeyId,
-    secretAccessKey: awsConfig.secretAccessKey
-  }
-
   const FILE_SIZE_LIMIT = 2300000
 
-  const S3Client = new S3(config)
   const successList = []
   const failedList = []
 
@@ -26,9 +17,14 @@ export default async function UploadFiles(dirName, toUploadFilesList) {
         // hash file name
         const uuid = uuidv4()
         file.uuid = uuid
+        console.log(file.uuid, 'uuid')
         try {
-          const res = await S3Client.uploadFile(file, uuid)
-          if(res.status === 204 || res.status === 200) {
+          const preSignedParams = {
+            bucket_name: awsConfig.bucketName,
+            object_name: `${dirName}/${file.uuid}.wav`,
+          }
+          const res = await presignedUploadFile(file, preSignedParams)
+          if(res && res.status === 204 || res.status === 200) {
             console.log('success', file.name)
             successList.push(file)
           } else {
