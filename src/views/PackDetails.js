@@ -13,13 +13,25 @@ import {
 const PackDetails = inject('packsStore', 'userStore')(observer((props) => {
   const packNameParams = useParams()
   const [uri, setUri] = useState(null)
+  const [packImageURLs, setPackImageURLs] = useState()
 
   useEffect(async () => {
     await getPackInfoByName()
+    getPackImageURLs()
     await props.userStore.getUserInfo()
     getURLForDownload()
 
   },[])
+
+  async function getPackImageURLs() {
+    var packImageURLList = []
+    await Promise.all(props.packsStore.packs.map(async pack => {
+      var newURL = await downloadFile(`pack_images/${pack.image_file}`)
+      packImageURLList.push(newURL)
+    }))
+
+    setPackImageURLs(packImageURLList)
+  }
 
   async function getPackInfoByName() {
     const {packName} = packNameParams
@@ -89,6 +101,12 @@ const PackDetails = inject('packsStore', 'userStore')(observer((props) => {
     }
   }
 
+  function renderPackImage(pack) {
+    if(!packImageURLs) return <Spinner animation="border" role="status" />
+    const packImageURL = packImageURLs.filter(url => url.includes(pack.image_file))
+    return <Image className="pack-img mr-3 mb-5" src={packImageURL} />
+  }
+
   function renderPackDetails() {
     
     if(props.packsStore.packInfoLoading) {
@@ -108,7 +126,7 @@ const PackDetails = inject('packsStore', 'userStore')(observer((props) => {
     return(
       <div className="d-flex flex-row align-items-center justify-content-center">
         <div className="d-flex flex-column">
-          <Image className="pack-img mr-3 mb-5" src={`${config.packImageURL}${packInfo.image_file}`} />
+          {renderPackImage(packInfo)}
           <h3 className="text-center">Audio Demo</h3>
           <iframe className="video" src={packInfo.video_file} frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen></iframe>
         </div>

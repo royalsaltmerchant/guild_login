@@ -22,15 +22,27 @@ const Library = inject('packsStore', 'userStore')(observer((props) => {
   const [tracksURLs, setTracksURLs] = useState([])
   const [trackCount, setTrackCount] = useState(0)
   const getTrackLimit = 10
+  const [packImageURLs, setPackImageURLs] = useState()
   
   useEffect(() => {
     onload()
   },[])
 
-  function onload() {
-    props.packsStore.getPacks()
+  async function onload() {
+    await props.packsStore.getPacks()
+    getPackImageURLs()
     props.userStore.getUserInfo()
     if(view === 'tracks') handleGetTracks()
+  }
+
+  async function getPackImageURLs() {
+    var packImageURLList = []
+    await Promise.all(props.packsStore.packs.map(async pack => {
+      var newURL = await downloadFile(`pack_images/${pack.image_file}`)
+      packImageURLList.push(newURL)
+    }))
+
+    setPackImageURLs(packImageURLList)
   }
 
   function serializeSearch(type, newParam) {
@@ -103,6 +115,12 @@ const Library = inject('packsStore', 'userStore')(observer((props) => {
     } else return null
   }
 
+  function renderPackImage(pack) {
+    if(!packImageURLs) return <Spinner animation="border" role="status" />
+    const packImageURL = packImageURLs.filter(url => url.includes(pack.image_file))
+    return <Image className="pack-img" src={packImageURL} />
+  }
+
   function renderSFXPacks() {
     const {packs, packsLoading} = props.packsStore
     
@@ -122,7 +140,7 @@ const Library = inject('packsStore', 'userStore')(observer((props) => {
         if(pack.active) {
           return(
             <div key={pack.id} className="img-div p-3">
-              <Image className="pack-img" src={`${config.packImageURL}${pack.image_file}`} />
+              {renderPackImage(pack)}
               <button className="di-btn" onClick={() => history.push(`/pack/${editedPackTitle}`)}>
                 Info
               </button>
