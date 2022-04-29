@@ -1,7 +1,7 @@
 import {getPresignedURLForDownload} from '../config/api'
 import { awsConfig } from '../config/config'
 
-export default async function downloadFiles(objectName) {
+export default async function downloadFile(objectName) {
   const bucketName = awsConfig.bucketName
   const params = {
     bucket_name: bucketName,

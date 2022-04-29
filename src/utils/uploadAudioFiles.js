@@ -2,7 +2,7 @@ import { awsConfig } from '../config/config'
 import { v4 as uuidv4 } from 'uuid'
 import presignedUploadFile from './presignedUploadFile'
 
-export default async function UploadFiles(dirName, toUploadFilesList) {
+export default async function uploadAudioFiles(dirName, toUploadFilesList) {
   const FILE_SIZE_LIMIT = 2300000
 
   const successList = []

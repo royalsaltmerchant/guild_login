@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { getTrackAssetsByUsername } from '../config/api'
-import downloadFiles from '../utils/DownloadFIles'
+import downloadFile from '../utils/presignedDownloadFile'
 import { Spinner, Button } from 'react-bootstrap'
 import TrackItem from '../components/TrackItem'
 import { useParams } from 'react-router-dom'
@@ -99,7 +99,7 @@ const Profile = inject('userStore')(observer((props) => {
             const assetName = asset.name
             const assetUUID = asset.uuid
             const objectName = `tracks/${assetUUID}.wav`
-            const presignedURL = await downloadFiles(objectName)
+            const presignedURL = await downloadFile(objectName)
             newTracksURLs.push({uuid: assetUUID, name: assetName, url: presignedURL})
           })
         )

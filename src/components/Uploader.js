@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from 'react'
 import { Form, Button } from 'react-bootstrap'
-import UploadFiles from '../utils/UploadFiles'
+import uploadAudioFiles from '../utils/uploadAudioFiles'
 import {Prompt} from 'react-router-dom'
 import { Spinner } from 'react-bootstrap'
 
@@ -34,7 +34,7 @@ export default function Uploader(props) {
       }
     }
     setUploading(true)
-    const filesSuccessOrFailed = await UploadFiles(props.dirName, toUploadFilesList)
+    const filesSuccessOrFailed = await uploadAudioFiles(props.dirName, toUploadFilesList)
     setUploading(false)
     const newSuccessList = filesSuccessOrFailed.successList
     const newFailedList = filesSuccessOrFailed.failedList

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { inject, observer } from 'mobx-react'
 import { Spinner, Button, Image } from 'react-bootstrap'
 import { Link } from 'react-router-dom'
-import downloadFiles from '../utils/DownloadFIles'
+import downloadFile from '../utils/presignedDownloadFile'
 
 const Dashboard = inject('userStore', 'projectsStore')(observer((props) => {
   const [projectImageURLs, setProjectImageURLs] = useState()
@@ -17,7 +17,7 @@ const Dashboard = inject('userStore', 'projectsStore')(observer((props) => {
   async function getProjectImageURLs() {
     var projectImageURLList = []
     await Promise.all(props.projectsStore.projects.map(async project => {
-      var newURL = await downloadFiles(`project_images/${project.image_file}`)
+      var newURL = await downloadFile(`project_images/${project.image_file}`)
       projectImageURLList.push(newURL)
     }))
     setProjectImageURLs(projectImageURLList)

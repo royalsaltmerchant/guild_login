@@ -10,7 +10,7 @@ import {
   Dropdown
 } from 'react-bootstrap'
 import { getTrackAssets } from '../config/api'
-import downloadFiles from '../utils/DownloadFIles'
+import downloadFile from '../utils/presignedDownloadFile'
 import TrackItem from '../components/TrackItem'
 import SearchBar from '../components/SearchBar'
 
@@ -258,7 +258,7 @@ const Library = inject('packsStore', 'userStore')(observer((props) => {
             const assetName = asset.name
             const assetUUID = asset.uuid
             const objectName = `tracks/${assetUUID}.wav`
-            const presignedURL = await downloadFiles(objectName)
+            const presignedURL = await downloadFile(objectName)
             newTracksURLs.push({uuid: assetUUID, name: assetName, url: presignedURL})
           })
         )

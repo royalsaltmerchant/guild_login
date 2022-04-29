@@ -2,7 +2,7 @@ import { inject, observer } from 'mobx-react'
 import React, {useEffect, useState} from 'react'
 import { useParams, useHistory } from 'react-router-dom'
 import { Button, Spinner } from 'react-bootstrap'
-import downloadFiles from '../utils/DownloadFIles'
+import downloadFile from '../utils/presignedDownloadFile'
 import { toJS } from 'mobx'
 import { editContributedAsset as editContributedAssetAPICall, editContribution as editContributionAPICall, editUser as editUserAPICall } from '../config/api'
 import {BsDownload} from 'react-icons/bs'
@@ -40,7 +40,7 @@ const ManageContribution = inject('contributionStore', 'projectsStore', 'entrySt
         const assetName = asset.name
         const assetUUID = asset.uuid
         const objectName = `submissions/${projectTitle}/${entryTitle}/${userName}/${assetUUID}.wav`
-        const presignedURL = await downloadFiles(objectName)
+        const presignedURL = await downloadFile(objectName)
         contributedAssetsURLs.push({name: assetName, uuid: assetUUID, url: presignedURL})
       })
     )

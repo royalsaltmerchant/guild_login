@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import {useParams} from 'react-router-dom'
 import { Image, Button, Spinner } from 'react-bootstrap'
 import {finalConfig as config, awsConfig} from '../config/config'
-import downloadFiles from '../utils/DownloadFIles'
+import downloadFile from '../utils/presignedDownloadFile'
 import {inject, observer} from 'mobx-react'
 import { BiCoin } from 'react-icons/bi'
 import {
@@ -52,7 +52,7 @@ const PackDetails = inject('packsStore', 'userStore')(observer((props) => {
     const objectName = `packs/${packName}/${packName}.zip`
 
     try {
-      const downloadLink = await downloadFiles(objectName)
+      const downloadLink = await downloadFile(objectName)
       if(downloadLink) {
         setUri(downloadLink)
         return true
