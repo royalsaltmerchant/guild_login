@@ -74,7 +74,9 @@ class Account extends Component {
             </div>
           )
         } else {
-          <div className="p-3 m-1 border rounded justify-content-center align-items-center card-style" style={{height: '10vh'}}><p>Project entry removed... </p></div>
+          return(
+            <div className="p-3 m-1 border rounded justify-content-center align-items-center card-style" style={{height: '10vh'}}><p>Project entry removed... </p></div>
+          )
         }
       } else {
         return(
@@ -89,7 +91,7 @@ class Account extends Component {
     const {userInfo} = this.props.userStore
     if(userInfo.contributor) {
       if(userInfo.contributions && userInfo.contributions.length !== 0) {
-        this.renderContributions(userInfo.contributions)
+        return this.renderContributions(userInfo.contributions)
       } else {
         return(
           <div>

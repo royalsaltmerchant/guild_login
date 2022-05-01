@@ -40,7 +40,7 @@ const Dashboard = inject('userStore', 'projectsStore')(observer((props) => {
         return(
           <div key={contribution.id} className="px-5 d-flex flex-row justify-content-between align-items-baseline flex-wrap">
             <p style={{color: 'purple'}}>{singleContributionUser.username} - <b>{contribution.amount}</b></p>
-            <p style={{color: 'green'}}>{contribution.status}</p>
+            <p style={{color: 'gray'}}>{contribution.status}</p>
             {props.userStore.userInfo && props.userStore.userInfo.admin ? <Button as={Link} variant="outline-secondary" to={`/Manage/${contribution.id}`}>Manage</Button> : null}
           </div>
         )

@@ -13,7 +13,7 @@ class CreateProject extends Component {
       object_name: `project_images/${file.name}`,
     }
 
-    presignedUploadFile(file, preSignedParams)
+    return await presignedUploadFile(file, preSignedParams)
   }
 
   async handleSubmitProject(event) {
@@ -30,9 +30,10 @@ class CreateProject extends Component {
     try {
       const res = await createProjectAPICall(params)
       if(res.status === 201) {
-        this.props.projectsStore.getProjects()
+        await this.props.projectsStore.getProjects()
         this.props.createProjectBoolean(false)
-        this.uploadImageFile(imageFile)
+        await this.uploadImageFile(imageFile)
+        this.props.getProjectImageURLs()
       }
     } catch(err) {
       console.log(err)

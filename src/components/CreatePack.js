@@ -6,14 +6,20 @@ import { inject, observer } from 'mobx-react'
 import presignedUploadFile from '../utils/presignedUploadFile'
 
 class CreatePack extends Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+      uploadingBoolean: false
+    }
+  }
 
-  uploadFile(file, fileDir) {
+  async uploadFile(file, fileDir) {
     const preSignedParams = {
       bucket_name: awsConfig.bucketName,
       object_name: fileDir,
     }
 
-    presignedUploadFile(file, preSignedParams)
+    return await presignedUploadFile(file, preSignedParams)
   }
 
   async handleSubmitPack(event) {
@@ -37,10 +43,13 @@ class CreatePack extends Component {
     try {
       const res = await createPackAPICall(params)
       if(res.status === 201) {
-        this.props.packsStore.getPacks()
+        this.setState({uploadingBoolean: true})
+        await this.uploadFile(imageFile, `pack_images/${imageFile.name}`)
+        await this.uploadFile(audioFile, `packs/${editedPackTitle}/${audioFile.name}`)
+        this.setState({uploadingBoolean: false})
         this.props.createPackBoolean(false)
-        this.uploadFile(imageFile, `pack_images/${imageFile.name}`)
-        this.uploadFile(audioFile, `packs/${editedPackTitle}`)
+        await this.props.packsStore.getPacks()
+        this.props.getPackImageURLs()
       }
     } catch(err) {
       console.log(err)
@@ -115,10 +124,15 @@ class CreatePack extends Component {
               accept=".zip"
              />
           </Form.Group>
-
-          <Button variant="outline-success" type="submit">
-            Create Pack
-          </Button>
+          {this.state.uploadingBoolean ? 
+            <div>
+              <Spinner animation="border" role="status" />
+              <p style={{color: 'green'}}>This could take awhile...</p>
+            </div> :
+            <Button variant="outline-success" type="submit">
+              Create Pack
+            </Button>
+          }
         </Form>
       </div>
     )

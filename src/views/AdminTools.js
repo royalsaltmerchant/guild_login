@@ -17,9 +17,9 @@ import {
   editAssetType as editAssetTypeAPICall,
   deleteAssetType as deleteAssetTypeAPICall
 } from '../config/api'
-import {finalConfig as config} from '../config/config'
 import {awsConfig} from '../config/config'
 import presignedUploadFile from '../utils/presignedUploadFile'
+import downloadFile from '../utils/presignedDownloadFile'
 
 class AdminTools extends Component {
   constructor(props) {
@@ -29,14 +29,18 @@ class AdminTools extends Component {
       createEntryBoolean: false,
       createPackBoolean: false,
       createAssetTypeBoolean: false,
-      uploadTrackBoolean: false
+      uploadTrackBoolean: false,
+      projectImageURLs: null,
+      packImageURLs: null
     }
   }
   
-  componentDidMount() {
+  async componentDidMount() {
     this.props.userStore.getUsersList()
-    this.props.packsStore.getPacks()
-    this.props.projectsStore.getProjects()
+    await this.props.packsStore.getPacks()
+    this.getPackImageURLs()
+    await this.props.projectsStore.getProjects()
+    this.getProjectImageURLs()
   }
 
   handleToggleClick(toggleKey, editKey) {
@@ -52,6 +56,27 @@ class AdminTools extends Component {
     })
   }
 
+  async getProjectImageURLs() {
+    var projectImageURLList = []
+    await Promise.all(this.props.projectsStore.projects.map(async project => {
+      var newURL = await downloadFile(`project_images/${project.image_file}`)
+      projectImageURLList.push(newURL)
+    }))
+    this.setState({
+      projectImageURLs: projectImageURLList
+    })
+  }
+
+  async getPackImageURLs() {
+    var packImageURLList = []
+    await Promise.all(this.props.packsStore.packs.map(async pack => {
+      var newURL = await downloadFile(`pack_images/${pack.image_file}`)
+      packImageURLList.push(newURL)
+    }))
+    this.setState({
+      packImageURLs: packImageURLList
+    })
+  }
 
   async handleEditProjectSave(event, project, projectEditKey) {
     event.preventDefault()
@@ -91,7 +116,8 @@ class AdminTools extends Component {
           this.setState({[projectEditKey]: false})
           this.props.projectsStore.getProjects()
           if(imageFile) {
-            this.uploadImageFile(imageFile, "project_images")
+            await this.uploadImageFile(imageFile, "project_images")
+            this.getProjectImageURLs()
           }
         } else throw new Error
       } catch(err) {
@@ -212,7 +238,8 @@ class AdminTools extends Component {
           this.setState({[packEditKey]: false})
           this.props.packsStore.getPacks()
           if(imageFile) {
-            this.uploadImageFile(imageFile, "pack_images")
+            await this.uploadImageFile(imageFile, "pack_images")
+            this.getPackImageURLs()
           }
         } else throw new Error
       } catch(err) {
@@ -382,12 +409,18 @@ class AdminTools extends Component {
     return entriesMap
   }
 
+  renderProjectImage(project) {
+    if(!this.state.projectImageURLs) return <Spinner animation="border" role="status" />
+    const projectImageURL = this.state.projectImageURLs.filter(url => url.includes(project.image_file))
+    return <Image className="small-img" src={projectImageURL} rounded />
+  }
+
   renderProjectsToggleOrEdit(projectToggleKey, projectEditKey, project) {
     if(this.state[projectToggleKey] && !this.state[projectEditKey]) {
       return(
         <div className="px-3">
           <p>Description: {project.description}</p>
-          <Image className="small-img" src={`${config.projectImageURL}${project.image_file}`} rounded />
+          {this.renderProjectImage(project)}
           <p>Active: {project.active ? 'true' : 'false'}</p>
           <p>Complete: {project.complete ? 'true' : 'false'}</p>
           <div>
@@ -539,6 +572,12 @@ class AdminTools extends Component {
     return assetTypesMap
   }
 
+  renderPackImage(pack) {
+    if(!this.state.packImageURLs) return <Spinner animation="border" role="status" />
+    const packImageURL = this.state.packImageURLs.filter(url => url.includes(pack.image_file))
+    return <Image className="small-img" src={packImageURL} rounded />
+  }
+
   renderPacksToggleOrEdit(packToggleKey, packEditKey, pack) {
     const packTitleSpaces = pack.title.replaceAll('-', ' ')
     const packTitle = packTitleSpaces.toLowerCase()
@@ -551,7 +590,7 @@ class AdminTools extends Component {
         <div className="px-3">
           <p>Title: {packTitle}</p>
           <p>Description: {pack.description}</p>
-          <Image className="small-img" src={`${config.packImageURL}${pack.image_file}`} rounded />
+          {this.renderPackImage(pack)}
           <br />
           <iframe class="video-sm" src={pack.video_file} frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
           <p>Coin Cost: {pack.coin_cost}</p>
@@ -757,7 +796,7 @@ class AdminTools extends Component {
       object_name: `${dirName}/${file.name}`,
     }
 
-    presignedUploadFile(file, preSignedParams)
+    return await presignedUploadFile(file, preSignedParams)
   }
 
   render() {
@@ -768,11 +807,11 @@ class AdminTools extends Component {
           <Button className="px-3 py-1" variant="link" onClick={() => this.setState({createProjectBoolean: !this.state.createProjectBoolean})}>
             {this.state.createProjectBoolean ? '- Create New Project' : '+ Create New Project'}
           </Button>
-          {this.state.createProjectBoolean ? <CreateProject createProjectBoolean={value => this.setState({createProjectBoolean: value})}/> : null}
+          {this.state.createProjectBoolean ? <CreateProject getProjectImageURLs={() => this.getProjectImageURLs()} createProjectBoolean={value => this.setState({createProjectBoolean: value})}/> : null}
           <Button className="px-3 py-1" variant="link" onClick={() => this.setState({createPackBoolean: !this.state.createPackBoolean})}>
             {this.state.createPackBoolean ? '- Create New Pack' : '+ Create New Pack'}
           </Button>
-          {this.state.createPackBoolean ? <CreatePack createPackBoolean={value => this.setState({createPackBoolean: value})}/> : null}
+          {this.state.createPackBoolean ? <CreatePack getPackImageURLs={() => this.getPackImageURLs()} createPackBoolean={value => this.setState({createPackBoolean: value})}/> : null}
           <Button className="px-3 py-1" variant="link" onClick={() => this.setState({uploadTrackBoolean: !this.state.uploadTrackBoolean})}>
             {this.state.uploadTrackBoolean ? '- Upload New Track' : '+ Upload New Track'}
           </Button>
