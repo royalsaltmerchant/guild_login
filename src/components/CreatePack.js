@@ -1,31 +1,25 @@
 import React, { Component } from 'react'
 import {Spinner, Button, Form} from 'react-bootstrap'
 import {createPack as createPackAPICall} from '../config/api'
-import S3 from 'react-aws-s3'
 import {awsConfig} from '../config/config'
 import { inject, observer } from 'mobx-react'
+import presignedUploadFile from '../utils/presignedUploadFile'
 
 class CreatePack extends Component {
-
-  async uploadFile(file, fileDir, fileName) {
-    const config = {
-      bucketName: awsConfig.bucketName,
-      dirName: fileDir,
-      region: awsConfig.region,
-      accessKeyId: awsConfig.accessKeyId,
-      secretAccessKey: awsConfig.secretAccessKey
+  constructor(props) {
+    super(props)
+    this.state = {
+      uploadingBoolean: false
     }
-    const S3Client = new S3(config)
+  }
 
-    try {
-      const res = await S3Client.uploadFile(file, fileName)
-      console.log(res)
-      if(res.status === 204) {
-        console.log('succesful upload to aws')
-      }
-    } catch(err) {
-      console.log('failed to upload image to amazon', err)
+  async uploadFile(file, fileDir) {
+    const preSignedParams = {
+      bucket_name: awsConfig.bucketName,
+      object_name: fileDir,
     }
+
+    return await presignedUploadFile(file, preSignedParams)
   }
 
   async handleSubmitPack(event) {
@@ -49,11 +43,13 @@ class CreatePack extends Component {
     try {
       const res = await createPackAPICall(params)
       if(res.status === 201) {
-        console.log(res)
-        this.props.packsStore.getPacks()
+        this.setState({uploadingBoolean: true})
+        await this.uploadFile(imageFile, `pack_images/${imageFile.name}`)
+        await this.uploadFile(audioFile, `packs/${editedPackTitle}/${audioFile.name}`)
+        this.setState({uploadingBoolean: false})
         this.props.createPackBoolean(false)
-        this.uploadFile(imageFile, "pack_images", imageFile.name)
-        this.uploadFile(audioFile, `packs/${editedPackTitle}`, editedPackTitle)
+        await this.props.packsStore.getPacks()
+        this.props.getPackImageURLs()
       }
     } catch(err) {
       console.log(err)
@@ -128,10 +124,15 @@ class CreatePack extends Component {
               accept=".zip"
              />
           </Form.Group>
-
-          <Button variant="outline-success" type="submit">
-            Create Pack
-          </Button>
+          {this.state.uploadingBoolean ? 
+            <div>
+              <Spinner animation="border" role="status" />
+              <p style={{color: 'green'}}>This could take awhile...</p>
+            </div> :
+            <Button variant="outline-success" type="submit">
+              Create Pack
+            </Button>
+          }
         </Form>
       </div>
     )

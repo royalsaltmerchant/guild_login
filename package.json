@@ -14,7 +14,6 @@
     "moment": "^2.29.1",
     "react": "^17.0.2",
     "react-audio-waveform": "^0.0.5",
-    "react-aws-s3": "^1.5.0",
     "react-bootstrap": "^1.6.1",
     "react-dom": "^17.0.2",
     "react-icons": "^4.3.1",

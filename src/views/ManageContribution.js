@@ -2,7 +2,7 @@ import { inject, observer } from 'mobx-react'
 import React, {useEffect, useState} from 'react'
 import { useParams, useHistory } from 'react-router-dom'
 import { Button, Spinner } from 'react-bootstrap'
-import downloadFiles from '../utils/DownloadFIles'
+import downloadFile from '../utils/presignedDownloadFile'
 import { toJS } from 'mobx'
 import { editContributedAsset as editContributedAssetAPICall, editContribution as editContributionAPICall, editUser as editUserAPICall } from '../config/api'
 import {BsDownload} from 'react-icons/bs'
@@ -40,26 +40,27 @@ const ManageContribution = inject('contributionStore', 'projectsStore', 'entrySt
         const assetName = asset.name
         const assetUUID = asset.uuid
         const objectName = `submissions/${projectTitle}/${entryTitle}/${userName}/${assetUUID}.wav`
-        const presignedURL = await downloadFiles(objectName)
+        const presignedURL = await downloadFile(objectName)
         contributedAssetsURLs.push({name: assetName, uuid: assetUUID, url: presignedURL})
       })
     )
     setAssetURLs(contributedAssetsURLs)
   }
 
-  function handleComplete() {
-    handleUpdateContributionStatus()
-    handleUpdateUserInfo()
+  async function handleComplete() {
+    await handleUpdateContributionStatus()
+    if(coinsToGive !== 0) await handleUpdateUserInfo()
+    history.push('/dashboard')
   }
 
-  function handleUpdateContributionStatus() {
+  async function handleUpdateContributionStatus() {
     const {contributionInfo} = props.contributionStore
     const params = {
       contribution_id: contributionInfo.id,
-      status: 'accepted'
+      status: coinsToGive !== 0 ? 'Accepted' : 'Rejected'
     }
     try {
-      editContributionAPICall(params)
+      await editContributionAPICall(params)
     } catch(err) {
       console.log(err)
       alert('Failed to update entry status')
@@ -75,9 +76,6 @@ const ManageContribution = inject('contributionStore', 'projectsStore', 'entrySt
     }
     try {
       const res = await editUserAPICall(params)
-      if(res.status === 200) {
-        history.push('/dashboard')
-      }
     } catch(err) {
       console.log(err)
       alert('Failed to send coins')
@@ -161,7 +159,7 @@ const ManageContribution = inject('contributionStore', 'projectsStore', 'entrySt
       <h2 className="pb-3">Asset Management</h2>
       {renderContributedAssets()}
       <br />
-      <Button variant="outline-info" disabled={coinsToGive === 0} onClick={() => handleComplete()}>Send {coinsToGive} Coins</Button>
+      <Button variant="outline-info" onClick={() => handleComplete()}>Complete with {coinsToGive} Coins</Button>
     </div>
   )
 }))

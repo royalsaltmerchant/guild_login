@@ -1,31 +1,19 @@
 import React, { Component } from 'react'
 import {Spinner, Button, Form} from 'react-bootstrap'
 import {createProject as createProjectAPICall} from '../config/api'
-import S3 from 'react-aws-s3'
 import {awsConfig} from '../config/config'
 import { inject, observer } from 'mobx-react'
+import presignedUploadFile from '../utils/presignedUploadFile'
 
 class CreateProject extends Component {
 
-  async uploadImageFile(imageFile) {
-    const config = {
-      bucketName: awsConfig.bucketName,
-      dirName: "project_images",
-      region: awsConfig.region,
-      accessKeyId: awsConfig.accessKeyId,
-      secretAccessKey: awsConfig.secretAccessKey
+  async uploadImageFile(file) {
+    const preSignedParams = {
+      bucket_name: awsConfig.bucketName,
+      object_name: `project_images/${file.name}`,
     }
-    const S3Client = new S3(config)
 
-    try {
-      const res = await S3Client.uploadFile(imageFile, imageFile.name)
-      console.log(res)
-      if(res.status === 204) {
-        console.log('succesful upload to aws')
-      }
-    } catch(err) {
-      console.log('failed to upload image to amazon',err)
-    }
+    return await presignedUploadFile(file, preSignedParams)
   }
 
   async handleSubmitProject(event) {
@@ -42,10 +30,10 @@ class CreateProject extends Component {
     try {
       const res = await createProjectAPICall(params)
       if(res.status === 201) {
-        console.log(res)
-        this.props.projectsStore.getProjects()
+        await this.props.projectsStore.getProjects()
         this.props.createProjectBoolean(false)
-        this.uploadImageFile(imageFile)
+        await this.uploadImageFile(imageFile)
+        this.props.getProjectImageURLs()
       }
     } catch(err) {
       console.log(err)
