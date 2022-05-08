@@ -175,7 +175,7 @@ export default function Register(props) {
             </Form.Text>
           </Form.Group>
 
-          <p>Please read and agree to our <a href='http://sfaudioguild.com/user-license-agreement.pdf'>USER LICENSE AGREEMENT</a> before completing registration</p>
+          <p>Please read and agree to our <a href='http://sfaudioguild.com/user-license-agreement.pdf' target="_blank" rel="noopener noreferrer">USER LICENSE AGREEMENT</a> before completing registration</p>
 
           <Form.Group controlId="userAgreement">
             <Form.Check required type="checkbox" label="I agree to the USER LICENSE AGREEMENT" />
