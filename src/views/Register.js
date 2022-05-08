@@ -174,6 +174,13 @@ export default function Register(props) {
               Your password must be 8-20 characters long.
             </Form.Text>
           </Form.Group>
+
+          <p>Please read and agree to our <a href='http://sfaudioguild.com/user-license-agreement.pdf'>USER LICENSE AGREEMENT</a> before completing registration</p>
+
+          <Form.Group controlId="userAgreement">
+            <Form.Check required type="checkbox" label="I agree to the USER LICENSE AGREEMENT" />
+          </Form.Group>
+
           <Button variant="outline-secondary" type="submit">
             Register
           </Button>
