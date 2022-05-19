@@ -3,6 +3,7 @@ import { Link, useHistory } from "react-router-dom";
 import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
 import Alert from 'react-bootstrap/Alert'
+import { editUser } from '../config/api';
 
 export default function RegisterContributor(props) {
   const [alert, setAlert] = useState(false)
@@ -33,32 +34,25 @@ export default function RegisterContributor(props) {
   async function handleSubmit(event) {
     event.preventDefault()
     console.log('ayyyy, contributor')
-    // const username = event.target.username.value.trim()
+    const address = event.target.address.value.trim()
+    const city = event.target.city.value.trim()
+    const state = event.target.state.value.trim()
+    const phone = event.target.phone.value.trim()
     const params = {
-
+      address: `${address}, ${city}, ${state}`,
+      phone: phone
     }
-    // if(true) {
-    //   try {
-    //     const res = await true
-    //     if(res.status === 201) {
-    //       history.push("/login")
-    //     }
-    //   } catch (error) {
-    //     console.log(error.response)
-    //     if(error.response.status === 400) {
-    //       setAlert(true)
-    //       setAlertType('warning')
-    //       setAlertText('Email or Username is already in use')
-    //     } else {
-    //       setAlert(true)
-    //       setAlertType('danger')
-    //       setAlertText('Something went wrong, please try again later!')
-    //     }
-    //   }
-    // } else {
-    //   setAlert(true)
-    //   setAlertText('Please Fix Errors Before You Register!')
-    // }
+    try {
+      const res = await editUser(params)
+      if(res.status === 200) {
+        history.push("/account")
+      }
+    } catch (error) {
+      console.log(error.response)
+      setAlert(true)
+      setAlertType('danger')
+      setAlertText('Something went wrong, please try again later!')
+    }
 
   }
 

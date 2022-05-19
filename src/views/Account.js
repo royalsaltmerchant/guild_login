@@ -151,6 +151,8 @@ class Account extends Component {
           <div className='px-3'>
             <p>{userInfo.first_name} {userInfo.last_name}</p>
             <p>{userInfo.email}</p>
+            {userInfo.address ? <p>{userInfo.address}</p> : null}
+            {userInfo.phone ? <p>{userInfo.phone}</p> : null}
             {/* <p>Approved asset count - {userInfo.approved_asset_count}</p> */}
             <p>Coins <BiCoin style={{color: 'orange', fontSize: '20px'}}/> - {userInfo.coins}</p>
             {/* <p>Premium member - {userInfo.premium ? "Yes" : "No"}</p> */}
