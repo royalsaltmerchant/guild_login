@@ -104,8 +104,7 @@ class Account extends Component {
       return(
         <div className='d-flex flex-column'>
           <Button variant="warning" as={Link} to={'/register-contributor'}>Become a Contributor</Button>
-          <br />
-          <small>What is a contributor? <a href="https://www.sfaudioguild.com/learn.html">Learn More</a></small>
+          <small className='pt-2'>What is a contributor? <a href="https://www.sfaudioguild.com/learn.html">Learn More</a></small>
         </div>
       )
     }
@@ -172,7 +171,7 @@ class Account extends Component {
         </div>
         <br />
         <h4>Contributions to SF Audio Guild Projects</h4>
-        <small style={{color: 'green'}}>- By contributing to our projects, you can earn 10 coins if your sound is approved!</small>
+        <small style={{color: 'green'}}>- By contributing to our projects, you can earn 10 coins per sound, if your sound is approved!</small>
         <hr className='mt-1'/>
         <div className="d-flex flex-row flex-wrap">
           {this.renderContributorOrNot()}
