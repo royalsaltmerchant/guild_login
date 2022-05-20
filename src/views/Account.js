@@ -100,6 +100,13 @@ class Account extends Component {
           </div>
         )
       }
+    } 
+    else if(userInfo.phone && userInfo.address && !userInfo.contributor) {
+      return(
+        <div>
+          <p>*** Your contributor application is being reviewed... Hang in there! ***</p>
+        </div>
+      )
     } else {
       return(
         <div className='d-flex flex-column'>

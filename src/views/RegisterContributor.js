@@ -1,16 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useHistory } from "react-router-dom";
+import { inject, observer } from 'mobx-react';
 import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
 import Alert from 'react-bootstrap/Alert'
 import { editUser } from '../config/api';
 
-export default function RegisterContributor(props) {
+const RegisterContributor = inject('userStore')(observer((props) => {
+  const [done, setDone] = useState(false)
   const [alert, setAlert] = useState(false)
   const [phone, setPhone] = useState('')
   const [alertType, setAlertType] = useState('warning')
   const [alertText, setAlertText] = useState('Something went wrong, please try again later!')
-  const history = useHistory()
 
   useEffect(() => {
       if(alert) {
@@ -33,19 +33,22 @@ export default function RegisterContributor(props) {
 
   async function handleSubmit(event) {
     event.preventDefault()
-    console.log('ayyyy, contributor')
+
     const address = event.target.address.value.trim()
     const city = event.target.city.value.trim()
     const state = event.target.state.value.trim()
     const phone = event.target.phone.value.trim()
+
     const params = {
+      user_id: props.userStore.userInfo.id,
       address: `${address}, ${city}, ${state}`,
       phone: phone
     }
+
     try {
       const res = await editUser(params)
       if(res.status === 200) {
-        history.push("/account")
+        setDone(true)
       }
     } catch (error) {
       console.log(error.response)
@@ -56,7 +59,14 @@ export default function RegisterContributor(props) {
 
   }
 
-  return (
+  if(done) {
+    return(
+      <div>
+        <h2>Success!</h2>
+        <p>Thanks for applying to be a contributor! We will review your application and update your account soon.</p>
+      </div>
+    )
+  } else return (
     <div>
       {renderAlert()}
         <Form onSubmit={(event) => handleSubmit(event)}>
@@ -111,16 +121,24 @@ export default function RegisterContributor(props) {
             />
           </Form.Group>
 
-          <p>Please read and agree to our <a href='http://sfaudioguild.com/contributor-license-agreement.pdf' target="_blank" rel="noopener noreferrer">CONTRIBUTOR LICENSE AGREEMENT</a> before completing registration</p>
+          <p>Please read and agree to our <a href='http://sfaudioguild.com/contributor-license-agreement.pdf' target="_blank" rel="noopener noreferrer">CONTRIBUTOR LICENSE AGREEMENT</a> before applying</p>
 
           <Form.Group controlId="userAgreement">
             <Form.Check required type="checkbox" label="I agree to the CONTRIBUTOR LICENSE AGREEMENT" />
           </Form.Group>
 
+          <p>Please download and email a signed copy of our <a href='http://sfaudioguild.com/copyright-license-agreement.pdf' target="_blank" rel="noopener noreferrer">COPYRIGHT LICENSE AGREEMENT</a> to <a href='mailto:admin@sfaudioguild.com'>admin@sfaudioguild.com</a></p>
+          
+          <Form.Group controlId="copyrightSigned">
+            <Form.Check required type="checkbox" label="I have emailed a signed copy of the COPYRIGHT LICENSE AGREEMENT" />
+          </Form.Group>
+
           <Button variant="outline-secondary" type="submit">
-            Register As Contributor
+            Apply for Contributor
           </Button>
         </Form>
     </div>
   )
-}
+}))
+
+export default RegisterContributor
