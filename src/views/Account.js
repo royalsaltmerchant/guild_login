@@ -100,12 +100,18 @@ class Account extends Component {
           </div>
         )
       }
+    } 
+    else if(userInfo.phone && userInfo.address && !userInfo.contributor) {
+      return(
+        <div>
+          <p>*** Your contributor application is being reviewed... Hang in there! ***</p>
+        </div>
+      )
     } else {
       return(
         <div className='d-flex flex-column'>
           <Button variant="warning" as={Link} to={'/register-contributor'}>Become a Contributor</Button>
-          <br />
-          <small>What is a contributor? <a href="https://www.sfaudioguild.com/learn.html">Learn More</a></small>
+          <small className='pt-2'>What is a contributor? <a href="https://www.sfaudioguild.com/learn.html">Learn More</a></small>
         </div>
       )
     }
@@ -152,6 +158,8 @@ class Account extends Component {
           <div className='px-3'>
             <p>{userInfo.first_name} {userInfo.last_name}</p>
             <p>{userInfo.email}</p>
+            {userInfo.address ? <p>{userInfo.address}</p> : null}
+            {userInfo.phone ? <p>{userInfo.phone}</p> : null}
             {/* <p>Approved asset count - {userInfo.approved_asset_count}</p> */}
             <p>Coins <BiCoin style={{color: 'orange', fontSize: '20px'}}/> - {userInfo.coins}</p>
             {/* <p>Premium member - {userInfo.premium ? "Yes" : "No"}</p> */}
@@ -172,7 +180,7 @@ class Account extends Component {
         </div>
         <br />
         <h4>Contributions to SF Audio Guild Projects</h4>
-        <small style={{color: 'green'}}>- By contributing to our projects, you can earn 10 coins if your sound is approved!</small>
+        <small style={{color: 'green'}}>- By contributing to our projects, you can earn 10 coins per sound, if your sound is approved!</small>
         <hr className='mt-1'/>
         <div className="d-flex flex-row flex-wrap">
           {this.renderContributorOrNot()}
