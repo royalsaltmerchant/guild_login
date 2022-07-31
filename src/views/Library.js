@@ -174,19 +174,21 @@ const Library = inject('packsStore', 'userStore')(observer((props) => {
   }
 
   function handleGetNextTracks() {
-    setOffset(getOffset() + getTrackLimit)
+    var offsetInt = parseInt(getOffset())
+    setOffset(offsetInt + getTrackLimit)
   }
 
   function handleGetPreviousTracks() {
-    setOffset(getOffset() - getTrackLimit)
+    var offsetInt = parseInt(getOffset())
+    setOffset(offsetInt - getTrackLimit)
   }
   
   function renderPaginationButtons() {
     return(
       <div className='py-3 text-center align-items-center'>
         <div className="d-flex flex-row justify-content-between">
-          <Button disabled={getOffset() === 0} variant='link' onClick={() => handleGetPreviousTracks()}>Previous</Button>
-          <Button disabled={(getOffset() + getTrackLimit) >= trackCount} variant='link' onClick={() => handleGetNextTracks()}>Next</Button>
+          <Button disabled={parseInt(getOffset()) === 0} variant='link' onClick={() => handleGetPreviousTracks()}>Previous</Button>
+          <Button disabled={(parseInt(getOffset()) + getTrackLimit) >= trackCount} variant='link' onClick={() => handleGetNextTracks()}>Next</Button>
         </div>
       </div>
     )
