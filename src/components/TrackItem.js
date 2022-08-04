@@ -1,6 +1,5 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import {BiCoin} from 'react-icons/bi'
-import {GiRoundStar} from 'react-icons/gi'
 import {BsDownload} from 'react-icons/bs'
 import Waveform from "react-audio-waveform"
 import { Link } from 'react-router-dom'
@@ -50,7 +49,7 @@ const TrackItem = inject('userStore')(observer((props) => {
     link.click()
 
     // edit user and track
-    if(props.userStore.userInfo && track.author_id != props.userStore.userInfo.id) {
+    if(props.userStore.userInfo && track.author_id !== props.userStore.userInfo.id) {
         try {
           await editUserAPICall(editCurrentUserParams)
           props.userStore.getUserInfo()
@@ -124,12 +123,12 @@ const TrackItem = inject('userStore')(observer((props) => {
   function renderTags(track, metatag) {
     if(props.userStore.userInfo && track.author_id === props.userStore.userInfo.id) {
       return(
-        <div className='d-flex flex-row flex-wrap'>
+        <div key={metatag} className='d-flex flex-row flex-wrap'>
           <Button variant="link" className="p-0 ml-2" onClick={() => setQuery(metatag)}>#{metatag}</Button>
           <Button variant="link" className="p-0 align-self-start" style={{color: 'red', fontSize: '13px'}} onClick={(e) => handleRemoveTag(e, track, metatag)}>✕</Button>
         </div>
       )
-    } else return <Button variant="link" onClick={() => setQuery(metatag)}>#{metatag}</Button>
+    } else return <Button key={metatag} variant="link" onClick={() => setQuery(metatag)}>#{metatag}</Button>
   }
 
   function renderRemove(track) {

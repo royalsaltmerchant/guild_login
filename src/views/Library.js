@@ -2,10 +2,8 @@ import React, { useEffect, useState } from 'react'
 import { Image } from 'react-bootstrap'
 import { inject, observer } from 'mobx-react'
 import { useHistory } from 'react-router'
-import {finalConfig as config} from '../config/config'
 import {
   Spinner,
-  Form,
   Button,
   Dropdown
 } from 'react-bootstrap'
@@ -25,15 +23,14 @@ const Library = inject('packsStore', 'userStore')(observer((props) => {
   const [packImageURLs, setPackImageURLs] = useState()
   
   useEffect(() => {
-    onload()
+    void async function init() {
+      await props.packsStore.getPacks()
+      getPackImageURLs()
+      props.userStore.getUserInfo()
+      if(view === 'tracks') handleGetTracks()
+    }()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   },[])
-
-  async function onload() {
-    await props.packsStore.getPacks()
-    getPackImageURLs()
-    props.userStore.getUserInfo()
-    if(view === 'tracks') handleGetTracks()
-  }
 
   async function getPackImageURLs() {
     var packImageURLList = []
@@ -146,7 +143,7 @@ const Library = inject('packsStore', 'userStore')(observer((props) => {
               </button>
             </div>
           )   
-        } 
+        } else return null
       })
       return packMap
     }
@@ -164,11 +161,11 @@ const Library = inject('packsStore', 'userStore')(observer((props) => {
       return tracksData.map(track => {
         if(track.active === true) {
           return(
-            <>
+            <div key={track.id}>
               <TrackItem tracksURLs={tracksURLs} track={track} setQuery={(query) => setQuery(query)} getTracks={() => handleGetTracks()}/>
-            </>
+            </div>
           )
-        }
+        } else return null
       })
     }
   }

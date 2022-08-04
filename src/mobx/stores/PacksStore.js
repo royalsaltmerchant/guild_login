@@ -32,7 +32,7 @@ export default class PacksStore {
           this.packsLoading = false
         })
         return res
-      } else throw new Error
+      } else throw new Error()
     } catch(err) {
       console.log(err)
       this.packsLoading = false
@@ -50,7 +50,7 @@ export default class PacksStore {
           this.packInfoLoading = false
         })
         return res
-      } else throw new Error
+      } else throw new Error()
     } catch(err) {
       console.log(err)
       this.packInfoLoading = false

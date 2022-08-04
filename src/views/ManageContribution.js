@@ -1,9 +1,8 @@
 import { inject, observer } from 'mobx-react'
 import React, {useEffect, useState} from 'react'
 import { useParams, useHistory } from 'react-router-dom'
-import { Button, Spinner } from 'react-bootstrap'
+import { Button } from 'react-bootstrap'
 import downloadFile from '../utils/presignedDownloadFile'
-import { toJS } from 'mobx'
 import { editContributedAsset as editContributedAssetAPICall, editContribution as editContributionAPICall, editUser as editUserAPICall } from '../config/api'
 import {BsDownload} from 'react-icons/bs'
 import {AiOutlineSound} from 'react-icons/ai'
@@ -17,6 +16,7 @@ const ManageContribution = inject('contributionStore', 'projectsStore', 'entrySt
   
   useEffect(() => {
     getData()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   async function getData() {
@@ -75,7 +75,7 @@ const ManageContribution = inject('contributionStore', 'projectsStore', 'entrySt
       approved_asset_count: approvedAssetCount
     }
     try {
-      const res = await editUserAPICall(params)
+      await editUserAPICall(params)
     } catch(err) {
       console.log(err)
       alert('Failed to send coins')
@@ -101,7 +101,7 @@ const ManageContribution = inject('contributionStore', 'projectsStore', 'entrySt
           setCoinsToGive(coinsToGive + 10)
           setApprovedAssetCount(approvedAssetCount + 1)
         }
-      } else throw new Error
+      } else throw new Error()
     } catch(err) {
       console.log(err)
     }
@@ -137,7 +137,7 @@ const ManageContribution = inject('contributionStore', 'projectsStore', 'entrySt
       const contributedAssets = contributionInfo.contributed_assets.slice().sort((a, b) => a.name.localeCompare(b.name))
       const contributedAssetsMap = contributedAssets.map(asset => {
         return(
-          <div className="py-2 px-2 d-flex flex-row justify-content-between align-items-baseline border rounded" style={{backgroundColor: 'white'}}>
+          <div key={asset.id} className="py-2 px-2 d-flex flex-row justify-content-between align-items-baseline border rounded" style={{backgroundColor: 'white'}}>
             <Button variant="link" onClick={() => handlePlayAudio(asset.uuid)}>{asset.name} <AiOutlineSound /></Button>
             <div className="d-flex flex-row align-items-baseline">
               {renderManageButtonsByStatus(asset)}

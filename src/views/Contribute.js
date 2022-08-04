@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { Spinner, Alert } from 'react-bootstrap'
+import { Spinner } from 'react-bootstrap'
 import {inject, observer} from 'mobx-react'
 import {useHistory, useParams} from 'react-router-dom'
 import {
@@ -13,10 +13,13 @@ const Upload = inject('entryStore', 'userStore', 'projectsStore')(observer((prop
   const history = useHistory()
   const entryParams = useParams()
 
-  useEffect(async () => {
-    await props.entryStore.getEntryInfo(entryParams.entryId)
-    props.projectsStore.getProjectInfo(props.entryStore.entryInfo.project_id)
-    props.userStore.getUserInfo()
+  useEffect(() => {
+    void async function init() {
+      await props.entryStore.getEntryInfo(entryParams.entryId)
+      props.projectsStore.getProjectInfo(props.entryStore.entryInfo.project_id)
+      props.userStore.getUserInfo()
+    }()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   },[])
 
   async function handleComplete(successList) {

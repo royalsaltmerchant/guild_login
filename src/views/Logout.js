@@ -1,5 +1,5 @@
 import { inject, observer } from 'mobx-react'
-import React, { Component, useState } from 'react'
+import React, { useState } from 'react'
 import { useEffect } from 'react'
 import {useHistory} from 'react-router-dom'
 const Logout = inject('userStore')(observer((props) => {
@@ -16,7 +16,8 @@ const Logout = inject('userStore')(observer((props) => {
     } else {
         setLogoutMessage('not logged in')
     }
-  })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
   
     return (
       <div>

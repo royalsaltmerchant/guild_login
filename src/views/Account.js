@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import {inject, observer} from 'mobx-react'
-import {Spinner, Button, Row, Col} from 'react-bootstrap'
+import {Spinner, Button} from 'react-bootstrap'
 import moment from 'moment'
 import {BiCoin} from 'react-icons/bi'
 import {GiRoundStar} from 'react-icons/gi'
@@ -48,7 +48,7 @@ class Account extends Component {
 
     const {projects} = this.props.projectsStore
     const contributionsReverse = contributions.slice().reverse()
-    const contributionsMap = contributionsReverse.map(contribution => {
+    const contributionsMap = contributionsReverse.map((contribution, index) => {
       const date = moment(contribution.date_created).format("MMM Do YYYY")
       const contributionProject = projects.filter(project => project.id === contribution.project_id)
       if(contributionProject.length !== 0) {
@@ -58,7 +58,7 @@ class Account extends Component {
           const entry = contributionProjectEntry[0]
           const contributedAssetsToggleKey = `contributedAsset${contribution.id}Toggle`
           return(
-            <div>
+            <div key={index}>
               <div className="p-3 m-1 border rounded card-style" style={{backgroundColor: 'white'}}>
                 <p>Created: {date}</p>
                 <p>Project: {project.title}</p>
@@ -75,12 +75,12 @@ class Account extends Component {
           )
         } else {
           return(
-            <div className="p-3 m-1 border rounded justify-content-center align-items-center card-style" style={{height: '10vh'}}><p>Project entry removed... </p></div>
+            <div key={index} className="p-3 m-1 border rounded justify-content-center align-items-center card-style" style={{height: '10vh'}}><p>Project entry removed... </p></div>
           )
         }
       } else {
         return(
-          <div className="p-3 m-1 border rounded justify-content-center align-items-center card-style" style={{height: '10vh'}}><p>Project removed... </p></div>
+          <div key={index} className="p-3 m-1 border rounded justify-content-center align-items-center card-style" style={{height: '10vh'}}><p>Project removed... </p></div>
         )
       }
     })

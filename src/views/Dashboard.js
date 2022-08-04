@@ -7,11 +7,14 @@ import downloadFile from '../utils/presignedDownloadFile'
 const Dashboard = inject('userStore', 'projectsStore')(observer((props) => {
   const [projectImageURLs, setProjectImageURLs] = useState()
 
-  useEffect(async () => {
-    await props.projectsStore.getProjects()
-    getProjectImageURLs()
-    props.userStore.getUsersList()
-    props.userStore.getUserInfo()
+  useEffect(() => {
+    void async function init() {
+      await props.projectsStore.getProjects()
+      getProjectImageURLs()
+      props.userStore.getUsersList()
+      props.userStore.getUserInfo()
+    }()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   },[])
 
   async function getProjectImageURLs() {
@@ -121,7 +124,7 @@ const Dashboard = inject('userStore', 'projectsStore')(observer((props) => {
             {renderProjectEntries(project.entries)}
           </div>
         )
-      }
+      } else return null
     }).reverse()
     return projectsMap
   }

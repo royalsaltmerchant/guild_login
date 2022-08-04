@@ -22,11 +22,14 @@ const Profile = inject('userStore')(observer((props) => {
   const [userByUsernameInfo, setUserByUsernameInfo] = useState(null)
   const getTrackLimit = 10
 
-  useEffect(async () => {
-    await props.userStore.getUserInfo()
-    if(props.userStore.userInfo) setAbout(props.userStore.userInfo.about)
-    getUserByUsernameInfo()
-    getTracksByUser()
+  useEffect(() => {
+    void async function init() {
+      await props.userStore.getUserInfo()
+      if(props.userStore.userInfo) setAbout(props.userStore.userInfo.about)
+      getUserByUsernameInfo()
+      getTracksByUser()
+    }()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   },[])
 
   function serializeSearch(type, newParam) {
@@ -149,9 +152,9 @@ const Profile = inject('userStore')(observer((props) => {
     if(tracksData.length !== 0) {
       return tracksData.map(track => {
         return(
-          <>
+          <div key={track.id}>
             <TrackItem tracksURLs={tracksURLs} track={track} setQuery={(query) => setQuery(query)} getTracks={() => getTracksByUser()}/>
-          </>
+          </div>
         )
       })
     }

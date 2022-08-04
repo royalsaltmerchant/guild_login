@@ -18,7 +18,6 @@ import PackDetails from './views/PackDetails';
 import AccessDenied from './views/AccessDenied';
 import NoMatch from './views/NoMatch';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import {Container} from 'react-bootstrap'
 import {authenticate as authenticateAPICall} from './config/api'
 import ForgotPassword from './views/ForgotPassword';
 import ResetPassword from './views/ResetPassword';
@@ -58,7 +57,7 @@ class Root extends React.Component{
               authenticated: true,
               loadingAuth: false
             })
-          } else throw new Error
+          } else throw new Error()
         } catch(err) {
           this.setState({
             authenticated: false,

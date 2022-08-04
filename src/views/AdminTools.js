@@ -119,7 +119,7 @@ class AdminTools extends Component {
             await this.uploadImageFile(imageFile, "project_images")
             this.getProjectImageURLs()
           }
-        } else throw new Error
+        } else throw new Error()
       } catch(err) {
         console.log(err)
       }
@@ -133,7 +133,7 @@ class AdminTools extends Component {
     
     const amount = event.target.form[`entry${entry.id}Amount`].value 
     const title = event.target.form[`entry${entry.id}Title`].value 
-    const description = event.target.form[`entry${entry.id}Description`].value
+    // const description = event.target.form[`entry${entry.id}Description`].value
     const complete = event.target.form[`entry${entry.id}Complete`].checked
 
     const params = {
@@ -156,7 +156,7 @@ class AdminTools extends Component {
         if(res.status === 200) {
           this.setState({[entryEditKey]: false})
           this.props.projectsStore.getProjects()
-        } else throw new Error
+        } else throw new Error()
       } catch(err) {
         console.log(err)
       }
@@ -188,7 +188,7 @@ class AdminTools extends Component {
         if(res.status === 200) {
           this.setState({[userEditKey]: false})
           this.props.userStore.getUsersList()
-        } else throw new Error
+        } else throw new Error()
       } catch(err) {
         console.log(err)
       }
@@ -241,7 +241,7 @@ class AdminTools extends Component {
             await this.uploadImageFile(imageFile, "pack_images")
             this.getPackImageURLs()
           }
-        } else throw new Error
+        } else throw new Error()
       } catch(err) {
         console.log(err)
       }
@@ -270,7 +270,7 @@ class AdminTools extends Component {
         if(res.status === 200) {
           this.setState({[assetTypeEditKey]: false})
           this.props.packsStore.getPacks()
-        } else throw new Error
+        } else throw new Error()
       } catch(err) {
         console.log(err)
       }
@@ -555,7 +555,7 @@ class AdminTools extends Component {
 
   renderPackAssetTypes(assetTypes) {
     const assetTypesMap = assetTypes.map(assetType => {
-      const assetTypeToggleKey = `assetType${assetType.id}Toggle`
+      // const assetTypeToggleKey = `assetType${assetType.id}Toggle`
       const assetTypeEditKey = `assetType${assetType.id}Edit`
       return(
         <div key={assetType.id} className="px-3">
@@ -592,7 +592,7 @@ class AdminTools extends Component {
           <p>Description: {pack.description}</p>
           {this.renderPackImage(pack)}
           <br />
-          <iframe class="video-sm" src={pack.video_file} frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+          <iframe title='pack-vid' className="video-sm" src={pack.video_file} frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen></iframe>
           <p>Coin Cost: {pack.coin_cost}</p>
           <p>Active: {pack.active ? 'true' : 'false'}</p>
           <p>Downloads: {pack.downloads}</p>
@@ -612,7 +612,7 @@ class AdminTools extends Component {
         <Form className="p-3 card-style border rounded">
           <Form.Group controlId={`pack${pack.id}Title`}>
             <Form.Label>Title</Form.Label>
-            <small class="ml-2" style={{color: 'green'}}>Title will auto-capitalize first letter of each word</small>
+            <small className="ml-2" style={{color: 'green'}}>Title will auto-capitalize first letter of each word</small>
             <Form.Control 
               size="md"
               type="text"
@@ -638,7 +638,7 @@ class AdminTools extends Component {
           </Form.Group>
           <Form.Group controlId={`pack${pack.id}Video`}>
             <Form.Label>Video Embed Link</Form.Label>
-            <small class="ml-2" style={{color: 'red'}}>The embed url, not the regular url</small>
+            <small className="ml-2" style={{color: 'red'}}>The embed url, not the regular url</small>
             <Form.Control 
               required
               size="md"
@@ -773,7 +773,7 @@ class AdminTools extends Component {
       const userEditKey = `user${user.id}Edit`
       if(user.active) {
         return(
-          <div className="px-3 py-1 rounded border admin-tools-item">
+          <div key={user.id} className="px-3 py-1 rounded border admin-tools-item">
             <div className="d-flex justify-content-between flex-wrap">
               <Button variant="link" onClick={() => this.handleToggleClick(userToggleKey, userEditKey)}>
                 {`${user.first_name} ${user.last_name} (${user.username}) ${user.email}`} {this.state[userToggleKey] ? "▼" : "▲"}
@@ -785,7 +785,7 @@ class AdminTools extends Component {
             {this.renderUserToggleOrEdit(userToggleKey, userEditKey, user)}
           </div>
         )
-      }
+      } else return null
     })
     return usersMap
   }

@@ -63,7 +63,7 @@ class CreatePack extends Component {
         <Form onSubmit={(event) => this.handleSubmitPack(event)}>
           <Form.Group controlId="packTitle">
             <Form.Label>Title</Form.Label>
-            <small class="ml-2" style={{color: 'green'}}>Title will auto-capitalize first letter of each word</small>
+            <small className="ml-2" style={{color: 'green'}}>Title will auto-capitalize first letter of each word</small>
             <Form.Control 
               required
               size="md"
@@ -84,7 +84,7 @@ class CreatePack extends Component {
 
           <Form.Group controlId="packVideo">
             <Form.Label>Video Embed Link</Form.Label>
-            <small class="ml-2" style={{color: 'red'}}>The embed url, not the regular url</small>
+            <small className="ml-2" style={{color: 'red'}}>The embed url, not the regular url</small>
             <Form.Control 
               required
               size="md"
@@ -116,7 +116,7 @@ class CreatePack extends Component {
 
           <Form.Group controlId="packAudio">
             <Form.Label>Audio Package</Form.Label>
-            <small class="ml-2" style={{color: 'red'}}>Must be a zipped folder!</small>
+            <small className="ml-2" style={{color: 'red'}}>Must be a zipped folder!</small>
             <Form.Control 
               required
               size="md" 

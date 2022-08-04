@@ -5,7 +5,7 @@ import Button from 'react-bootstrap/Button'
 import Alert from 'react-bootstrap/Alert'
 import {registerUser as registerUserAPICall} from '../config/api'
 
-export default function Register(props) {
+export default function Register() {
   const [warningTextUsername, setWarningTextUsername] = useState('')
   const [warningTextPassword, setWarningTextPassword] = useState('')
   const [warningUsernameToggle, setWarningUsernameToggle] = useState(false)

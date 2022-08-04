@@ -78,7 +78,7 @@ export default function Uploader(props) {
   return (
     <div>
       <Prompt
-        when={successList.length != 0 && !props.complete}
+        when={successList.length !== 0 && !props.complete}
         message="If you leave without pressing Complete your uploads will be lost! Are you sure you want to navigate away?"
       />
       <p>Upload SFX</p>

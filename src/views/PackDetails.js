@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import {useParams} from 'react-router-dom'
 import { Image, Button, Spinner } from 'react-bootstrap'
-import {finalConfig as config, awsConfig} from '../config/config'
 import downloadFile from '../utils/presignedDownloadFile'
 import {inject, observer} from 'mobx-react'
 import { BiCoin } from 'react-icons/bi'
@@ -15,12 +14,14 @@ const PackDetails = inject('packsStore', 'userStore')(observer((props) => {
   const [uri, setUri] = useState(null)
   const [packImageURLs, setPackImageURLs] = useState()
 
-  useEffect(async () => {
-    await getPackInfoByName()
-    getPackImageURLs()
-    await props.userStore.getUserInfo()
-    getURLForDownload()
-
+  useEffect(() => {
+    void async function init() {
+      await getPackInfoByName()
+      getPackImageURLs()
+      await props.userStore.getUserInfo()
+      getURLForDownload()  
+    }()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   },[])
 
   async function getPackImageURLs() {
@@ -128,7 +129,7 @@ const PackDetails = inject('packsStore', 'userStore')(observer((props) => {
         <div className="d-flex flex-column">
           {renderPackImage(packInfo)}
           <h3 className="text-center">Audio Demo</h3>
-          <iframe className="video" src={packInfo.video_file} frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen></iframe>
+          <iframe title='pack-vid' className="video" src={packInfo.video_file} frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen></iframe>
         </div>
         <div className="w-50">
           <h1>{packTitle}</h1>

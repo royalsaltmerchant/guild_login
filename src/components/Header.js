@@ -9,6 +9,7 @@ export default class Header extends Component {
         <Media>
           <a href="https://sfaudioguild.com">
           <img
+            alt=''
             src={sfag}
             width={80}
             height={80}

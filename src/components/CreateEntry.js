@@ -1,6 +1,6 @@
 import { inject, observer } from 'mobx-react'
 import React, { Component } from 'react'
-import {Spinner, Button, Form} from 'react-bootstrap'
+import {Button, Form} from 'react-bootstrap'
 import {createEntry as createEntryAPICall} from '../config/api'
 
 class CreateEntry extends Component {

@@ -17,14 +17,13 @@ export default async function uploadAudioFiles(dirName, toUploadFilesList) {
         // hash file name
         const uuid = uuidv4()
         file.uuid = uuid
-        console.log(file.uuid, 'uuid')
         try {
           const preSignedParams = {
             bucket_name: awsConfig.bucketName,
             object_name: `${dirName}/${file.uuid}.wav`,
           }
           const res = await presignedUploadFile(file, preSignedParams)
-          if(res && res.status === 204 || res.status === 200) {
+          if(res && (res.status === 204 || res.status === 200)) {
             console.log('success', file.name)
             successList.push(file)
           } else {

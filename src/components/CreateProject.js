@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import {Spinner, Button, Form} from 'react-bootstrap'
+import {Button, Form} from 'react-bootstrap'
 import {createProject as createProjectAPICall} from '../config/api'
 import {awsConfig} from '../config/config'
 import { inject, observer } from 'mobx-react'
