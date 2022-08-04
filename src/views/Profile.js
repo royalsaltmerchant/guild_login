@@ -24,6 +24,7 @@ const Profile = inject('userStore')(observer((props) => {
 
   useEffect(() => {
     void async function init() {
+      await props.userStore.getUsersList()
       await props.userStore.getUserInfo()
       if(props.userStore.userInfo) setAbout(props.userStore.userInfo.about)
       getUserByUsernameInfo()

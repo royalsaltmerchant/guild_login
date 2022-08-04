@@ -149,13 +149,15 @@ const TrackItem = inject('userStore')(observer((props) => {
   }
 
   const {track, setQuery} = props
+  const {usersList} = props.userStore
+  const authorUsername = usersList.filter((user) => track.author_id === user.id)[0].username
   return (
     <div className='d-flex flex-column  border rounded track-button' style={{backgroundColor: 'white'}} onClick={(e) => handleTrackToggle(e)}>
       <div className="mb-1 py-2 px-2 d-flex flex-row flex-wrap justify-content-between align-items-center" onClick={(e) => handleTrackToggle(e)}>
         <div className='d-flex flex-row flex-wrap ml-2 align-items-center' onClick={(e) => handleTrackToggle(e)}>
           <div className="d-flex flex-row flex-wrap align-items-baseline" style={{width: '450px'}} onClick={(e) => handleTrackToggle(e)}>
             <p style={{fontSize: '20px', margin: 0, padding: 0}}>{track.name}</p>
-            <Button as={Link} variant="link" to={`/profile/${track.author_username}`}>{renderTrackAuthorIsPremium()} {track.author_username}</Button>
+            <Button as={Link} variant="link" to={`/profile/${authorUsername}`}>{renderTrackAuthorIsPremium()} {authorUsername}</Button>
           </div>
           <div className='waveform-div d-flex flex-row border rounded px-1' style={{width: '300px', paddingTop: '6px', backgroundColor: '#fdf0ff'}}>
             <div className="waveform" style={{width: '250px'}}>

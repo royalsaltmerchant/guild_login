@@ -26,7 +26,8 @@ const Library = inject('packsStore', 'userStore')(observer((props) => {
     void async function init() {
       await props.packsStore.getPacks()
       getPackImageURLs()
-      props.userStore.getUserInfo()
+      await props.userStore.getUserInfo()
+      await props.userStore.getUsersList()
       if(view === 'tracks') handleGetTracks()
     }()
     // eslint-disable-next-line react-hooks/exhaustive-deps
