@@ -12,26 +12,23 @@ import {
 const PackDetails = inject('packsStore', 'userStore')(observer((props) => {
   const packNameParams = useParams()
   const [uri, setUri] = useState(null)
-  const [packImageURLs, setPackImageURLs] = useState()
+  const [packImageURL, setPackImageURL] = useState()
 
   useEffect(() => {
     void async function init() {
       await getPackInfoByName()
-      getPackImageURLs()
+      getPackImageURL()
       await props.userStore.getUserInfo()
       getURLForDownload()  
     }()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   },[])
 
-  async function getPackImageURLs() {
-    var packImageURLList = []
-    await Promise.all(props.packsStore.packs.map(async pack => {
-      var newURL = await downloadFile(`pack_images/${pack.image_file}`)
-      packImageURLList.push(newURL)
-    }))
-
-    setPackImageURLs(packImageURLList)
+  async function getPackImageURL() {
+    const {packInfo} = props.packsStore
+    var newURL = await downloadFile(`pack_images/${packInfo.image_file}`)
+    console.log(newURL)
+    setPackImageURL(newURL)
   }
 
   async function getPackInfoByName() {
@@ -103,8 +100,7 @@ const PackDetails = inject('packsStore', 'userStore')(observer((props) => {
   }
 
   function renderPackImage(pack) {
-    if(!packImageURLs) return <Spinner animation="border" role="status" />
-    const packImageURL = packImageURLs.filter(url => url.includes(pack.image_file))
+    if(!packImageURL) return <Spinner animation="border" role="status" />
     return <Image className="pack-img mr-3 mb-5" src={packImageURL} />
   }
 
