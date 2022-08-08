@@ -29,7 +29,7 @@ class Account extends Component {
     const contributedAssetMap = contributedAssets.map(asset => {
       return(
         <div className="px-3">
-          <p>{asset.name}</p>
+          <p style={{display: 'flex'}}><p class="pr-2">{asset.name}</p>{asset.status === 'approved' ? <p style={{color: 'green'}}>✓</p> : null}</p>
         </div>
       )
     })
