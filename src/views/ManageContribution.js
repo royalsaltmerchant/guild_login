@@ -22,19 +22,19 @@ const ManageContribution = inject('contributionStore', 'projectsStore', 'entrySt
   async function getData() {
     const contributionId = params.id
     // get contribution data
-    const contributionInfoRes = await props.contributionStore.getContributionInfo(contributionId)
+    await props.contributionStore.getContributionInfo(contributionId)
     // get project title
-    const projectInfoRes = await props.projectsStore.getProjectInfo(contributionInfoRes.data.project_id)
-    const projectTitle = projectInfoRes.data.title
+    await props.projectsStore.getProjectInfo(props.contributionStore.contributionInfo.project_id)
+    const projectTitle = props.projectsStore.projectInfo.title
     // get entry title
-    const entryInfoRes = await props.entryStore.getEntryInfo(contributionInfoRes.data.entry_id)
-    const entryTitle = entryInfoRes.data.title
+    await props.entryStore.getEntryInfo(props.contributionStore.contributionInfo.entry_id)
+    const entryTitle = props.entryStore.entryInfo.title
     // get user username
-    const userInfoRes = await props.userStore.getUserInfo(contributionInfoRes.data.user_id)
-    const userName = `${userInfoRes.data.first_name}_${userInfoRes.data.last_name}`
+    await props.userStore.getUserInfo(props.contributionStore.contributionInfo.user_id)
+    const userName = `${props.userStore.userInfo.first_name}_${props.userStore.userInfo.last_name}`
     // get urls for contributed assets
     const contributedAssetsURLs = []
-    const contributedAssets = contributionInfoRes.data.contributed_assets
+    const contributedAssets = props.contributionStore.contributionInfo.contributed_assets
     await Promise.all(
       contributedAssets.map(async asset => {
         const assetName = asset.name
