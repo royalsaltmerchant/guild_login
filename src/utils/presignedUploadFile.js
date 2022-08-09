@@ -4,13 +4,11 @@ export default async function presignedUploadFile(file, preSignedParams) {
   try {
     const res = await getPresignedURLForUpload(preSignedParams)
     if(res.status === 200) {
-      const presignedData = res.data.fields
       const formData  = new FormData()
 
-      formData.append('key', presignedData.key)
-      formData.append('AWSAccessKeyId', presignedData.AWSAccessKeyId)
-      formData.append('policy', presignedData.policy)
-      formData.append('signature', presignedData.signature)
+      for(const field in res.data.fields) {
+        formData.append(field, res.data[field])
+      }
       formData.append('file', file)
 
       try {

@@ -174,10 +174,10 @@ class AdminTools extends Component {
     const params = {
       user_id: userId
     }
-    if(approvedAssetCount !== '' && approvedAssetCount !== ' ') {
+    if(approvedAssetCount !== 0) {
       params.approved_asset_count = approvedAssetCount
     }
-    if(coins !== '' && coins !== ' ') {
+    if(coins !== 0) {
       params.coins = coins
     }
     const paramsSize = Object.keys(params).length
@@ -730,19 +730,19 @@ class AdminTools extends Component {
       return(
         <Form className="p-3 card-style border rounded">
           <Form.Group controlId={`user${user.id}ApprovedAssetCount`}>
-            <Form.Label>Approved Asset Count</Form.Label>
+            <Form.Label>Approved Asset Count + {user.approved_asset_count} <small>(Current Amount)</small></Form.Label>
             <Form.Control 
               size="md"
               type="number"
-              placeholder={user.approved_asset_count}
+              placeholder={0}
             />
           </Form.Group>
           <Form.Group controlId={`user${user.id}Coins`}>
-            <Form.Label>Coins</Form.Label>
+            <Form.Label>Coins + {user.coins} <small>(Current Amount)</small></Form.Label>
             <Form.Control 
               size="md"
               type="number"
-              placeholder={user.coins}
+              placeholder={0}
             />
           </Form.Group>
           <div className="d-flex justify-content-around">

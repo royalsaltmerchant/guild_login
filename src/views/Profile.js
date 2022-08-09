@@ -148,7 +148,7 @@ const Profile = inject('userStore')(observer((props) => {
       return <Spinner animation="border" role="status" />
     }
     if(!loadingTracks && tracksData.length === 0) {
-      return <p>Can't find any tracks</p>
+      return null
     }
     if(tracksData.length !== 0) {
       return tracksData.map(track => {
