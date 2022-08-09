@@ -102,7 +102,7 @@ const TrackItem = inject('userStore')(observer((props) => {
   }
 
   function renderAddTag(track) {
-    if(props.userStore.userInfo && track.author_id === props.userStore.userInfo.id && track.audio_metadata.length < 20) {
+    if(props.userStore.userInfo && track.author_id === props.userStore.userInfo.id && track.metadata.length < 20) {
       if(tagBoolean) {
         return(
           <Form className="form-inline" onSubmit={e => handleAddTag(e, track)}>
@@ -201,7 +201,7 @@ const TrackItem = inject('userStore')(observer((props) => {
           <div className="d-flex flex-row align-items-baseline" onClick={(e) => handleTrackToggle(e)}>
             <div className='m-3 d-flex flex-row'>
               <p className='p-0 m-0'>Searchable Tags:</p>
-              {track.audio_metadata && track.audio_metadata.length !== 0 ? track.audio_metadata.map(metatag =>
+              {track.metadata && track.metadata.length !== 0 ? track.metadata.map(metatag =>
                 renderTags(track, metatag)
                 ) : "No Tags"}
                 {renderAddTag(track)}
