@@ -51,7 +51,7 @@ app.get('*', (req, res) => {
 
 
 //Run
-var PORT = 4000
+var PORT = 6000
 app.listen({port: PORT}, async () => {
   console.log(`Server Running at http://localhost:${PORT}`)
 })
