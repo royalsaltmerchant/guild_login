@@ -1,8 +1,10 @@
 const AWS = require('aws-sdk');
 
 AWS.config.update({
+  signatureVersion: 'v4',
   accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-  secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY
+  secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+  region: 'us-west-1'
 });
 
 const s3 = new AWS.S3();
@@ -29,12 +31,10 @@ async function getSignedUrlForDownload(req, res, next) {
 async function getSignedUrlForUpload(req, res, next) {
   const params = {
     Bucket: req.body.bucket_name,
-    Key: req.body.object_name,
-    Expires: 60 * 10,
-    Conditions: [
-      ['content-length-range', 0, 30000000], // 30 Mb
-      {'acl': 'public-read'}
-    ]
+    Fields: {
+        key: req.body.object_name
+    },
+    Expires: 60 * 10
   };
 
   try {

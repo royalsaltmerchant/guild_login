@@ -6,9 +6,9 @@ export default async function presignedUploadFile(file, preSignedParams) {
     if(res.status === 200) {
       const formData  = new FormData()
 
-      for(const field in res.data.fields) {
-        formData.append(field, res.data[field])
-      }
+      Object.keys(res.data.fields).forEach((key) => {
+        formData.append(key, res.data.fields[key]);
+      });
       formData.append('file', file)
 
       try {
