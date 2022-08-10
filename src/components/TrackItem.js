@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import {BiCoin} from 'react-icons/bi'
 import {BsDownload} from 'react-icons/bs'
 import Waveform from "react-audio-waveform"
@@ -13,7 +13,13 @@ import { editTrackAsset as editTrackAssetAPICall, editUser as editUserAPICall, r
 const TrackItem = inject('userStore')(observer((props) => {
   const [trackToggle, setTrackToggle] = useState(false)
   const [tagBoolean, setTagBoolean] = useState(false)
+  const [metadata, setMetadata] = useState([])
   const DEFAULT_COIN_COST = 10
+
+  useEffect(() => {
+    console.log(props.track)
+    setMetadata(props.track.metadata)
+  }, [])
 
   function handlePlayAudio(trackUUID) {
     const {tracksURLs} = props
@@ -71,21 +77,22 @@ const TrackItem = inject('userStore')(observer((props) => {
     }
     try {
       await editTrackAssetAPICall(params)
-      props.getTracks()
+      setMetadata([...metadata, tag])
     } catch(err) {
       console.log(err)
     }
   }
 
-  async function handleRemoveTag(e, track, metatag) {
+  async function handleRemoveTag(e, track, tag) {
     e.preventDefault()
     const params = {
       track_id: track.id,
-      remove_tag: metatag
+      remove_tag: tag
     }
     try {
       await editTrackAssetAPICall(params)
-      props.getTracks()
+      const newMetadata = metadata.filter(oldTag => oldTag !== tag)
+      setMetadata(newMetadata)
     } catch(err) {
       console.log(err)
     }
@@ -102,7 +109,7 @@ const TrackItem = inject('userStore')(observer((props) => {
   }
 
   function renderAddTag(track) {
-    if(props.userStore.userInfo && track.author_id === props.userStore.userInfo.id && track.metadata.length < 20) {
+    if(props.userStore.userInfo && track.author_id === props.userStore.userInfo.id && metadata.length < 20) {
       if(tagBoolean) {
         return(
           <Form className="form-inline" onSubmit={e => handleAddTag(e, track)}>
@@ -201,9 +208,9 @@ const TrackItem = inject('userStore')(observer((props) => {
           <div className="d-flex flex-row align-items-baseline" onClick={(e) => handleTrackToggle(e)}>
             <div className='m-3 d-flex flex-row'>
               <p className='p-0 m-0'>Searchable Tags:</p>
-              {track.metadata && track.metadata.length !== 0 ? track.metadata.map(metatag =>
+              {track.metadata && metadata.length !== 0 ? metadata.map(metatag =>
                 renderTags(track, metatag)
-                ) : "No Tags"}
+                ) : "-- No Tags --"}
                 {renderAddTag(track)}
             </div>
           </div>

@@ -410,7 +410,7 @@ class AdminTools extends Component {
   }
 
   renderProjectImage(project) {
-    if(!this.state.projectImageURLs) return <Spinner animation="border" role="status" />
+    if(!this.state.projectImageURLs) return null
     const projectImageURL = this.state.projectImageURLs.filter(url => url.includes(project.image_file))
     return <Image className="small-img" src={projectImageURL} rounded />
   }
@@ -498,7 +498,7 @@ class AdminTools extends Component {
 
   renderProjects() {
     if(this.props.projectsStore.projectsLoading) {
-      return <Spinner animation="border" role="status" />
+      return null
     }
     if(!this.props.projectsStore.projects) {
       return <p>Can't get projects!</p>
@@ -573,7 +573,7 @@ class AdminTools extends Component {
   }
 
   renderPackImage(pack) {
-    if(!this.state.packImageURLs) return <Spinner animation="border" role="status" />
+    if(!this.state.packImageURLs) return null
     const packImageURL = this.state.packImageURLs.filter(url => url.includes(pack.image_file))
     return <Image className="small-img" src={packImageURL} rounded />
   }
@@ -682,7 +682,7 @@ class AdminTools extends Component {
 
   renderPacks() {
     if(this.props.packsStore.packsLoading) {
-      return <Spinner animation="border" role="status" />
+      return null
     }
 
     if(!this.props.packsStore.packs) {
@@ -762,7 +762,7 @@ class AdminTools extends Component {
 
   renderUsersList() {
     if(this.props.userStore.usersListLoading) {
-      return <Spinner animation="border" role="status" />
+      return null
     }
     if(!this.props.userStore.usersList) {
       return <p>Can't get users list!</p>
@@ -800,6 +800,7 @@ class AdminTools extends Component {
   }
 
   render() {
+    if(this.props.projectsStore.projectsLoading || this.props.packsStore.packsLoading || this.props.userStore.usersListLoading) return <Spinner animation="border" role="status" />
     return (
       <div>
         <p style={{fontSize:"20px"}}>Create</p>
@@ -817,13 +818,10 @@ class AdminTools extends Component {
           </Button>
           {this.state.uploadTrackBoolean ? <UploadTrack authorId={this.props.userStore.userInfo.id} uploadTrackBoolean={value => this.setState({uploadTrackBoolean: value})}/> : null}
         </div>
-        <hr className='mt-1'/>
         <p style={{fontSize:"20px"}}>Projects</p>
         {this.renderProjects()}
-        <hr className='mt-1'/>
         <p style={{fontSize:"20px"}}>Packs</p>
         {this.renderPacks()}
-        <hr className='mt-1'/>
         <p style={{fontSize:"20px"}}>Users</p>
         {this.renderUsersList()}
       </div>

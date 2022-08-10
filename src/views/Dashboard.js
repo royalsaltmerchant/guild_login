@@ -91,7 +91,7 @@ const Dashboard = inject('userStore', 'projectsStore')(observer((props) => {
   }
 
   function renderProjectImage(project) {
-    if(!projectImageURLs) return <Spinner animation="border" role="status" />
+    if(!projectImageURLs) return null
     const projectImageURL = projectImageURLs.filter(url => url.includes(project.image_file))
     return <Image className="small-img pr-3" src={projectImageURL} rounded />
   }
