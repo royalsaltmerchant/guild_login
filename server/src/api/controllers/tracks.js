@@ -102,6 +102,11 @@ async function getTrackAssets(req, res, next) {
     // offset function
     const arrOffset = (arr, offset) => [...arr.slice(offset), ...arr.slice(0, offset)]
 
+    // sort alphabetically if not filtering by popular
+    if(!req.body.filter || req.body.filter !== "popular") {
+      tracks.sort((a, b) => a.name.localeCompare(b.name, 'en', {numeric: true}))
+    }
+
     const results = {
       tracks: arrOffset(tracks, req.body.limit + req.body.offset),
       track_count: tracks.length,
