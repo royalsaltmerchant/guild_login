@@ -72,45 +72,66 @@ async function getTrackAssets(req, res, next) {
     if(req.body.filter) {
       if(req.body.filter === "popular") {
         if(req.body.query) {
-          const trackData = await getTrackAssetsByDownloadsAndKeywordQuery({keyword: req.body.query, username: req.params.username})
+          const trackData = await getTrackAssetsByDownloadsAndKeywordQuery({
+            keyword: req.body.query, 
+            username: req.params.username,
+            limit: req.body.limit,
+            offset: req.body.offset
+          })
           tracks.push(...trackData.rows)
         } else {
-          const trackData = await getTrackAssetsByDownloadsQuery({username: req.params.username})
+          const trackData = await getTrackAssetsByDownloadsQuery({
+            username: req.params.username,
+            limit: req.body.limit,
+            offset: req.body.offset
+          })
           tracks.push(...trackData.rows)
         }
       } else {
         if(req.body.query) {
-          const trackData = await getTrackAssetsByDoubleKeywordQuery({keyword1: req.body.filter, keyword2: req.body.query, username: req.params.username})
+          const trackData = await getTrackAssetsByDoubleKeywordQuery({
+            keyword1: req.body.filter, 
+            keyword2: req.body.query, 
+            username: req.params.username,
+            limit: req.body.limit,
+            offset: req.body.offset
+          })
           tracks.push(...trackData.rows)
         } else {
-          const trackData = await getTrackAssetsByKeywordQuery({keyword: req.body.filter, username: req.params.username})
+          const trackData = await getTrackAssetsByKeywordQuery({
+            keyword: req.body.filter, 
+            username: req.params.username,
+            limit: req.body.limit,
+            offset: req.body.offset
+          })
           tracks.push(...trackData.rows)
         }
       }
     }
 
     if(!req.body.filter && req.body.query) {
-      const trackData = await getTrackAssetsByKeywordQuery({keyword: req.body.query, username: req.params.username})
+      const trackData = await getTrackAssetsByKeywordQuery({
+        keyword: req.body.query, 
+        username: req.params.username,
+        limit: req.body.limit,
+        offset: req.body.offset
+      })
       tracks.push(...trackData.rows)
     }
 
     if(!req.body.filter && !req.body.query) {
-      const trackData = await getAllTrackAssetsQuery({username: req.params.username})
+      const trackData = await getAllTrackAssetsQuery({
+        username: req.params.username,
+        limit: req.body.limit,
+        offset: req.body.offset
+      })
       tracks.push(...trackData.rows)
     }
 
-    // offset function
-    const arrOffset = (arr, offset) => [...arr.slice(offset), ...arr.slice(0, offset)]
-
-    // sort alphabetically if not filtering by popular
-    if(!req.body.filter || req.body.filter !== "popular") {
-      tracks.sort((a, b) => a.name.localeCompare(b.name, 'en', {numeric: true}))
-    }
-
     const results = {
-      tracks: arrOffset(tracks, req.body.limit + req.body.offset),
+      tracks: tracks,
       track_count: tracks.length,
-      remaining_amount: tracks.length - (req.body.offset + req.body.limit),
+      // remaining_amount: tracks.length - (req.body.offset + req.body.limit),
       offset: req.body.offset,
       amount: req.body.limit
     }

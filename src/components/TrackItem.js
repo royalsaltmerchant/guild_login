@@ -17,7 +17,6 @@ const TrackItem = inject('userStore')(observer((props) => {
   const DEFAULT_COIN_COST = 10
 
   useEffect(() => {
-    console.log(props.track)
     setMetadata(props.track.metadata)
   }, [])
 

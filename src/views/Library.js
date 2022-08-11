@@ -14,12 +14,12 @@ import SearchBar from '../components/SearchBar'
 
 const Library = inject('packsStore', 'userStore')(observer((props) => {
   const history = useHistory()
+  const searchParams = new URLSearchParams(history.location.search)
   const [view, setView] = useState('tracks')
   const [tracksData, setTracksData] = useState([])
   const [loadingTracks, setLoadingTracks] = useState(false)
   const [tracksURLs, setTracksURLs] = useState([])
   const [trackCount, setTrackCount] = useState(0)
-  const getTrackLimit = 10
   const [packImageURLs, setPackImageURLs] = useState()
   
   useEffect(() => {
@@ -28,7 +28,9 @@ const Library = inject('packsStore', 'userStore')(observer((props) => {
       getPackImageURLs()
       await props.userStore.getUserInfo()
       await props.userStore.getUsersList()
-      if(view === 'tracks') handleGetTracks()
+      if(view === 'tracks') {
+        handleGetTracks()
+      }
     }()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   },[])
@@ -43,71 +45,82 @@ const Library = inject('packsStore', 'userStore')(observer((props) => {
     setPackImageURLs(packImageURLList)
   }
 
-  function serializeSearch(type, newParam) {
-    const params = new URLSearchParams({})
+  function updateSearchParams(type, newParam) {
+    searchParams.set(type, newParam)
 
-    if(type === 'query' && newParam !== '') {
-      params.append('query', newParam)
-      const filter = getFilter()
-      if(filter) params.append("filter", filter)
-    } 
-    else if(type === 'filter') {
-      if(newParam !== null) params.append('filter', newParam)
-      const query = getQuery()
-      if(query !== '') params.append('query', query)
-    }
-    else if(type === 'offset') {
-      const filter = getFilter()
-      if(filter) params.append("filter", filter)
-      const query = getQuery()
-      if(query !== '') params.append('query', query)
-      if(newParam !== 0) params.append('offset', newParam)
-    }
-
-    const paramsAsString = params.toString()
+    const stringParams = searchParams.toString()
     history.push({
       pathname: '/library',
-      search: paramsAsString
+      search: stringParams
+    })
+  }
+
+  function removeSearchParam(type) {
+    searchParams.delete(type)
+
+    const stringParams = searchParams.toString()
+    history.push({
+      pathname: '/library',
+      search: stringParams
     })
   }
   
   function setQuery(query) {
-    serializeSearch('query', query)
+    if(query) {
+      updateSearchParams('query', query)
+    } else removeSearchParam('query')
+
     handleGetTracks()
   }
 
   function getQuery() {
-    const {query} = new Proxy(new URLSearchParams(history.location.search), {
-      get: (searchParams, prop) => searchParams.get(prop),
-    });  
+    const query = searchParams.get('query')
     if(query) {
       return query
-    } else return ''
+    } else return null
   }
 
-  function setOffset(offset) {
-    serializeSearch('offset', offset)
+  function setTrackLimit(limit) {
+    // reset offset
+    removeSearchParam('offset')
+    // set or remove limit
+    if(limit) {
+      updateSearchParams('limit', limit)
+    } else removeSearchParam('limit')
     handleGetTracks()
   }
 
+  function getTrackLimit() {
+    const limit = searchParams.get('limit')
+    if(limit) {
+      return limit
+    } else return 30
+  }
+
+  function setOffset(offset) {
+    if(offset) {
+      updateSearchParams('offset', offset)
+    } else removeSearchParam('offset')
+    handleGetTracks()
+  }
+
+
   function getOffset() {
-    const {offset} = new Proxy(new URLSearchParams(history.location.search), {
-      get: (searchParams, prop) => searchParams.get(prop),
-    });  
+    const offset = searchParams.get('offset')
     if(offset) {
       return offset
     } else return 0
   }
 
   function setFilter(filter) {
-    serializeSearch('filter', filter)
+    if(filter) {
+      updateSearchParams('filter', filter)
+    } else removeSearchParam('filter')
     handleGetTracks()
   }
 
   function getFilter() {
-    const {filter} = new Proxy(new URLSearchParams(history.location.search), {
-      get: (searchParams, prop) => searchParams.get(prop),
-    });  
+    const filter = searchParams.get('filter')
     if(filter) {
       return filter
     } else return null
@@ -173,12 +186,14 @@ const Library = inject('packsStore', 'userStore')(observer((props) => {
 
   function handleGetNextTracks() {
     var offsetInt = parseInt(getOffset())
-    setOffset(offsetInt + getTrackLimit)
+    var limitInt = parseInt(getTrackLimit())
+    setOffset(offsetInt + limitInt)
   }
 
   function handleGetPreviousTracks() {
     var offsetInt = parseInt(getOffset())
-    setOffset(offsetInt - getTrackLimit)
+    var limitInt = parseInt(getTrackLimit())
+    setOffset(offsetInt - limitInt)
   }
   
   function renderPaginationButtons() {
@@ -186,34 +201,48 @@ const Library = inject('packsStore', 'userStore')(observer((props) => {
       <div className='py-3 text-center align-items-center'>
         <div className="d-flex flex-row justify-content-between">
           <Button disabled={parseInt(getOffset()) === 0} variant='link' onClick={() => handleGetPreviousTracks()}>Previous</Button>
-          <Button disabled={(parseInt(getOffset()) + getTrackLimit) >= trackCount} variant='link' onClick={() => handleGetNextTracks()}>Next</Button>
+          <Button disabled={trackCount < parseInt(getTrackLimit())} variant='link' onClick={() => handleGetNextTracks()}>Next</Button>
         </div>
       </div>
     )
   }
 
-  function renderFilterName() {
-    if(getFilter()) {
-      return getFilter()
-    } else return "Filter"
-  }
-
   function renderSelectFilter() {
     return(
-      <Dropdown>
+      <Dropdown onSelect={(e) => {setFilter(e) }}>
         <Dropdown.Toggle
           variant="outline-secondary"
         >
-          {renderFilterName()}
+          {getFilter() ? getFilter() : 'Filter'}
         </Dropdown.Toggle>
 
         <Dropdown.Menu>
-          <Dropdown.Item onClick={() => setFilter(null)}>None</Dropdown.Item>
-          <Dropdown.Item onClick={() => setFilter('popular')}>popular</Dropdown.Item>
-          <Dropdown.Item onClick={() => setFilter('weapons')}>weapons</Dropdown.Item>
-          <Dropdown.Item onClick={() => setFilter('magic')}>magic</Dropdown.Item>
-          <Dropdown.Item onClick={() => setFilter('creatures')}>creatures</Dropdown.Item>
-          <Dropdown.Item onClick={() => setFilter('foley')}>foley</Dropdown.Item>
+          <Dropdown.Item eventKey={null}>None</Dropdown.Item>
+          <Dropdown.Item eventKey="popular">popular</Dropdown.Item>
+          <Dropdown.Item eventKey="weapons">weapons</Dropdown.Item>
+          <Dropdown.Item eventKey="magic">magic</Dropdown.Item>
+          <Dropdown.Item eventKey="creatures">creatures</Dropdown.Item>
+          <Dropdown.Item eventKey="foley">foley</Dropdown.Item>
+        </Dropdown.Menu>
+      </Dropdown>
+    )
+  }
+
+  function renderSelectTrackLimit() {
+    return(
+      <Dropdown onSelect={(e) => {setTrackLimit(e) }}>
+        <Dropdown.Toggle
+          variant="outline-secondary"
+        >
+          {getTrackLimit()}
+        </Dropdown.Toggle>
+
+        <Dropdown.Menu>
+          <Dropdown.Item eventKey="5">5</Dropdown.Item>
+          <Dropdown.Item eventKey="10">10</Dropdown.Item>
+          <Dropdown.Item eventKey="20">20</Dropdown.Item>
+          <Dropdown.Item eventKey="30">30</Dropdown.Item>
+          <Dropdown.Item eventKey="50">50</Dropdown.Item>
         </Dropdown.Menu>
       </Dropdown>
     )
@@ -239,14 +268,14 @@ const Library = inject('packsStore', 'userStore')(observer((props) => {
             <div className='d-flex flex-row align-items-baseline'>
               {renderSelectFilter()}  
               {
-                getQuery() !== '' ?
+                getQuery() ?
                 <div className='ml-2 d-flex flex-row align-items-baseline'>
                   <p>{`+ ${getQuery()}`}</p>
-                  <Button variant="link" onClick={() => setQuery('')}>Remove</Button>
+                  <Button variant="link" onClick={() => setQuery(null)}>Remove</Button>
                 </div> : null
               }
             </div>
-            <p>Results: {trackCount}</p>
+            {renderSelectTrackLimit()}
           </div>
           {renderTracksList()}
           {renderPaginationButtons()}
@@ -259,9 +288,9 @@ const Library = inject('packsStore', 'userStore')(observer((props) => {
     setLoadingTracks(true)
     const params = {
       offset: parseInt(getOffset()),
-      limit: getTrackLimit
+      limit: parseInt(getTrackLimit()) ? parseInt(getTrackLimit()) : 30
     }
-    if(getQuery() !== '') {
+    if(getQuery()) {
       params.query = getQuery()
     }
     if(getFilter()) {
@@ -283,7 +312,7 @@ const Library = inject('packsStore', 'userStore')(observer((props) => {
         setTracksURLs(newTracksURLs)
         setTracksData(res.data.tracks)
         setLoadingTracks(false)
-        setTrackCount(res.data.track_count)
+        setTrackCount(parseInt(res.data.track_count))
       } else throw new Error()
     } catch(err) {
       setLoadingTracks(false)

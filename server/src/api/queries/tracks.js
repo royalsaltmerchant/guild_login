@@ -32,74 +32,91 @@ async function addTrackAssetQuery(data) {
   return await db.query(query)
 }
 
-async function getTrackAssetsByKeywordQuery({keyword, username}) {
-  const query = {
-    text: /*sql*/ `select * from public."track_asset" where (position($1 in lower(name))>0 or $1=any(metadata))`,
-    values: [keyword],
+async function getTrackAssetsByKeywordQuery({keyword, username, limit, offset}) {
+  let query = {
+    text: /*sql*/ `select * from public."track_asset" where position($1 in lower(name))>0 or $1=any(metadata) order by name COLLATE "numeric" limit $2 offset $3`,
+    values: [keyword, limit, offset],
   }
   if(username) {
+    // by author id
     const userData = await getUserByUsernameQuery(username)
     const user = userData.rows[0]
-    query.values.push(user.id)
-    query.text += ` and (author_id = $2)`
+    query = {
+      text: /*sql*/ `select * from public."track_asset" where (position($1 in lower(name))>0 or $1=any(metadata)) and (author_id = $2) order by name COLLATE "numeric" limit $3 offset $4`,
+      values: [keyword, user.id, limit, offset],
+    }
   }
   return await db.query(query)
 }
 
-async function getTrackAssetsByDoubleKeywordQuery({keyword1, keyword2, username}) {
-  const query = {
-    text: /*sql*/ `select * from public."track_asset" where (position($1 in lower(name))>0 or $1=any(metadata)) and (position($2 in lower(name))>0 or $2=any(metadata))`,
-    values: [keyword1, keyword2]
+async function getTrackAssetsByDoubleKeywordQuery({keyword1, keyword2, username, limit, offset}) {
+  let query = {
+    text: /*sql*/ `select * from public."track_asset" where (position($1 in lower(name))>0 or $1=any(metadata)) and (position($2 in lower(name))>0 or $2=any(metadata)) order by name COLLATE "numeric" limit $3 offset $4`,
+    values: [keyword1, keyword2, limit, offset]
   }
   if(username) {
+    // by author id
     const userData = await getUserByUsernameQuery(username)
     const user = userData.rows[0]
-    query.values.push(user.id)
-    query.text += ` and (author_id = $3)`
+    query = {
+      text: /*sql*/ `select * from public."track_asset" where ((position($1 in lower(name))>0 or $1=any(metadata)) and (position($2 in lower(name))>0 or $2=any(metadata))) and (author_id = $3) order by name COLLATE "numeric" limit $4 offset $5`,
+      values: [keyword1, keyword2, user.id, limit, offset]
+    }
   }
   return await db.query(query)
 }
 
-async function getTrackAssetsByDownloadsQuery({username}) {
-  const query = {
-    text: /*sql*/ `select * from public."track_asset"`,
+async function getTrackAssetsByDownloadsQuery({username, limit, offset}) {
+  let query = {
+    text: /*sql*/ `select * from public."track_asset" order by downloads desc limit $1 offset $2`,
+    values: [limit, offset]
   }
   if(username) {
+    // by author id
     const userData = await getUserByUsernameQuery(username)
     const user = userData.rows[0]
-    query.values.push(user.id)
-    query.text += ` where (author_id = $2)`
+    query = {
+      text: /*sql*/ `select * from public."track_asset" where (author_id = $1) order by downloads desc limit $2 offset $3`,
+      values: [user.id, limit, offset]
+    }
   }
-  query.text += ` order by downloads desc limit 10`
+
   return await db.query(query)
 }
 
-async function getTrackAssetsByDownloadsAndKeywordQuery({keyword, username}) {
-  const query = {
-    text: /*sql*/ `select * from public."track_asset" where (position($1 in lower(name))>0 or $1=any(metadata))`,
-    values: [keyword]
+async function getTrackAssetsByDownloadsAndKeywordQuery({keyword, username, limit, offset}) {
+  let query = {
+    text: /*sql*/ `select * from public."track_asset" where position($1 in lower(name))>0 or $1=any(metadata) order by downloads desc limit $2 offset $3`,
+    values: [keyword, limit, offset]
   }
   if(username) {
+    // by author id
     const userData = await getUserByUsernameQuery(username)
     const user = userData.rows[0]
-    query.values.push(user.id)
-    query.text += ` and (author_id = $2)`
-  }
-  query.text += ` order by downloads desc limit 10`
+    query = {
+      text: /*sql*/ `select * from public."track_asset" where (position($1 in lower(name))>0 or $1=any(metadata)) and (author_id = $2) order by downloads desc limit $3 offset $4`,
+      values: [keyword, user.id, limit, offset]
+    }
+  } 
+
   return await db.query(query)
 }
 
-async function getAllTrackAssetsQuery({username}) {
-  const query = {
-    text: /*sql*/ `select * from public."track_asset"`,
-    values: []
+async function getAllTrackAssetsQuery({username, limit, offset}) {
+  let query = {
+    text: /*sql*/ `select * from public."track_asset" order by name COLLATE "numeric" limit $1 offset $2`,
+    values: [limit, offset]
   }
   if(username) {
+    // by author id
     const userData = await getUserByUsernameQuery(username)
     const user = userData.rows[0]
-    query.values.push(user.id)
-    query.text += ` where (author_id = $1)`
+    query = {
+      text: /*sql*/ `select * from public."track_asset" where (author_id = $1) order by name COLLATE "numeric" limit $2 offset $3`,
+      values: [user.id, limit, offset]
+    }
   }
+
   return await db.query(query)
 }
 
