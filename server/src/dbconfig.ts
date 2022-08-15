@@ -1,4 +1,4 @@
-var { Pool } = require("pg")
+import { Pool } from "pg"
 
 var credentials = {
   user: process.env.AUDIOGUILD_POSTGRES_USER,
@@ -11,11 +11,11 @@ var credentials = {
 var pool = new Pool(credentials)
 
 module.exports = {
-  async query(text, params) {
+  async query(queryString: string) {
     const start = Date.now()
-    const res = await pool.query(text, params)
+    const res = await pool.query(queryString)
     const duration = Date.now() - start
-    console.log('executed query', { text, duration, rows: res.rowCount })
+    console.log('executed query', { queryString, duration, rows: res.rowCount })
     return res
   },
 }
