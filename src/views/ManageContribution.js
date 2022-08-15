@@ -40,7 +40,7 @@ const ManageContribution = inject('contributionStore', 'projectsStore', 'entrySt
         const assetName = asset.name
         const assetUUID = asset.uuid
         const objectName = `submissions/${projectTitle}/${entryTitle}/${userName}/${assetUUID}.wav`
-        const presignedURL = await downloadFile(objectName)
+        const presignedURL = await downloadFile({objectName, downloadName: assetName})
         contributedAssetsURLs.push({name: assetName, uuid: assetUUID, url: presignedURL})
       })
     )

@@ -38,7 +38,7 @@ const Library = inject('packsStore', 'userStore')(observer((props) => {
   async function getPackImageURLs() {
     var packImageURLList = []
     await Promise.all(props.packsStore.packs.map(async pack => {
-      var newURL = await downloadFile(`pack_images/${pack.image_file}`)
+      var newURL = await downloadFile({objectName:`pack_images/${pack.image_file}`})
       packImageURLList.push(newURL)
     }))
 
@@ -305,7 +305,7 @@ const Library = inject('packsStore', 'userStore')(observer((props) => {
             const assetName = asset.name
             const assetUUID = asset.uuid
             const objectName = `tracks/${assetUUID}.wav`
-            const presignedURL = await downloadFile(objectName)
+            const presignedURL = await downloadFile({objectName, downloadName: assetName})
             newTracksURLs.push({uuid: assetUUID, name: assetName, url: presignedURL})
           })
         )

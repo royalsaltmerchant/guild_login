@@ -18,6 +18,7 @@ const TrackItem = inject('userStore')(observer((props) => {
 
   useEffect(() => {
     setMetadata(props.track.metadata)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   function handlePlayAudio(trackUUID) {
@@ -28,8 +29,7 @@ const TrackItem = inject('userStore')(observer((props) => {
   }
 
   async function handleDownload(track) {
-    const {tracksURLs, userStore} = props
-    const assetURL = tracksURLs.filter(URL => URL.uuid === track.uuid)[0]
+    const {userStore} = props
     const newCurrentUserCoinsAmount = -Math.abs(DEFAULT_COIN_COST)
     const newAuthorUserCoinsAmount = DEFAULT_COIN_COST
     const newDownloadsAmount = track.downloads + 1
@@ -45,13 +45,6 @@ const TrackItem = inject('userStore')(observer((props) => {
       track_id: track.id,
       downloads: newDownloadsAmount
     }
-
-    // download
-    const link = document.createElement("a")
-    link.href = assetURL.url
-    link.download = assetURL.name
-    link.target = "_blank"
-    link.click()
 
     // edit user and track
     if(props.userStore.userInfo && track.author_id !== props.userStore.userInfo.id) {
@@ -148,15 +141,24 @@ const TrackItem = inject('userStore')(observer((props) => {
   }
 
   function handleTrackToggle(e) {
-    e.preventDefault()
     if(e.target === e.currentTarget) {
+      e.preventDefault()
       setTrackToggle(!trackToggle)
     }
   }
 
-  const {track, setQuery} = props
+  function getTrackDownloadDisabled(track) {
+    if(track.author_id === props.userStore.userInfo.id) {
+      return true
+    } else if(props.userStore.userInfo.coins < DEFAULT_COIN_COST) {
+      return false
+    } else return true
+  }
+
+  const {track, setQuery, tracksURLs} = props
   const {usersList} = props.userStore
   const authorUsername = usersList.filter((user) => track.author_id === user.id)[0].username
+  const assetURL = tracksURLs.filter(URL => URL.uuid === track.uuid)[0]
   return (
     <div className='d-flex flex-column  border rounded track-button' style={{backgroundColor: 'white'}} onClick={(e) => handleTrackToggle(e)}>
       <div className="mb-1 py-2 px-2 d-flex flex-row flex-wrap justify-content-between align-items-center" onClick={(e) => handleTrackToggle(e)}>
@@ -187,9 +189,19 @@ const TrackItem = inject('userStore')(observer((props) => {
             {props.userStore.userInfo && track.author_id === props.userStore.userInfo.id ? null : <p style={{fontSize: '15px', color: 'green'}}>{DEFAULT_COIN_COST}</p>}
             {
               props.userStore.userInfo ?
-              <div className='d-flex flex-row'>
-                <Button title="Download" disabled={props.userStore.userInfo.coins < DEFAULT_COIN_COST} variant="link-secondary" style={{fontSize: '30px', paddingRight: 0, paddingTop: 0}} onClick={() => handleDownload(track)}><BsDownload /></Button>
-              </div>
+              <Button
+                id="download"
+                className='d-flex flex-row'
+                title="Download" 
+                disabled={getTrackDownloadDisabled(track)}
+                variant="link-secondary" 
+                style={{fontSize: '30px', 
+                  paddingRight: 0, 
+                  paddingTop: 0
+                }} 
+                onClick={() => handleDownload(track)}>
+                  <a style={{color:'inherit'}} download={assetURL.name} href={assetURL.url}><BsDownload/></a>
+              </Button>
               : null
             }
             {renderRemove(track)}

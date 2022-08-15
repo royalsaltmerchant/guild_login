@@ -26,7 +26,7 @@ const PackDetails = inject('packsStore', 'userStore')(observer((props) => {
 
   async function getPackImageURL() {
     const {packInfo} = props.packsStore
-    var newURL = await downloadFile(`pack_images/${packInfo.image_file}`)
+    var newURL = await downloadFile({objectName:`pack_images/${packInfo.image_file}`})
     console.log(newURL)
     setPackImageURL(newURL)
   }
@@ -62,7 +62,7 @@ const PackDetails = inject('packsStore', 'userStore')(observer((props) => {
     const objectName = `packs/${packName}/${packName}.zip`
 
     try {
-      const downloadLink = await downloadFile(objectName)
+      const downloadLink = await downloadFile({objectName})
       if(downloadLink) {
         setUri(downloadLink)
         return true
@@ -85,7 +85,7 @@ const PackDetails = inject('packsStore', 'userStore')(observer((props) => {
       <div className="d-flex flex-column justify-content-center align-items-center">
         <p>Cost:</p>
         <h4>{packInfo.coin_cost} <BiCoin className="align-self-center" style={{fontSize: '25px', color: 'orange'}} /></h4>
-        {props.userStore.userInfo.coins < packInfo.coin_cost || !uri ? null : <Button  onClick={() => handleDownloadClick(packInfo)}><a style={{color: 'white', textDecoration: 'none'}} href={uri}>Download</a></Button>}
+        {props.userStore.userInfo.coins < packInfo.coin_cost || !uri ? null : <Button  onClick={() => handleDownloadClick(packInfo)}><a style={{color: 'white', textDecoration: 'none'}} href={uri} download={packInfo.title}>Download</a></Button>}
       </div>
     )
   }

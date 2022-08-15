@@ -103,7 +103,7 @@ const Profile = inject('userStore')(observer((props) => {
             const assetName = asset.name
             const assetUUID = asset.uuid
             const objectName = `tracks/${assetUUID}.wav`
-            const presignedURL = await downloadFile(objectName)
+            const presignedURL = await downloadFile({objectName, downloadName: assetName})
             newTracksURLs.push({uuid: assetUUID, name: assetName, url: presignedURL})
           })
         )

@@ -20,7 +20,7 @@ const Dashboard = inject('userStore', 'projectsStore')(observer((props) => {
   async function getProjectImageURLs() {
     var projectImageURLList = []
     await Promise.all(props.projectsStore.projects.map(async project => {
-      var newURL = await downloadFile(`project_images/${project.image_file}`)
+      var newURL = await downloadFile({objectName:`project_images/${project.image_file}`})
       projectImageURLList.push(newURL)
     }))
     setProjectImageURLs(projectImageURLList)

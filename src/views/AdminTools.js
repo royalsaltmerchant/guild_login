@@ -59,7 +59,7 @@ class AdminTools extends Component {
   async getProjectImageURLs() {
     var projectImageURLList = []
     await Promise.all(this.props.projectsStore.projects.map(async project => {
-      var newURL = await downloadFile(`project_images/${project.image_file}`)
+      var newURL = await downloadFile({objectName: `project_images/${project.image_file}`})
       projectImageURLList.push(newURL)
     }))
     this.setState({
@@ -70,7 +70,7 @@ class AdminTools extends Component {
   async getPackImageURLs() {
     var packImageURLList = []
     await Promise.all(this.props.packsStore.packs.map(async pack => {
-      var newURL = await downloadFile(`pack_images/${pack.image_file}`)
+      var newURL = await downloadFile({objectName:`pack_images/${pack.image_file}`})
       packImageURLList.push(newURL)
     }))
     this.setState({
