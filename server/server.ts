@@ -1,16 +1,15 @@
-
-const dotenv = require('dotenv')
+import dotenv from 'dotenv'
 dotenv.config()
-const path = require('path');
-const express = require('express')
-const cors = require("cors")
-const users = require('./src/api/routes/users')
-const projects = require('./src/api/routes/projects')
-const packs = require('./src/api/routes/packs')
-const entries = require('./src/api/routes/entries')
-const contributions = require('./src/api/routes/contributions')
-const tracks = require('./src/api/routes/tracks')
-const s3 = require('./src/api/routes/s3')
+import path from 'path'
+import express, { Request, Response, NextFunction } from 'express'
+import cors from "cors"
+import users from './src/api/routes/users'
+import projects from './src/api/routes/projects'
+import packs from './src/api/routes/packs'
+import entries from './src/api/routes/entries'
+import contributions from './src/api/routes/contributions'
+import tracks from './src/api/routes/tracks'
+import s3 from './src/api/routes/s3'
 
 var app = express()
 
@@ -33,7 +32,7 @@ app.use('/api', tracks)
 app.use('/api', s3)
 
 //Error
-app.use((error, req, res, next) => {
+app.use((error: {status: number, message: string}, req:Request, res:Response, next:NextFunction) => {
   console.error(error)
   res.status(error.status || 500)
   res.json({

@@ -10,4 +10,4 @@ router.post('/signed_URL_download', getSignedUrlForDownload)
 router.post('/signed_URL_upload', getSignedUrlForUpload)
 
 
-module.exports = router
+export default router

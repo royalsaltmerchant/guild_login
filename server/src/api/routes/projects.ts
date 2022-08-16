@@ -15,4 +15,4 @@ router.post('/add_project', addProject)
 router.post('/edit_project', editProject)
 router.post('/remove_project', removeProject)
 
-module.exports = router
+export default router

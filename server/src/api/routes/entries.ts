@@ -13,4 +13,4 @@ router.post('/remove_entry', removeEntry)
 router.post('/add_entry', addEntry)
 router.post('/edit_entry', editEntry)
 
-module.exports = router
+export default router
