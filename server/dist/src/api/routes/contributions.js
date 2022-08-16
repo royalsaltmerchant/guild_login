@@ -1,4 +1,5 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 const express = require('express');
 const { 
 // getAllContributions,
@@ -10,4 +11,4 @@ router.post('/add_contribution', addContribution);
 router.post('/edit_contribution', editContribution);
 router.post('/add_contributed_asset', addContributedAsset);
 router.post('/edit_contributed_asset', editContributedAsset);
-module.exports = router;
+exports.default = router;

@@ -1,6 +1,7 @@
 const db = require('../../dbconfig')
+import {User} from '../../types/dbTypes'
 
-async function getUserByIdQuery(id) {
+async function getUserByIdQuery(id: number): Promise<User[]> {
   const query = {
     text: /*sql*/ `select * from public."user" where id = $1`,
     values: [id],
@@ -8,14 +9,14 @@ async function getUserByIdQuery(id) {
   return await db.query(query)
 }
 
-async function getAllUsersQuery() {
+async function getAllUsersQuery(): Promise<User[]> {
   const query = {
     text: /*sql*/ `select * from public."user"`,
   }
   return await db.query(query)
 }
 
-async function getUserByUsernameQuery(username) {
+async function getUserByUsernameQuery(username: string): Promise<User[]> {
   const query = {
     text: /*sql*/ `select * from public."user" where username = $1`,
     values: [username],
@@ -23,7 +24,7 @@ async function getUserByUsernameQuery(username) {
   return await db.query(query)
 }
 
-async function getUserByEmailQuery(email) {
+async function getUserByEmailQuery(email: string): Promise<User[]> {
   const query = {
     text: /*sql*/ `select * from public."user" where email = $1`,
     values: [email],
@@ -31,7 +32,7 @@ async function getUserByEmailQuery(email) {
   return await db.query(query)
 }
 
-async function registerUserQuery({username, email, first_name, last_name, password}) {
+async function registerUserQuery({username, email, first_name, last_name, password}: {username: string, email: string, first_name: string, last_name: string, password: string}): Promise<User[]> {
   const query = {
     text: /*sql*/ `
       insert into public."user" (
@@ -55,7 +56,7 @@ async function registerUserQuery({username, email, first_name, last_name, passwo
   return await db.query(query)
 }
 
-async function editUserQuery(data) {
+async function editUserQuery(data: any): Promise<User[]> {
   const id = data.user_id
   let edits = ``
   let values = []
@@ -80,7 +81,7 @@ async function editUserQuery(data) {
   return await db.query(query)
 }
 
-async function editUserPasswordQuery(id, password) {
+async function editUserPasswordQuery(id: number, password: string): Promise<User[]> {
   const query = {
     text: /*sql*/ `update public."user" set password = $2 where id = $1 returning *`,
     values: [id, password]
@@ -89,7 +90,7 @@ async function editUserPasswordQuery(id, password) {
   return await db.query(query)
 }
 
-module.exports = {
+export {
   getAllUsersQuery,
   getUserByIdQuery,
   getUserByUsernameQuery,

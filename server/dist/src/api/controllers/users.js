@@ -8,6 +8,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.requestResetEmail = exports.resetPassword = exports.editUser = exports.verifyJwt = exports.loginUser = exports.registerUser = exports.getUserByUsername = exports.getUserById = exports.getAllUsers = exports.getUserByToken = void 0;
 const bcrypt = require("bcrypt");
 const jwt = require('jsonwebtoken');
 const mail = require('../smtp/index');
@@ -47,7 +49,7 @@ function getUserByToken(req, res, next) {
                 const contributionData = yield getContributionsByUserIdQuery(userData.rows[0].id);
                 const contributedAssetData = yield getAllContributedAssetsQuery();
                 for (var contribution of contributionData.rows) {
-                    contribution.contributed_assets = contributedAssetData.rows.filter(asset => asset.contribution_id === contribution.id);
+                    contribution.contributed_assets = contributedAssetData.rows.filter((asset) => asset.contribution_id === contribution.id);
                 }
                 const data = userData.rows[0];
                 data.contributions = contributionData.rows;
@@ -61,14 +63,15 @@ function getUserByToken(req, res, next) {
         }
     });
 }
+exports.getUserByToken = getUserByToken;
 function getAllUsers(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             const usersData = yield getAllUsersQuery();
             const contributionsData = yield getAllContributionsQuery();
             const data = [];
-            usersData.rows.forEach(user => {
-                user.contributions = contributionsData.rows.filter(contribution => contribution.user_id === user.id);
+            usersData.rows.forEach((user) => {
+                user.contributions = contributionsData.rows.filter((contribution) => contribution.user_id === user.id);
                 data.push(user);
             });
             res.send(data);
@@ -78,6 +81,7 @@ function getAllUsers(req, res, next) {
         }
     });
 }
+exports.getAllUsers = getAllUsers;
 function getUserById(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
@@ -92,6 +96,7 @@ function getUserById(req, res, next) {
         }
     });
 }
+exports.getUserById = getUserById;
 function getUserByUsername(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
@@ -106,6 +111,7 @@ function getUserByUsername(req, res, next) {
         }
     });
 }
+exports.getUserByUsername = getUserByUsername;
 function registerUser(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
@@ -128,6 +134,7 @@ function registerUser(req, res, next) {
         }
     });
 }
+exports.registerUser = registerUser;
 function loginUser(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
@@ -162,6 +169,7 @@ function loginUser(req, res, next) {
         }
     });
 }
+exports.loginUser = loginUser;
 function verifyJwt(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
@@ -180,6 +188,7 @@ function verifyJwt(req, res, next) {
         }
     });
 }
+exports.verifyJwt = verifyJwt;
 function editUser(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
@@ -201,6 +210,7 @@ function editUser(req, res, next) {
         }
     });
 }
+exports.editUser = editUser;
 function resetPassword(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
@@ -222,6 +232,7 @@ function resetPassword(req, res, next) {
         }
     });
 }
+exports.resetPassword = resetPassword;
 function requestResetEmail(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
@@ -240,15 +251,4 @@ function requestResetEmail(req, res, next) {
         }
     });
 }
-module.exports = {
-    getUserByToken,
-    getAllUsers,
-    getUserById,
-    getUserByUsername,
-    registerUser,
-    loginUser,
-    verifyJwt,
-    editUser,
-    resetPassword,
-    requestResetEmail
-};
+exports.requestResetEmail = requestResetEmail;

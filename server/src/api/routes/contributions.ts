@@ -17,4 +17,4 @@ router.post('/edit_contribution', editContribution)
 router.post('/add_contributed_asset', addContributedAsset)
 router.post('/edit_contributed_asset', editContributedAsset)
 
-module.exports = router
+export default router

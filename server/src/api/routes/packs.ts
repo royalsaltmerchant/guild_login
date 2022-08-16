@@ -21,4 +21,4 @@ router.post('/add_asset_type', addAssetType)
 router.post('/edit_asset_type', editAssetType)
 router.post('/remove_asset_type', removeAssetType)
 
-module.exports = router
+export default router

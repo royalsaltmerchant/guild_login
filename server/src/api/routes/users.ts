@@ -25,4 +25,4 @@ router.post('/edit_user', editUser)
 router.post('/reset_password', resetPassword)
 router.post('/request_reset_email', requestResetEmail)
 
-module.exports = router
+export default router

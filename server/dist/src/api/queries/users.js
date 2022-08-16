@@ -8,6 +8,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.editUserPasswordQuery = exports.editUserQuery = exports.registerUserQuery = exports.getUserByEmailQuery = exports.getUserByUsernameQuery = exports.getUserByIdQuery = exports.getAllUsersQuery = void 0;
 const db = require('../../dbconfig');
 function getUserByIdQuery(id) {
     return __awaiter(this, void 0, void 0, function* () {
@@ -18,6 +20,7 @@ function getUserByIdQuery(id) {
         return yield db.query(query);
     });
 }
+exports.getUserByIdQuery = getUserByIdQuery;
 function getAllUsersQuery() {
     return __awaiter(this, void 0, void 0, function* () {
         const query = {
@@ -26,6 +29,7 @@ function getAllUsersQuery() {
         return yield db.query(query);
     });
 }
+exports.getAllUsersQuery = getAllUsersQuery;
 function getUserByUsernameQuery(username) {
     return __awaiter(this, void 0, void 0, function* () {
         const query = {
@@ -35,6 +39,7 @@ function getUserByUsernameQuery(username) {
         return yield db.query(query);
     });
 }
+exports.getUserByUsernameQuery = getUserByUsernameQuery;
 function getUserByEmailQuery(email) {
     return __awaiter(this, void 0, void 0, function* () {
         const query = {
@@ -44,6 +49,7 @@ function getUserByEmailQuery(email) {
         return yield db.query(query);
     });
 }
+exports.getUserByEmailQuery = getUserByEmailQuery;
 function registerUserQuery({ username, email, first_name, last_name, password }) {
     return __awaiter(this, void 0, void 0, function* () {
         const query = {
@@ -68,6 +74,7 @@ function registerUserQuery({ username, email, first_name, last_name, password })
         return yield db.query(query);
     });
 }
+exports.registerUserQuery = registerUserQuery;
 function editUserQuery(data) {
     return __awaiter(this, void 0, void 0, function* () {
         const id = data.user_id;
@@ -90,6 +97,7 @@ function editUserQuery(data) {
         return yield db.query(query);
     });
 }
+exports.editUserQuery = editUserQuery;
 function editUserPasswordQuery(id, password) {
     return __awaiter(this, void 0, void 0, function* () {
         const query = {
@@ -99,12 +107,4 @@ function editUserPasswordQuery(id, password) {
         return yield db.query(query);
     });
 }
-module.exports = {
-    getAllUsersQuery,
-    getUserByIdQuery,
-    getUserByUsernameQuery,
-    getUserByEmailQuery,
-    registerUserQuery,
-    editUserQuery,
-    editUserPasswordQuery
-};
+exports.editUserPasswordQuery = editUserPasswordQuery;

@@ -1,3 +1,5 @@
+import { Request, Response, NextFunction } from 'express'
+import {User, Contribution, ContributedAsset} from '../../types/dbTypes'
 const bcrypt = require("bcrypt")
 const jwt = require('jsonwebtoken');
 const mail = require('../smtp/index')
@@ -18,11 +20,11 @@ const {
   getAllContributedAssetsQuery
 } = require('../queries/contributedAssets')
 
-function generateAccessToken(id, expires) {
+function generateAccessToken(id: number, expires: string): string {
   return jwt.sign({id}, process.env.SECRET_KEY, { expiresIn: expires });
 }
 
-function sendResetEmail(user, token) {
+function sendResetEmail(user: User, token: string) {
   mail.sendMessage({
     user: user,
     title: "Reset Password",
@@ -30,8 +32,8 @@ function sendResetEmail(user, token) {
   })
 }
 
-async function verifyUserByToken(token) {
-  return jwt.verify(token, process.env.SECRET_KEY, async (err, user) => {
+async function verifyUserByToken(token: string): Promise<{rows: User[]}> {
+  return jwt.verify(token, process.env.SECRET_KEY, async (err: any, user: User) => {
     if(err) return null
 
     const userData = await getUserByIdQuery(user.id)
@@ -42,9 +44,9 @@ async function verifyUserByToken(token) {
   })
 }
 
-async function getUserByToken(req, res, next) {
+async function getUserByToken(req:Request, res:Response, next:NextFunction) {
   try {
-    const token = req.headers['x-access-token'] ? req.headers['x-access-token'].split(' ')[1] : null
+    const token = req.headers['x-access-token'] ? (req.headers['x-access-token'] as string).split(' ')[1] : null
     if(token) {
       const userData = await verifyUserByToken(token)
 
@@ -55,7 +57,7 @@ async function getUserByToken(req, res, next) {
       const contributedAssetData = await getAllContributedAssetsQuery()
 
       for(var contribution of contributionData.rows) {
-        contribution.contributed_assets = contributedAssetData.rows.filter(asset => asset.contribution_id === contribution.id)
+        contribution.contributed_assets = contributedAssetData.rows.filter((asset: ContributedAsset) => asset.contribution_id === contribution.id)
       }
 
       const data = userData.rows[0]
@@ -68,15 +70,15 @@ async function getUserByToken(req, res, next) {
   }
 }
 
-async function getAllUsers(req, res, next) {
+async function getAllUsers(req:Request, res:Response, next:NextFunction) {
   try {
     const usersData = await getAllUsersQuery()
 
     const contributionsData = await getAllContributionsQuery()
 
-    const data = []
-    usersData.rows.forEach(user => {
-      user.contributions = contributionsData.rows.filter(contribution => contribution.user_id === user.id)
+    const data: Array<User> = []
+    usersData.rows.forEach((user: User) => {
+      user.contributions = contributionsData.rows.filter((contribution: Contribution) => contribution.user_id === user.id)
       data.push(user)
     })
 
@@ -86,7 +88,7 @@ async function getAllUsers(req, res, next) {
   }
 }
 
-async function getUserById(req, res, next) {
+async function getUserById(req:Request, res:Response, next:NextFunction) {
   try {
     const userData = await getUserByIdQuery(req.body.id)
 
@@ -101,7 +103,7 @@ async function getUserById(req, res, next) {
   }
 }
 
-async function getUserByUsername(req, res, next) {
+async function getUserByUsername(req:Request, res:Response, next:NextFunction) {
   try {
     const userData = await getUserByUsernameQuery(req.body.username)
 
@@ -116,7 +118,7 @@ async function getUserByUsername(req, res, next) {
   }
 }
 
-async function registerUser(req, res, next) {
+async function registerUser(req:Request, res:Response, next:NextFunction) {
   try {
     const {username, email, first_name, last_name, password} = req.body
     // hash password
@@ -138,7 +140,7 @@ async function registerUser(req, res, next) {
   }
 }
 
-async function loginUser(req, res, next) {
+async function loginUser(req:Request, res:Response, next:NextFunction) {
   try {
     const username = req.body.username_or_email
     const email = req.body.username_or_email.toLowerCase()
@@ -170,9 +172,9 @@ async function loginUser(req, res, next) {
   }
 }
 
-async function verifyJwt(req, res, next) {
+async function verifyJwt(req:Request, res:Response, next:NextFunction) {
   try {
-    const token = req.headers['x-access-token'] ? req.headers['x-access-token'].split(' ')[1] : null
+    const token = req.headers['x-access-token'] ? (req.headers['x-access-token'] as string).split(' ')[1] : null
     if(token) {
       const userData = verifyUserByToken(token)
 
@@ -185,7 +187,7 @@ async function verifyJwt(req, res, next) {
   }
 }
 
-async function editUser(req, res, next) {
+async function editUser(req:Request, res:Response, next:NextFunction) {
   try {
     if(req.body.coins) {
       const userData = await getUserByIdQuery(req.body.user_id)
@@ -205,7 +207,7 @@ async function editUser(req, res, next) {
   }
 }
 
-async function resetPassword(req, res, next) {
+async function resetPassword(req:Request, res:Response, next:NextFunction) {
   try {
     const token = req.body.token
     const password = req.body.password
@@ -224,7 +226,7 @@ async function resetPassword(req, res, next) {
   }
 }
 
-async function requestResetEmail(req, res, next) {
+async function requestResetEmail(req:Request, res:Response, next:NextFunction) {
   try {
     const userData = await getUserByEmailQuery(req.body.email.toLowerCase())
 
@@ -243,7 +245,7 @@ async function requestResetEmail(req, res, next) {
   }
 }
 
-module.exports = {
+export {
   getUserByToken,
   getAllUsers,
   getUserById,

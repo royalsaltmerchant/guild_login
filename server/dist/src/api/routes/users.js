@@ -1,4 +1,5 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 const express = require('express');
 const { getUserByToken, getAllUsers, getUserById, getUserByUsername, registerUser, loginUser, verifyJwt, editUser, resetPassword, requestResetEmail } = require('../controllers/users');
 var router = express.Router();
@@ -12,4 +13,4 @@ router.get('/verify_jwt', verifyJwt);
 router.post('/edit_user', editUser);
 router.post('/reset_password', resetPassword);
 router.post('/request_reset_email', requestResetEmail);
-module.exports = router;
+exports.default = router;
