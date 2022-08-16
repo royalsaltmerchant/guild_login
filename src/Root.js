@@ -24,7 +24,6 @@ import ResetPassword from './views/ResetPassword';
 import ManageContribution from './views/ManageContribution';
 import AdminTools from './views/AdminTools';
 import {BiHide, BiShow} from 'react-icons/bi';
-import Profile from './views/Profile';
 import Upgrade from './views/Upgrade';
 import Coins from './views/Coins';
 import RegisterContributor from './views/RegisterContributor';
@@ -141,7 +140,7 @@ class Root extends React.Component{
               <Account/>
             </Route>
             <Route path="/profile/:username">
-              <Profile/>
+              <Library profile/>
             </Route>
             <Route path="/Dashboard">
               <Dashboard /> 

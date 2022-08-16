@@ -1,182 +1,74 @@
 import React, { useEffect, useState } from 'react'
-import { Image } from 'react-bootstrap'
 import { inject, observer } from 'mobx-react'
 import { useHistory } from 'react-router'
+import { useParams } from 'react-router-dom'
+import { 
+  getTrackAssets, 
+  getTrackAssetsByUsername, 
+  getUserByUsername 
+} from '../config/api'
+import downloadFile from '../utils/presignedDownloadFile'
+import TrackItem from '../components/TrackItem'
+import SearchBar from '../components/SearchBar'
+import Packs from '../components/Packs'
+import EditSingleItem from '../components/EditSingleItem'
 import {
   Spinner,
   Button,
   Dropdown
 } from 'react-bootstrap'
-import { getTrackAssets } from '../config/api'
-import downloadFile from '../utils/presignedDownloadFile'
-import TrackItem from '../components/TrackItem'
-import SearchBar from '../components/SearchBar'
+import {
+  setQuery,
+  getQuery,
+  setTrackLimit,
+  getTrackLimit,
+  setOffset,
+  getOffset,
+  setFilter,
+  getFilter
+} from '../utils/searchParams'
 
-const Library = inject('packsStore', 'userStore')(observer((props) => {
+const Library = inject('userStore')(observer((props) => {
   const history = useHistory()
-  const searchParams = new URLSearchParams(history.location.search)
+  const pageParams = useParams()
   const [view, setView] = useState('tracks')
   const [tracksData, setTracksData] = useState([])
   const [loadingTracks, setLoadingTracks] = useState(false)
   const [tracksURLs, setTracksURLs] = useState([])
   const [trackCount, setTrackCount] = useState(0)
-  const [packImageURLs, setPackImageURLs] = useState()
+  const [aboutToggle, setAboutToggle] = useState(false)
+  const [about, setAbout] = useState()
+  const [userByUsernameInfo, setUserByUsernameInfo] = useState(null)
   
   useEffect(() => {
     void async function init() {
-      await props.packsStore.getPacks()
-      getPackImageURLs()
       await props.userStore.getUserInfo()
       await props.userStore.getUsersList()
-      if(view === 'tracks') {
+      if(!props.profile && view === 'tracks') {
+        handleGetTracks()
+      }
+      if(props.profile) {
+        if(props.userStore.userInfo) setAbout(props.userStore.userInfo.about)
+        getUserByUsernameInfo()
         handleGetTracks()
       }
     }()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  },[])
-
-  async function getPackImageURLs() {
-    var packImageURLList = []
-    await Promise.all(props.packsStore.packs.map(async pack => {
-      var newURL = await downloadFile({objectName:`pack_images/${pack.image_file}`})
-      packImageURLList.push(newURL)
-    }))
-
-    setPackImageURLs(packImageURLList)
-  }
-
-  function updateSearchParams(type, newParam) {
-    searchParams.set(type, newParam)
-
-    const stringParams = searchParams.toString()
-    history.push({
-      pathname: '/library',
-      search: stringParams
-    })
-  }
-
-  function removeSearchParam(type) {
-    searchParams.delete(type)
-
-    const stringParams = searchParams.toString()
-    history.push({
-      pathname: '/library',
-      search: stringParams
-    })
-  }
-  
-  function setQuery(query) {
-    if(query) {
-      updateSearchParams('query', query)
-    } else removeSearchParam('query')
-
-    handleGetTracks()
-  }
-
-  function getQuery() {
-    const query = searchParams.get('query')
-    if(query) {
-      return query
-    } else return null
-  }
-
-  function setTrackLimit(limit) {
-    // reset offset
-    removeSearchParam('offset')
-    // set or remove limit
-    if(limit) {
-      updateSearchParams('limit', limit)
-    } else removeSearchParam('limit')
-    handleGetTracks()
-  }
-
-  function getTrackLimit() {
-    const limit = searchParams.get('limit')
-    if(limit) {
-      return limit
-    } else return 30
-  }
-
-  function setOffset(offset) {
-    if(offset) {
-      updateSearchParams('offset', offset)
-    } else removeSearchParam('offset')
-    handleGetTracks()
-  }
-
-
-  function getOffset() {
-    const offset = searchParams.get('offset')
-    if(offset) {
-      return offset
-    } else return 0
-  }
-
-  function setFilter(filter) {
-    if(filter) {
-      updateSearchParams('filter', filter)
-    } else removeSearchParam('filter')
-    handleGetTracks()
-  }
-
-  function getFilter() {
-    const filter = searchParams.get('filter')
-    if(filter) {
-      return filter
-    } else return null
-  }
-
-  function renderPackImage(pack) {
-    if(!packImageURLs) return <Spinner animation="border" role="status" />
-    const packImageURL = packImageURLs.filter(url => url.includes(pack.image_file))
-    return <Image className="pack-img" src={packImageURL} />
-  }
-
-  function renderSFXPacks() {
-    const {packs, packsLoading} = props.packsStore
-    
-    if(packsLoading) {
-      return <Spinner animation="border" role="status" />
-    }
-
-    if(!packs) {
-      return(
-        <p>Can't get packs!</p>
-      )
-    }
-    else {
-      const packMap = packs.map(pack => {
-        const editedPackTitle = pack.title.replaceAll(' ', '-').toLowerCase()
-        
-        if(pack.active) {
-          return(
-            <div key={pack.id} className="img-div p-3">
-              {renderPackImage(pack)}
-              <button className="di-btn" onClick={() => history.push(`/pack/${editedPackTitle}`)}>
-                Info
-              </button>
-            </div>
-          )   
-        } else return null
-      })
-      return packMap
-    }
-  }
-
+  },[props.profile])
   
   function renderTracksList() {
     if(loadingTracks) {
       return <Spinner animation="border" role="status" />
     }
     if(!loadingTracks && tracksData.length === 0) {
-      return null
+      return <p>No tracks</p>
     }
     if(tracksData.length !== 0) {
       return tracksData.map(track => {
         if(track.active === true) {
           return(
             <div key={track.id}>
-              <TrackItem tracksURLs={tracksURLs} track={track} setQuery={(query) => setQuery(query)} getTracks={() => handleGetTracks()}/>
+              <TrackItem tracksURLs={tracksURLs} track={track} setQuery={(query) => setQuery(query, history, handleGetTracks)} getTracks={() => handleGetTracks()}/>
             </div>
           )
         } else return null
@@ -185,23 +77,23 @@ const Library = inject('packsStore', 'userStore')(observer((props) => {
   }
 
   function handleGetNextTracks() {
-    var offsetInt = parseInt(getOffset())
-    var limitInt = parseInt(getTrackLimit())
-    setOffset(offsetInt + limitInt)
+    var offsetInt = parseInt(getOffset(history))
+    var limitInt = parseInt(getTrackLimit(history))
+    setOffset(offsetInt + limitInt, history, handleGetTracks)
   }
 
   function handleGetPreviousTracks() {
-    var offsetInt = parseInt(getOffset())
-    var limitInt = parseInt(getTrackLimit())
-    setOffset(offsetInt - limitInt)
+    var offsetInt = parseInt(getOffset(history))
+    var limitInt = parseInt(getTrackLimit(history))
+    setOffset(offsetInt - limitInt, history, handleGetTracks)
   }
   
   function renderPaginationButtons() {
     return(
       <div className='py-3 text-center align-items-center'>
         <div className="d-flex flex-row justify-content-between">
-          <Button disabled={parseInt(getOffset()) === 0} variant='link' onClick={() => handleGetPreviousTracks()}>Previous</Button>
-          <Button disabled={trackCount < parseInt(getTrackLimit())} variant='link' onClick={() => handleGetNextTracks()}>Next</Button>
+          <Button disabled={parseInt(getOffset(history)) === 0} variant='link' onClick={() => handleGetPreviousTracks()}>Previous</Button>
+          <Button disabled={trackCount < parseInt(getTrackLimit(history))} variant='link' onClick={() => handleGetNextTracks()}>Next</Button>
         </div>
       </div>
     )
@@ -209,11 +101,11 @@ const Library = inject('packsStore', 'userStore')(observer((props) => {
 
   function renderSelectFilter() {
     return(
-      <Dropdown onSelect={(e) => {setFilter(e) }}>
+      <Dropdown onSelect={(e) => {setFilter(e, history, handleGetTracks) }}>
         <Dropdown.Toggle
           variant="outline-secondary"
         >
-          {getFilter() ? getFilter() : 'Filter'}
+          {getFilter(history) ? getFilter(history) : 'Filter'}
         </Dropdown.Toggle>
 
         <Dropdown.Menu>
@@ -230,11 +122,11 @@ const Library = inject('packsStore', 'userStore')(observer((props) => {
 
   function renderSelectTrackLimit() {
     return(
-      <Dropdown onSelect={(e) => {setTrackLimit(e) }}>
+      <Dropdown onSelect={(e) => {setTrackLimit(e, history, handleGetTracks) }}>
         <Dropdown.Toggle
           variant="outline-secondary"
         >
-          {getTrackLimit()}
+          {getTrackLimit(history)}
         </Dropdown.Toggle>
 
         <Dropdown.Menu>
@@ -250,15 +142,7 @@ const Library = inject('packsStore', 'userStore')(observer((props) => {
 
   function renderPacksOrTracksView() {
     if(view === 'packs') {
-      return(
-        <div>
-          <h4 className="pt-3">Packs</h4>
-          <hr className='mt-1'/>
-          <div className="d-flex flex-row">
-            {renderSFXPacks()}
-          </div>
-        </div>
-      )
+      return <Packs />
     } else {
       return(
         <div>
@@ -268,10 +152,10 @@ const Library = inject('packsStore', 'userStore')(observer((props) => {
             <div className='d-flex flex-row align-items-baseline'>
               {renderSelectFilter()}  
               {
-                getQuery() ?
+                getQuery(history) ?
                 <div className='ml-2 d-flex flex-row align-items-baseline'>
-                  <p>{`+ ${getQuery()}`}</p>
-                  <Button variant="link" onClick={() => setQuery(null)}>Remove</Button>
+                  <p>{`+ ${getQuery(history)}`}</p>
+                  <Button variant="link" onClick={() => setQuery(null, history, handleGetTracks)}>Remove</Button>
                 </div> : null
               }
             </div>
@@ -284,20 +168,48 @@ const Library = inject('packsStore', 'userStore')(observer((props) => {
     }
   }
 
+  async function getUserByUsernameInfo() {
+    const res = await getUserByUsername(pageParams.username)
+    setUserByUsernameInfo(res.data)
+  }
+
+  function handleEditAbout({params}) {
+    params.user_id = props.userStore.userInfo.id
+    props.userStore.editUserInfo(params)
+    setAboutToggle(false)
+  }
+
+  function renderAbout() {
+    const {userInfo} = props.userStore
+    if(userInfo && userInfo.username === pageParams.username) {
+      return(
+        <p className='pl-3' style={{fontSize: '20px'}}>"{props.userStore.userInfo.about}"</p>
+      )
+    }
+    else if(userByUsernameInfo) {
+      return(
+        <p className='pl-3' style={{fontSize: '20px'}}>"{userByUsernameInfo.about}"</p>
+      )
+    }
+  }
+
   async function handleGetTracks() {
     setLoadingTracks(true)
     const params = {
-      offset: parseInt(getOffset()),
-      limit: parseInt(getTrackLimit()) ? parseInt(getTrackLimit()) : 30
+      offset: parseInt(getOffset(history)),
+      limit: parseInt(getTrackLimit(history)) ? parseInt(getTrackLimit(history)) : 30
     }
-    if(getQuery()) {
-      params.query = getQuery()
+    if(getQuery(history)) {
+      params.query = getQuery(history)
     }
-    if(getFilter()) {
-      params.filter = getFilter()
+    if(getFilter(history)) {
+      params.filter = getFilter(history)
     }
     try {
-      const res = await getTrackAssets(params)
+      let res;
+      if(props.profile) res = await getTrackAssetsByUsername(pageParams.username, params)
+      else res = await getTrackAssets(params)
+      
       if(res.status === 200) {
         const newTracksURLs = []
         await Promise.all(
@@ -319,22 +231,67 @@ const Library = inject('packsStore', 'userStore')(observer((props) => {
       console.log(err)
     }
   }
-  
-  return (
-    <div>
-      <div className="border rounded d-flex flex-row px-2 py-1" style={{backgroundColor: '#ebebeb', width: '100%'}}>
-        <div className="d-flex flex-row align-items-center mr-5">
-          <h5 className="mt-1 mr-5">Library</h5>
-          {view === 'tracks' ? <SearchBar setQuery={(query) => setQuery(query)}/> : null}
+
+  if(props.profile) {
+    const {userInfo} = props.userStore
+    return (
+      <div>
+        <div className='d-flex flex-row'>
+          <h4 className='mr-5'>{pageParams.username}</h4>
+          <SearchBar setQuery={(query) => setQuery(query, history, handleGetTracks)}/>
         </div>
         <div>
-          <Button variant="link" onClick={() => setView('packs')}>Packs</Button>
-          <Button variant="link" onClick={() => setView('tracks')}>Tracks</Button>
+          <div className="d-flex flex-row align-items-baseline">
+            <p>About:</p>
+            {userInfo && userInfo.username === pageParams.username ? <Button variant="link" onClick={() => setAboutToggle(!aboutToggle)}>{aboutToggle ? "Edit -" : "Edit +"}</Button> : null}
+          </div>
+          {
+            aboutToggle ? 
+            EditSingleItem({
+              typeOfEdit: 'about',
+              toggle: 'about',
+              inputType: 'textarea',
+              handleEdit: (data) => handleEditAbout(data),
+              item: about, setItem: setAbout}) 
+            : renderAbout()
+          }
         </div>
+        <hr className='mt-1'/>
+          <div className='p-1 d-flex flex-row justify-content-between'>
+            <div className='d-flex flex-row align-items-baseline'>
+              {renderSelectFilter()}  
+              {
+                getQuery(history) ?
+                <div className='ml-2 d-flex flex-row align-items-baseline'>
+                  <p>{`+ ${getQuery(history)}`}</p>
+                  <Button variant="link" onClick={() => setQuery(null, history, handleGetTracks)}>Remove</Button>
+                </div> : null
+              }
+            </div>
+            {renderSelectTrackLimit()}
+          </div>
+          {renderTracksList()}
+          {renderPaginationButtons()}
       </div>
-      {renderPacksOrTracksView()}
-    </div>
-  )
+    )
+  } else {
+    return (
+      <div>
+        <div className="border rounded d-flex flex-row px-2 py-1" style={{backgroundColor: '#ebebeb', width: '100%'}}>
+          <div className="d-flex flex-row align-items-center mr-5">
+            <h5 className="mt-1 mr-5">Library</h5>
+            {view === 'tracks' ? <SearchBar setQuery={(query) => setQuery(query, history, handleGetTracks)}/> : null}
+          </div>
+          <div>
+            <Button variant="link" onClick={() => setView('packs')}>Packs</Button>
+            <Button variant="link" onClick={() => setView('tracks')}>Tracks</Button>
+          </div>
+        </div>
+        {renderPacksOrTracksView()}
+      </div>
+    )
+  }
+  
 }))
 
 export default Library
