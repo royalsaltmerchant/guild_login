@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import {BiCoin} from 'react-icons/bi'
 import {BsDownload} from 'react-icons/bs'
+import {GiRoundStar} from 'react-icons/gi'
 import Waveform from "react-audio-waveform"
 import { Link } from 'react-router-dom'
 import { inject, observer } from 'mobx-react'
@@ -137,7 +138,11 @@ const TrackItem = inject('userStore')(observer((props) => {
   }
 
   function renderTrackAuthorIsPremium() {
-    return null
+    const {track} = props
+    const {usersList} = props.userStore
+    const user = usersList.filter((user) => track.author_id === user.id)[0]
+    if(user.premium) return <GiRoundStar style={{color: 'orange', marginBottom: '5px'}}/>
+    else return null
   }
 
   function handleTrackToggle(e) {
@@ -165,7 +170,7 @@ const TrackItem = inject('userStore')(observer((props) => {
         <div className='d-flex flex-row flex-wrap ml-2 align-items-center' onClick={(e) => handleTrackToggle(e)}>
           <div className="d-flex flex-row flex-wrap align-items-baseline" style={{width: '450px'}} onClick={(e) => handleTrackToggle(e)}>
             <p style={{fontSize: '20px', margin: 0, padding: 0}}>{track.name}</p>
-            <Button as={Link} variant="link" to={`/profile/${authorUsername}`}>{renderTrackAuthorIsPremium()} {authorUsername}</Button>
+            <Button as={Link} variant="link" to={`/profile/${authorUsername}`}>{renderTrackAuthorIsPremium(track)} {authorUsername}</Button>
           </div>
           <div className='waveform-div d-flex flex-row border rounded px-1' style={{width: '300px', paddingTop: '6px', backgroundColor: '#fdf0ff'}}>
             <div className="waveform" style={{width: '250px'}}>
